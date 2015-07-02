@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<physical>
+		<!-- OP as percents -->
+		<overprovisioning>7</overprovisioning>
+		<!-- GCT is garbage collection threshold - as percents -->
+		<gc_threshold>30</gc_threshold>
+		<chips>1</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
+		<planes>2</planes>
+		<blocks>32</blocks>
+		<pages>32</pages>
+	</physical>
+	<visual>
+		<show_counters>yes</show_counters>
+		<speed>9000</speed><!-- Number of frames per minute -->
+		<page_width>18</page_width>
+		<page_height>13</page_height>
+		<block_space>2</block_space><!-- spacing between the blocks in the plane -->
+		<pages_in_row>16</pages_in_row>
+		<blocks_in_row>4</blocks_in_row>
+		<planes_in_row>1</planes_in_row>
+	</visual>
+	<ReusableVisualizationSSDManager>
+		<name>Reusable Simulation</name>
+		<clean_color r="255" g="255" b="255"/>
+		<first_write r="50" g="255" b="150"/>
+		<second_write r="50" g="150" b="255"/>
+	</ReusableVisualizationSSDManager>
+	<ReusableSSDManager>
+		<name>Reusable</name>
+		<clean_color r="255" g="255" b="255"/>
+		<first_write r="50" g="255" b="150"/>
+		<second_write r="50" g="150" b="255"/>
+	</ReusableSSDManager>
+	<HotColdReusableSSDManager>
+		<name>HotCold-Reusable</name>
+		<temp_limit>5</temp_limit>
+		<clean_color r="255" g="255" b="255"/>
+		<first_write r="50" g="255" b="150"/>
+		<second_write r="50" g="150" b="255"/>
+	</HotColdReusableSSDManager>
+	<HotColdSSDManager>
+		<name>HotCold</name>
+		<clean_color r="255" g="255" b="255"/>
+		<intermediate r="200" g="200" b="200"/>
+		<cold r="255" g="60" b="60"/>
+		<hot r="60" g="120" b="255"/>
+		<min_temperature>1</min_temperature>
+		<max_temperature>10</max_temperature>
+		<partition>1</partition>
+		<partition>5</partition>
+		<partition>10</partition>
+	</HotColdSSDManager>
+	<GreedySSDManager>
+		<name>Greedy</name>
+		<clean_color r="255" g="255" b="255"/>
+		<written_color r="255" g="220" b="100"/>
+	</GreedySSDManager>
+</root>
