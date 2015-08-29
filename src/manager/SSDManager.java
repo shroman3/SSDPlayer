@@ -43,12 +43,27 @@ import general.XMLGetter;
 import general.XMLParsingException;
 
 
+/**
+ * @author Roman
+ * 
+ * SSDManager is a base class for every use case simulation.
+ *
+ * @param <P> - Page
+ * @param <B> - Block
+ * @param <T> - Plane
+ * @param <C> - Chip
+ * @param <D> - Device
+ */
 public abstract class SSDManager<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>> {
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> simulatorsMap;
 	private static List<String> managersList = new ArrayList<>();
 	private static List<String> simulatorsList = new ArrayList<>();
 	
+	/**
+	 * Initialize SSD manager using given configuration
+	 * @param xmlGetter - configuration getter 
+	 */
 	public static void initializeManager(XMLGetter xmlGetter) {
 		if (managersMap == null) {		
 			Reflections reflections = new Reflections(SSDManager.class.getPackage().getName());
@@ -87,9 +102,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 			simulatorsMap = simulators;
 		}
 	}
-
-	public static void finalizeManager() {
-	}
 	
 	public static SSDManager<?,?,?,?,?> getManager(String managerName) {
 		SSDManager<?, ?, ?, ?, ?> manager = managersMap.get(managerName);
@@ -99,10 +111,16 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		return manager;
 	}
 	
+	/**
+	 * @return all the use case simulation managers
+	 */
 	public static Iterable<String> getAllManagers() {
 		return managersList;
 	}
 	
+	/**
+	 * @return all the visual simulators
+	 */
 	public static Iterable<String> getAllSimulators() {
 		return simulatorsList;
 	}
@@ -119,36 +137,46 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
 
+	/**
+	 * @return get trace parser for this manager
+	 */
 	abstract public TraceParserGeneral<P, B, T, C, D, ? extends SSDManager<P,B,T,C,D>> getTraseParser();
+	/**
+	 * @return get list for statistic getters
+	 */
 	abstract protected List<StatisticsGetter> initStatisticsGetters();
+	/**
+	 * @param chips - empty chips
+	 * @return empty device initializing
+	 */
 	abstract protected D getEmptyDevice(List<C> chips);
+	/**
+	 * @param planes - empty planes
+	 * @return empty chip for device initializing
+	 */
 	abstract protected C getEmptyChip(List<T> planes);
+	/**
+	 * @param blocks - empty blocks
+	 * @return empty plane for device initializing
+	 */
 	abstract protected T getEmptyPlane(List<B> blocks);
+	/**
+	 * @param pages - empty pages
+	 * @return empty block for device initializing
+	 */
 	abstract protected B getEmptyBlock(List<P> pages);
+	/**
+	 * @return empty page for device initializing
+ 	 */
 	abstract public P getEmptyPage();
 
 
 	SSDManager() {
 	}
-	
-	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
-		initPhysicalValues(xmlGetter);
-		managerName = getStringField(xmlGetter, "name");
-		cleanColor = getColorField(xmlGetter, "clean_color");
-		
-		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
-		gct = (int)(blocksInPlane * ((double)gct/(100)));
-	}
 
-	private void initPhysicalValues(XMLGetter xmlGetter) throws XMLParsingException {
-		op = xmlGetter.getIntField("physical", "overprovisioning");
-		gct = xmlGetter.getIntField("physical", "gc_threshold");
-		chipsNum = xmlGetter.getIntField("physical", "chips");
-		planesNum = xmlGetter.getIntField("physical", "planes");
-		blocksInPlane = xmlGetter.getIntField("physical", "blocks");
-		pagesInBlock = xmlGetter.getIntField("physical", "pages");
-	}
-
+	/**
+	 * @return the size of the device in pages
+	 */
 	public int getLpRange() {
 		return chipsNum * planesNum *(blocksInPlane - gct - 2)*pagesInBlock;
 	}
@@ -213,6 +241,25 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		cleanDevice = (D) cleanDevice.writeLP(lp, arg);
 		return cleanDevice;
 	}
+
+	public List<WorkloadWidget<P,B,T,C,D,SSDManager<P,B,T,C,D>>> getWorkLoadGeneratorWidgets() {
+		return null;
+	}
+	
+	/**
+	 * IMPORTANT to call the super.initValues(xmlGetter) in the extending managers
+	 * Initializes SSD managers parameters from the XML config file
+	 * @param xmlGetter - XML config file getter
+	 * @throws XMLParsingException
+	 */
+	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
+		initPhysicalValues(xmlGetter);
+		managerName = getStringField(xmlGetter, "name");
+		cleanColor = getColorField(xmlGetter, "clean_color");
+		
+		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
+		gct = (int)(blocksInPlane * ((double)gct/(100)));
+	}
 	
 	protected String getStringField(XMLGetter xmlGetter, String field) throws XMLParsingException {
 		return xmlGetter.getStringField(getClass().getSimpleName(), field);
@@ -266,7 +313,12 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		return pages;
 	}
 
-	public List<WorkloadWidget<P,B,T,C,D,SSDManager<P,B,T,C,D>>> getWorkLoadGeneratorWidgets() {
-		return null;
+	private void initPhysicalValues(XMLGetter xmlGetter) throws XMLParsingException {
+		op = xmlGetter.getIntField("physical", "overprovisioning");
+		gct = xmlGetter.getIntField("physical", "gc_threshold");
+		chipsNum = xmlGetter.getIntField("physical", "chips");
+		planesNum = xmlGetter.getIntField("physical", "planes");
+		blocksInPlane = xmlGetter.getIntField("physical", "blocks");
+		pagesInBlock = xmlGetter.getIntField("physical", "pages");
 	}
 }

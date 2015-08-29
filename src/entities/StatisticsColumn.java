@@ -26,7 +26,12 @@ import general.Consts;
 import java.awt.Color;
 
 import utils.Utils;
-
+ 
+/**
+ * @author Roman
+ * 
+ * The entity that represents statistics data for some entity statistics graph
+ */
 public class StatisticsColumn {
 	private String columnName;
 	private double value;

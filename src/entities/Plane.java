@@ -83,8 +83,20 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		initValues();
 	}
 	
+	/**
+	 * @return builder for a copy of this plane(used in order to create a modified copy)
+	 */
 	abstract public Builder<P,B> getSelfBuilder();
+	/**
+	 * @param lp - the logical page to be written 
+	 * @param arg - additional data(hot/cold or something else..)
+	 * @return new Plane with the lp written on it
+	 */
 	abstract public Plane<P,B> writeLP(int lp, int arg);
+	/**
+	 * @return tuple: first -  Plane after being cleaned 
+	 * 				  second - the number of moved pages in process of garbage collection
+	 */
 	abstract protected Pair<? extends Plane<P, B>, Integer> cleanPlane();
 
 	public Iterable<B> getBlocks() {

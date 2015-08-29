@@ -25,6 +25,12 @@ import java.util.List;
 
 import ui.GeneralStatisticsGraph;
 
+
+/**
+ * @author Roman
+ * 
+ * This interface that represents a statistics gathered by SSD manager.
+ */
 public interface StatisticsGetter {
 	int getNumberOfColumns();
 	List<StatisticsColumn> getStatistics(Device<?,?,?,?> device);
