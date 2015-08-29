@@ -115,7 +115,7 @@ public class ReusablePlane extends Plane<ReusablePage, ReusableBlock> {
 
 			toMove = pickedToClean.getValue1().getValidCounter();
 			Set<Integer> lpMoved = new HashSet<Integer>();
-			for (ReusablePage page : pickedToClean.getValue1().getDisplayedPages()) {
+			for (ReusablePage page : pickedToClean.getValue1().getPages()) {
 				if (page.isValid() && !lpMoved.contains(page.getLp())) {						
 					activeBlock = activeBlock.move(page.getLp(), page.getWriteLevel());
 					lpMoved.add(page.getLp());

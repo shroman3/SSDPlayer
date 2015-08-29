@@ -58,7 +58,7 @@ public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 			for (ReusablePlane plane : chip.getPlanes()) {
 				for (ReusableBlock block : plane.getBlocks()) {
 					Set<Integer> utilitySet = new HashSet<Integer>();
-					for (ReusablePage page : block.getDisplayedPages()) {
+					for (ReusablePage page : block.getPages()) {
 						if (page.isValid() && page.getWriteLevel() == writeLevel) { 									
 							utilitySet.add(page.getLp());
 						}

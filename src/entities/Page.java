@@ -28,15 +28,17 @@ import utils.UIUtils;
 import utils.Utils;
 
 
+/**
+ * @author Roman
+ * 
+ * The most small measure in the player, Page is immutable entity.
+ * It contains the basic info on what it contains: isClean, isValid, isGC, logical page.
+ */
 public abstract class Page {
 	public static abstract class Builder {
 		private Page page;
 		
 		abstract public Page build();
-
-		protected void setPage(Page page) {
-			this.page = page;
-		}
 		
 		public Builder setClean(boolean isClean) {
 			page.isClean = isClean;
@@ -57,6 +59,10 @@ public abstract class Page {
 			Utils.validateNotNegative(lp, "logical page");
 			page.lp = lp;
 			return this;
+		}
+		
+		protected void setPage(Page page) {
+			this.page = page;
 		}
 	}
 	

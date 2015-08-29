@@ -92,7 +92,7 @@ public class BasicPlane extends Plane<BasicPage, BasicBlock> {
 		int active = getActiveBlockIndex();
 		BasicBlock activeBlock = cleanBlocks.get(active);
 		
-		for (BasicPage page : pickedToClean.getValue1().getDisplayedPages()) {
+		for (BasicPage page : pickedToClean.getValue1().getPages()) {
 			if (page.isValid()) {						
 				activeBlock = activeBlock.move(page.getLp());
 			}

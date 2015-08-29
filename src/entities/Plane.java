@@ -30,6 +30,17 @@ import org.javatuples.Pair;
 
 import utils.Utils;
 
+/**
+ * @author Roman
+ * 
+ * Plane basically is ordered collection of blocks, but this entity contains counters
+ * and information for the activities that should be handled by it: 
+ * number of clean blocks, active block index, etc.
+ * Also immutable
+ * 
+ * @param <P> - page type the block stores.
+ * @param <B> - block type that the plane stores
+ */
 public abstract class Plane<P extends Page, B extends Block<P>> {
 	public abstract static class Builder<P extends Page, B extends Block<P>> {
 		private Plane<P,B> plane;
@@ -103,6 +114,10 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return new ArrayList<B>(blocksList);
 	}
 	
+	/**
+	 * @param lp - Logical Page to be invalidated
+	 * @return new plane with the Logical Page specified invalidated from the blocks
+	 */
 	@SuppressWarnings("unchecked")
 	public Plane<P,B> invalidate(int lp) {
 		List<B> updatedBlocks = new ArrayList<B>();
@@ -115,6 +130,10 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 	
 	
+	/**
+	 * @return <clean plane, number of pages moved in garbage collection>
+	 * if no cleaning is invoked returns itself and 0 pages moved
+	 */
 	public Pair<? extends Plane<P,B>, Integer> clean() {
 		if(!invokeCleaning()) {
 			return new Pair<Plane<P, B>, Integer>(this, 0);
@@ -159,6 +178,9 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return block.getStatus() == BlockStatusGeneral.USED;
 	}
 
+	/**
+	 * On creation this methods initializes the counters of the plane
+	 */
 	private void initValues() {
 		int minValid = Integer.MAX_VALUE;
 		int minEraseClean = Integer.MAX_VALUE;

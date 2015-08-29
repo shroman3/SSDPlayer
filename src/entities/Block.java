@@ -30,6 +30,14 @@ import java.util.List;
 import manager.SSDManager;
 import utils.Utils;
 
+/**
+ * @author Roman
+ *
+ * Block basically is ordered collection of pages, but this entity stores more 
+ * information like eraseCounter, block status, etc.
+ * Also immutable
+ * @param <P> - page type the block stores.
+ */
 public abstract class Block<P extends Page> {
 	public static abstract class Builder<P extends Page> {
 		private Block<P> block;
@@ -50,7 +58,7 @@ public abstract class Block<P extends Page> {
 		}
 		
 		public Builder<P> setPagesList(List<P> pagesList) {
-			block.displayedPagesList = new ArrayList<P>(pagesList);
+			block.pagesList = new ArrayList<P>(pagesList);
 			return this;
 		}
 		
@@ -67,7 +75,7 @@ public abstract class Block<P extends Page> {
 		public abstract Block<P> build();
 		
 		protected void validate() {
-			Utils.validateNotNull(block.displayedPagesList, "pagesList");
+			Utils.validateNotNull(block.pagesList, "pagesList");
 			Utils.validateNotNull(block.status, "status");
 			Utils.validateNotNegative(block.eraseCounter, "erase Counter");
 		}
@@ -77,8 +85,11 @@ public abstract class Block<P extends Page> {
 		}
 	}
 	
-	private List<P> displayedPagesList;
+	private List<P> pagesList;
 	private int eraseCounter = -1;
+	/**
+	 * Number of logical valid pages stored in the block
+	 */
 	private int validCounter = 0;
 	private BlockStatus status = null; 
 	private boolean inGC = false;
@@ -87,7 +98,7 @@ public abstract class Block<P extends Page> {
 	protected Block() { }
 	
 	protected Block(Block<P> other) {
-		displayedPagesList = new ArrayList<P>(other.displayedPagesList);
+		pagesList = new ArrayList<P>(other.pagesList);
 		eraseCounter = other.eraseCounter;
 		status = other.status;
 		inGC = other.inGC;
@@ -97,16 +108,16 @@ public abstract class Block<P extends Page> {
 
 	abstract public Builder<P> getSelfBuilder();
 
-	public Iterable<P> getDisplayedPages() {
-		return displayedPagesList;
+	public Iterable<P> getPages() {
+		return pagesList;
 	}
 	
 	public P getPage(int i) {
-		return displayedPagesList.get(i);
+		return pagesList.get(i);
 	}
 	
 	public int getPagesNum() {
-		return displayedPagesList.size();
+		return pagesList.size();
 	}
 
 	public int getEraseCounter() {
@@ -116,7 +127,6 @@ public abstract class Block<P extends Page> {
 	public int getValidCounter() {
 		return validCounter;
 	}
-	
 
 	public BlockStatus getStatus() {
 		return status;
@@ -127,12 +137,12 @@ public abstract class Block<P extends Page> {
 	}
 	
 	public List<P> getNewPagesList() {
-		return new ArrayList<P>(displayedPagesList);
+		return new ArrayList<P>(pagesList);
 	}
 
 	public int getCleanPageIndex() {
-		for (int i =0; i < displayedPagesList.size()-1; ++i) {
-			Page page = displayedPagesList.get(i);
+		for (int i =0; i < pagesList.size()-1; ++i) {
+			Page page = pagesList.get(i);
 			if (page.isClean()) {
 				return i;
 			}
@@ -156,12 +166,17 @@ public abstract class Block<P extends Page> {
 		return null;
 	}
 	
+	/**
+	 * @param lp - Logical Page to be invalidated
+	 * @return new block with the Logical Page specified invalidated
+	 * if doesn't contain the specified LP returns itself..
+	 */
 	public Block<P> invalidate(int lp) {
 		boolean wasFound = false;
 		List<P> pages = new ArrayList<P>(getPagesNum());
-		for (P page : getDisplayedPages()) {
+		for (P page : getPages()) {
 			if (page.isValid() && (page.getLp() == lp)) {
-				page = invalidate(page);
+				page = invalidatePage(page);
 				wasFound = true;
 			}
 			pages.add(page);
@@ -173,15 +188,10 @@ public abstract class Block<P extends Page> {
 		}
 		return builder.build();
 	}
-	
-	//Using getSelfBuilder so the build should return the same type - P
-	@SuppressWarnings("unchecked")
-	public P invalidate(P page) {
-		Page.Builder builder = page.getSelfBuilder();
-		builder.setValid(false);
-		return (P) builder.build();
-	}
-	
+
+	/**
+	 * @return new clean block with updated counters
+	 */
 	public Block<P> eraseBlock() {
 		Builder<P> builder = getSelfBuilder();
 		builder.setPagesList(getEmptyPages())
@@ -191,8 +201,11 @@ public abstract class Block<P extends Page> {
 		return builder.build();
 	}
 	
+	/**
+	 * @return whether the block has free page to write on..
+	 */
 	public boolean hasRoomForWrite() {
-		for (P page : getDisplayedPages()) {
+		for (P page : getPages()) {
 			if (page.isClean()) {
 				return true;
 			}
@@ -206,6 +219,12 @@ public abstract class Block<P extends Page> {
 		return builder.build();
 	}
 	
+	/**
+	 * @param index - to set the page
+	 * @param page - the page to set
+	 * @return new Block with page specified in the specified index, 
+	 * with updated counters
+	 */
 	protected Block<P> addValidPage(int index, P page) {
 		List<P> newPagesList = getNewPagesList();
 		newPagesList.set(index, page);
@@ -214,6 +233,14 @@ public abstract class Block<P extends Page> {
 		return blockBuilder.build();
 	}
 	
+	//Using getSelfBuilder so the build should return the same type - P
+	@SuppressWarnings("unchecked")
+	private P invalidatePage(P page) {
+		Page.Builder builder = page.getSelfBuilder();
+		builder.setValid(false);
+		return (P) builder.build();
+	}
+		
 	private List<P> getEmptyPages() {
 		List<P> pages = new ArrayList<P>(getPagesNum());
 		P page = manager.getEmptyPage();

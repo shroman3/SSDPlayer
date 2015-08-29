@@ -27,6 +27,17 @@ import java.util.List;
 import org.javatuples.Pair;
 
 
+/**
+ * @author Roman
+ * 
+ * Chip is ordered collection of planes
+ * which is suppose to share the load equally between the planes it got.
+ * Also immutable
+ * 
+ * @param <P> - page type the block stores.
+ * @param <B> - block type that the plane stores.
+ * @param <T> - plane type that the chip stores.
+ */
 public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P,B>> {
 	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>> {
 		private Chip<P,B,T> chip;

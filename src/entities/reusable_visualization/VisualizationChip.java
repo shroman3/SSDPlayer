@@ -74,7 +74,7 @@ public class VisualizationChip extends Chip<VisualizationPage, VisualizationBloc
 	public int getLPWriteLevel(int lp) {
 		for (VisualizationPlane plane : getPlanes()) {
 			for (VisualizationBlock block : plane.getBlocks()) {
-				for (VisualizationPage page : block.getDisplayedPages()) {
+				for (VisualizationPage page : block.getPages()) {
 					if (page.getLp() == lp) {
 						return page.getWriteLevel();
 					}

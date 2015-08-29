@@ -110,7 +110,7 @@ public class BlockView extends Component {
 			g2d.setFont(Consts.UI.INVISIBLE_FONT);
 		}
 		int pageIndex = 0;
-		for (Page page :  block.getDisplayedPages()) {
+		for (Page page :  block.getPages()) {
 			drawPage(g2d, x, y, pageIndex++, page);
 		}
 

@@ -56,7 +56,7 @@ public class WritesToGCGetter extends SecondWritesStatisticsGetter {
 			for (ReusablePlane plane : chip.getPlanes()) {				
 				for (ReusableBlock block : plane.getBlocks()) {
 					Set<Integer> utilitySet = new HashSet<Integer>();
-					for (ReusablePage page : block.getDisplayedPages()) {
+					for (ReusablePage page : block.getPages()) {
 						if (page.isValid() && (!utilitySet.contains(page.getLp()))) {
 							utilitySet.add(page.getLp());
 							if (page.isGC()) {

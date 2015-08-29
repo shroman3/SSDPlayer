@@ -58,7 +58,7 @@ public class WriteLevelDistributionGetter extends SimulationStatisticsGetter {
 			for (VisualizationPlane plane : chip.getPlanes()) {
 				for (VisualizationBlock block : plane.getBlocks()) {
 					for (int i = 0; i < counters.length; i++) {
-						for (VisualizationPage page : block.getDisplayedPages()) {
+						for (VisualizationPage page : block.getPages()) {
 							if (page.isValid()) {			
 								Set<Integer> writeLevelLPSet = utilitySet.get(page.getWriteLevel());
 								if (writeLevelLPSet == null) {

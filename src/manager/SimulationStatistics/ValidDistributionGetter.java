@@ -58,7 +58,7 @@ public class ValidDistributionGetter extends SimulationStatisticsGetter {
 			for (VisualizationPlane plane : chip.getPlanes()) {
 				for (VisualizationBlock block : plane.getBlocks()) {
 					Set<Integer> utilitySet = new HashSet<Integer>();
-					for (VisualizationPage page : block.getDisplayedPages()) {
+					for (VisualizationPage page : block.getPages()) {
 						if (page.isValid() && page.getWriteLevel() == writeLevel) { 									
 							utilitySet.add(page.getLp());
 						}

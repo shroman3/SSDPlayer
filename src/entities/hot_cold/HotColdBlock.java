@@ -108,7 +108,7 @@ public class HotColdBlock extends Block<HotColdPage> {
 
 	public HotColdBlock move(int lp, int temperature) {
 		int index = 0;
-		for (HotColdPage page : getDisplayedPages()) {
+		for (HotColdPage page : getPages()) {
 			if (page.isClean()) {
 				HotColdPage.Builder builder = page.getSelfBuilder();
 				builder.setTemperature(temperature).setClean(false).setLp(lp).setGC(true).setValid(true);
@@ -127,7 +127,7 @@ public class HotColdBlock extends Block<HotColdPage> {
 	
 	public HotColdBlock writeLP(int lp, int temperature) {
 		int index = 0;
-		for (HotColdPage page : getDisplayedPages()) {
+		for (HotColdPage page : getPages()) {
 			if (page.isClean()) {
 				HotColdPage.Builder builder = page.getSelfBuilder();
 				builder.setTemperature(temperature).setClean(false).setLp(lp).setGC(false).setValid(true);

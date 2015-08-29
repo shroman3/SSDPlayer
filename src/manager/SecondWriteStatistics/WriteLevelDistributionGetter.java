@@ -58,7 +58,7 @@ public class WriteLevelDistributionGetter extends SecondWritesStatisticsGetter {
 			for (ReusablePlane plane : chip.getPlanes()) {
 				for (ReusableBlock block : plane.getBlocks()) {
 					for (int i = 0; i < counters.length; i++) {
-						for (ReusablePage page : block.getDisplayedPages()) {
+						for (ReusablePage page : block.getPages()) {
 							if (page.isValid()) {			
 								Set<Integer> writeLevelLPSet = utilitySet.get(page.getWriteLevel());
 								if (writeLevelLPSet == null) {

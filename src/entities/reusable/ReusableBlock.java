@@ -97,7 +97,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 	public Pair<Integer, Integer> getRecycledPageIndex() {
 		int first = -1;
 		int pageIndex =0;
-		Iterator<ReusablePage> iterator = getDisplayedPages().iterator();
+		Iterator<ReusablePage> iterator = getPages().iterator();
 		for (; iterator.hasNext();) {
 			ReusablePage page = iterator.next();
 			if ((!page.isValid()) && (page.getWriteLevel() <= 1)) {
@@ -119,7 +119,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 
 	public ReusableBlock move(Integer lp, int writeLevel) {
 		int index = 0;
-		for (ReusablePage page : getDisplayedPages()) {
+		for (ReusablePage page : getPages()) {
 			if (page.isClean()) {
 				ReusablePage.Builder builder = page.getSelfBuilder();
 				builder.setWriteLevel(1).setGcWriteLevel(writeLevel).setClean(false).setLp(lp).setGC(true).setValid(true);
@@ -132,7 +132,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 
 	public ReusableBlock firstWriteLP(int lp) {
 		int index = 0;
-		for (ReusablePage page : getDisplayedPages()) {
+		for (ReusablePage page : getPages()) {
 			if (page.isClean()) {
 				ReusablePage.Builder builder = page.getSelfBuilder();
 				builder.setWriteLevel(1).setClean(false).setLp(lp).setGC(false).setValid(true);
@@ -147,7 +147,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 		int index = 0;
 		int count = 0;
 		List<ReusablePage> newPagesList = getNewPagesList();
-		for (ReusablePage page : getDisplayedPages()) {
+		for (ReusablePage page : getPages()) {
 			if ((!page.isValid()) && (page.getWriteLevel() == 1)) {
 				ReusablePage.Builder builder = page.getSelfBuilder();
 				builder.setWriteLevel(2).setClean(false).setLp(lp).setGC(false).setValid(true);
@@ -166,7 +166,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 	
 	public boolean hasRoomForSecondWrite() {
 		int count = 0;
-		for (ReusablePage page : getDisplayedPages()) {
+		for (ReusablePage page : getPages()) {
 			if ((!page.isValid()) && (page.getWriteLevel() <= 1)) {
 				++count;
 				if (count >=2) {

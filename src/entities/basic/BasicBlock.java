@@ -89,7 +89,7 @@ public class BasicBlock extends Block<BasicPage> {
 
 	public BasicBlock move(int lp) {
 		int index = 0;
-		for (BasicPage page : getDisplayedPages()) {
+		for (BasicPage page : getPages()) {
 			if (page.isClean()) {
 				BasicPage.Builder builder = page.getSelfBuilder();
 				builder.setClean(false).setLp(lp).setGC(true).setValid(true);
@@ -102,7 +102,7 @@ public class BasicBlock extends Block<BasicPage> {
 	
 	public BasicBlock writeLP(int lp) {
 		int index = 0;
-		for (BasicPage page : getDisplayedPages()) {
+		for (BasicPage page : getPages()) {
 			if (page.isClean()) {
 				BasicPage.Builder builder = page.getSelfBuilder();
 				builder.setClean(false).setLp(lp).setGC(false).setValid(true);

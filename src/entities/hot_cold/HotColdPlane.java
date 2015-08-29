@@ -122,7 +122,7 @@ public class HotColdPlane extends Plane<HotColdPage, HotColdBlock> {
 		int toMove = pickedToClean.getValue1().getValidCounter();
 		HotColdPartition partition = pickedToClean.getValue1().getPartition();
 		Integer active = activeBlocksMap.get(partition);
-		for (HotColdPage page : pickedToClean.getValue1().getDisplayedPages()) {
+		for (HotColdPage page : pickedToClean.getValue1().getPages()) {
 			if (page.isValid()) {						
 				if (active == null) {
 					active = getLowestEraseCleanBlockIndex();
