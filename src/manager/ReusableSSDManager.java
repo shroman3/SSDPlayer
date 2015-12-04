@@ -57,8 +57,8 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 
 
 	@Override
-	public TraceParserGeneral<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, ReusableSSDManager> getTraseParser() {
-		return new BasicTraceParser<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, ReusableSSDManager>(this);
+	public TraceParserGeneral<ReusableDevice, ReusableSSDManager> getTraseParser() {
+		return new BasicTraceParser<ReusableDevice, ReusableSSDManager>(this);
 	}
 
 	@Override
@@ -67,11 +67,10 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	}
 	
 	@Override
-	public List<WorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, 
-		SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+	public List<WorkloadWidget<ReusableDevice, SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
 		return creators;
 	}
 	

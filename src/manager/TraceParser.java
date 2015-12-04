@@ -23,19 +23,28 @@ package manager;
 
 import java.io.FileNotFoundException;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 
-public interface TraceParser<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> {
+public interface TraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> {
 	void open(String fileName) throws FileNotFoundException;
 	void close();
 
+	/**
+	 * This method returns the last command written from the trace.
+	 * May be needed in the GUI.
+	 * @return last command written from the trace.
+	 */
 	String getLastCommand();
 	
+	/**
+	 * Reads next command in the trace, parses it and executes on the current Device.
+	 * @return The new Device returned by the command execution.
+	 * @throws Exception
+	 */
 	D parseNextCommand() throws Exception;
 	
+	/**
+	 * @return The Device in current state(No Side Effects in this method).
+	 */
 	D getCurrentDevice();
 }

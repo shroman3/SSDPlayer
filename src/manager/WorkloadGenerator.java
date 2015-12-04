@@ -23,15 +23,10 @@ package manager;
 
 import java.io.FileNotFoundException;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 
 
-public abstract class WorkloadGenerator <P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> 
-	implements TraceParser<P,B,T,C,D,S> {
+public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	private String name;
 	private int traceLength;
 	private S manager;

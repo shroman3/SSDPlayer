@@ -21,6 +21,9 @@
  *******************************************************************************/
 package manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableChip;
 import entities.reusable.ReusableDevice;
@@ -28,10 +31,6 @@ import entities.reusable.ReusablePage;
 import entities.reusable.ReusablePlane;
 import general.XMLGetter;
 import general.XMLParsingException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import ui.WorkloadWidget;
 
 public class HotColdReusableSSDManager extends ReusableSSDManager {
@@ -42,16 +41,15 @@ public class HotColdReusableSSDManager extends ReusableSSDManager {
 	}
 	
 	@Override
-	public TraceParserGeneral<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, ReusableSSDManager> getTraseParser() {
-		return new HotColdTraceParser<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, ReusableSSDManager>(this);
+	public TraceParserGeneral<ReusableDevice, ReusableSSDManager> getTraseParser() {
+		return new HotColdTraceParser<ReusableDevice, ReusableSSDManager>(this);
 	}
 	
 	@Override
-	public List<WorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice, 
-		SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+	public List<WorkloadWidget<ReusableDevice, SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
 		return creators;
 	}
 	

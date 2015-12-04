@@ -26,14 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import entities.Block;
 import entities.Device;
-import entities.Chip;
-import entities.Page;
-import entities.Plane;
 
-public abstract class TraceParserGeneral<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> 
-	implements TraceParser<P,B,T,C,D,S> {
+public abstract class TraceParserGeneral<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	protected BufferedReader br = null;
 
 	private String operationLine;

@@ -23,14 +23,9 @@ package manager;
 
 import java.util.Random;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 
-public class UniformWorkloadGenerator <P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> 
-	extends WorkloadGenerator<P,B,T,C,D,S> {
+public class UniformWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadGenerator<D,S> {
 	private Random random;
 	private int seed;
 

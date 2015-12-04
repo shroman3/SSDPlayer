@@ -30,9 +30,22 @@ import ui.GeneralStatisticsGraph;
  * @author Roman
  * 
  * This interface that represents a statistics gathered by SSD manager.
+ * Every gathered statistics in this simulator implements this interface.
  */
 public interface StatisticsGetter {
+	/**
+	 * The Graphs cannot change dynamically number of the columns or lines, 
+	 * they are presenting. For that reason the statistics getter must 
+	 * explicitly state number of gathered columns or lines. 
+	 * @return number of gathered columns or lines
+	 */
 	int getNumberOfColumns();
+	/**
+	 * This is the method in which the statistics getter calculates the statistics,
+	 * for the current Device state.
+	 * @param device - to calculate the statistics on
+	 * @return list of statistics columns for the current Device's state.  
+	 */
 	List<StatisticsColumn> getStatistics(Device<?,?,?,?> device);
 	GeneralStatisticsGraph getStatisticsGraph();
 }

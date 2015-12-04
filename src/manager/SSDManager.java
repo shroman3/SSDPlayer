@@ -32,7 +32,6 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-import ui.WorkloadWidget;
 import entities.Block;
 import entities.Chip;
 import entities.Device;
@@ -41,12 +40,26 @@ import entities.Plane;
 import entities.StatisticsGetter;
 import general.XMLGetter;
 import general.XMLParsingException;
+import ui.WorkloadWidget;
 
 
 /**
  * @author Roman
  * 
- * SSDManager is a base class for every use case simulation.
+ * SSDManager is a abstract base class for every FTL use case.
+ * 
+ * All the non abstract subclasses of this class will be loaded using reflection library.
+ * The UI classes use the static methods of this class to get all the possible use cases in the simulator.
+ * This class includes static methods like getManagerByName, getAllManagerNames etc.
+ * The static members are managersMap - holding all of the managers by their name(specified in the config),
+ * simulatorsList - list of names of the simulation SSD managers, 
+ * visualisationsList - list of names of the visualization SSD managers,
+ * 
+ * The non static part presents the interface which every use case SSDManager will have to implement.
+ * Methods like getTraseParser(), initStatisticsGetters(), etc.
+ * The type is Generic in terms of the entities it uses so there will be static typing as strict as possible.
+ * Every SSDManager is defined to use a very specific set of entities, 
+ * which will be defined with the implementation of the use case.
  *
  * @param <P> - Page
  * @param <B> - Block
@@ -56,12 +69,15 @@ import general.XMLParsingException;
  */
 public abstract class SSDManager<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>> {
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
-	private static Map<String, ? extends SSDManager<?,?,?,?,?>> simulatorsMap;
-	private static List<String> managersList = new ArrayList<>();
 	private static List<String> simulatorsList = new ArrayList<>();
+	private static List<String> visualizationsList = new ArrayList<>();
 	
 	/**
-	 * Initialize SSD manager using given configuration
+	 * Initialize SSD manager using given configuration.
+	 * First loads all of the subclasses of the SSDManager.
+	 * After creates instance of the non abstract ones, calls their initialization method 
+	 * and adds them to the managersMap, by their name(specified in the config file).
+	 *   
 	 * @param xmlGetter - configuration getter 
 	 */
 	public static void initializeManager(XMLGetter xmlGetter) {
@@ -75,7 +91,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 			Set<Class<? extends SSDManager<?,?,?,?,?>>> subTypes = (Set<Class<? extends SSDManager<?,?,?,?,?>>>)auxObj;
 			
 			Map<String, SSDManager<?,?,?,?,?>> managers = new HashMap<String, SSDManager<?,?,?,?,?>>();
-			Map<String, SSDManager<?,?,?,?,?>> simulators = new HashMap<String, SSDManager<?,?,?,?,?>>();
 			for (Class<? extends SSDManager<?,?,?,?,?>> clazz : subTypes) {
 				if (!Modifier.isAbstract(clazz.getModifiers())) {
 					try {
@@ -83,12 +98,11 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 						SSDManager<?,?,?,?,?> manager = clazz.newInstance();
 						manager.initValues(xmlGetter);
 						if (manager instanceof VisualizationSSDManager) {
-							simulators.put(manager.getManagerName(), manager);
-							simulatorsList.add(manager.getManagerName());
+							visualizationsList.add(manager.getManagerName());
 						} else {
-							managers.put(manager.getManagerName(), manager);
-							managersList.add(manager.getManagerName());
+							simulatorsList.add(manager.getManagerName());
 						}
+						managers.put(manager.getManagerName(), manager);
 						manager.statisticsGetters  = manager.initStatisticsGetters();
 						System.out.println("Finished initializing " + clazz.getSimpleName() + " - " + manager.getManagerName());
 					} catch (Throwable e) {
@@ -96,33 +110,28 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 					}
 				}
 			}
+			Collections.sort(visualizationsList);
 			Collections.sort(simulatorsList);
-			Collections.sort(managersList);
 			managersMap = managers;
-			simulatorsMap = simulators;
 		}
 	}
 	
 	public static SSDManager<?,?,?,?,?> getManager(String managerName) {
-		SSDManager<?, ?, ?, ?, ?> manager = managersMap.get(managerName);
-		if(manager == null) {
-			manager = simulatorsMap.get(managerName);
-		}
-		return manager;
+		return managersMap.get(managerName);
 	}
 	
 	/**
 	 * @return all the use case simulation managers
 	 */
-	public static Iterable<String> getAllManagers() {
-		return managersList;
+	public static Iterable<String> getAllSimulationManagerNames() {
+		return simulatorsList;
 	}
 	
 	/**
-	 * @return all the visual simulators
+	 * @return all the visualization managers
 	 */
-	public static Iterable<String> getAllSimulators() {
-		return simulatorsList;
+	public static Iterable<String> getAllVisualizationManagerNames() {
+		return visualizationsList;
 	}
 	
 	private List<StatisticsGetter> statisticsGetters;
@@ -140,7 +149,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	/**
 	 * @return get trace parser for this manager
 	 */
-	abstract public TraceParserGeneral<P, B, T, C, D, ? extends SSDManager<P,B,T,C,D>> getTraseParser();
+	abstract public TraceParserGeneral<D, ? extends SSDManager<P,B,T,C,D>> getTraseParser();
 	/**
 	 * @return get list for statistic getters
 	 */
@@ -175,64 +184,95 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	}
 
 	/**
+	 * Calculates and returns the logical pages addresses range of the device.
+	 * Calculates using the physical sizes and the Over-Provisioning.
 	 * @return the size of the device in pages
 	 */
 	public int getLpRange() {
 		return chipsNum * planesNum *(blocksInPlane - gct - 2)*pagesInBlock;
 	}
 	
+	/**
+	 * @return name of the SSDManager specified in the config.
+	 */
 	public String getManagerName() {
 		return managerName;
 	}
 	
+	/**
+	 * @return Over-Provisioning - specified in the config
+	 */
 	public double getOP() {
 		return op;
 	}
 	
+	/**
+	 * @return number of blocks reserved for Over-Provisioning
+	 */
 	public int getReserved() {
 		return reserved;
 	}
 
+	/**
+	 * @return - Garbage Collection threshold, specified in the config in percents, 
+	 * returned in blocks number.
+	 */
 	public int getGCT() {
 		return gct;
 	}
 	
+	/**
+	 * @return Number of Chips in the Device, specified in the config.
+	 */
 	public int getChipsNum() {
 		return chipsNum;		
 	}
 	
+	/**
+	 * @return Number of Planes in each Chip, specified in the config. 
+	 */
 	public int getPlanesNum() {
 		return planesNum;
 	}
 	
+	/**
+	 * @return Number of Blocks in each Plane, specified in the config.
+	 */
 	public int getBlocksNum() {
 		return blocksInPlane;
 	}
 	
+	/**
+	 * @return Number of Pages in each Block, specified in the config.
+	 */
 	public int getPagesNum() {
 		return pagesInBlock;
 	}
 
+	/**
+	 * @return Color of a clean Page.
+	 */
 	public Color getCleanColor() {
 		return cleanColor;
 	}
 	
+	/**
+	 * Each use case manager initializes a list of statistics he would like to present.
+	 * This method is here to allow other parts of the simulation get those statistics getters.
+	 * @return Returns the statistics getters
+	 */
 	public Iterable<StatisticsGetter> getStatisticsGetters() {
 		return statisticsGetters;
 	}
-	
-	public D getEmptyDevice() {
-		return getEmptyDevice(getEmptyChips(getEmptyPlanes(getEmptyBlocks(getEmptyPages()))));
-	}
-	
+
 	/**
-	 * This method simulate the normal write procedure in SSD device
+	 * This method simulate the normal write procedure in SSD device.
+	 * In order to change the basic writing algorithm change overload this method. 
+	 * This operation may invoke the Garbage Collection as a side effect.
 	 * 
-	 * @param device
-	 *            - the device to write on
-	 * @param lp
-	 *            -logical page to write
-	 * @return the device after the write
+	 * @param device - the device to write on
+	 * @param lp -logical page to write
+	 * @return the new device after the write.
 	 */
 	@SuppressWarnings("unchecked")
 	public D writeLP(D device, int lp, int arg) {
@@ -242,7 +282,12 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		return cleanDevice;
 	}
 
-	public List<WorkloadWidget<P,B,T,C,D,SSDManager<P,B,T,C,D>>> getWorkLoadGeneratorWidgets() {
+	/**
+	 * Each use case SSDManager may have specific workload generators he is applicable to.
+	 * This is the method to overload in order to add workload generators of your liking. 
+	 * @return List of Workload Generators applicable with current SSDManager.
+	 */
+	public List<WorkloadWidget<D,SSDManager<P,B,T,C,D>>> getWorkLoadGeneratorWidgets() {
 		return null;
 	}
 	
@@ -312,7 +357,11 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		}
 		return pages;
 	}
-
+	
+	D getEmptyDevice() {
+		return getEmptyDevice(getEmptyChips(getEmptyPlanes(getEmptyBlocks(getEmptyPages()))));
+	}
+	
 	private void initPhysicalValues(XMLGetter xmlGetter) throws XMLParsingException {
 		op = xmlGetter.getIntField("physical", "overprovisioning");
 		gct = xmlGetter.getIntField("physical", "gc_threshold");

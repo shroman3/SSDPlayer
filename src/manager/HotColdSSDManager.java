@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
-import manager.HotColdStatistics.PartitionDistributionGetter;
-import ui.WorkloadWidget;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.hot_cold.HotColdBlock;
@@ -39,6 +36,9 @@ import entities.hot_cold.HotColdPage;
 import entities.hot_cold.HotColdPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
+import manager.HotColdStatistics.PartitionDistributionGetter;
+import ui.WorkloadWidget;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
 	private int minTemperature;
@@ -57,8 +57,8 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	}
 	
 	@Override
-	public TraceParserGeneral<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice, HotColdSSDManager> getTraseParser() {
-		return new HotColdTraceParser<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice, HotColdSSDManager>(this);
+	public HotColdTraceParser<HotColdDevice, HotColdSSDManager> getTraseParser() {
+		return new HotColdTraceParser<HotColdDevice, HotColdSSDManager>(this);
 	}
 
 	public HotColdPartition getPartition(int temperature) {
@@ -87,11 +87,10 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	}
 
 	@Override
-	public List<WorkloadWidget<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice, 
-		SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
+	public List<WorkloadWidget<HotColdDevice, SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
 		return creators;
 	}
 	

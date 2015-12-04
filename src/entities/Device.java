@@ -121,10 +121,6 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		return builder.build();
 	}
 
-	protected int getChipIndex(int lp) {
-		return lp%getChipsNum();
-	}
-	
 	@SuppressWarnings("unchecked")
 	public Device<P,B,T,C> writeLP(int lp, int arg) {
 		int chipIndex = getChipIndex(lp);
@@ -133,5 +129,9 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
 		return builder.build();
+	}
+	
+	protected int getChipIndex(int lp) {
+		return lp%getChipsNum();
 	}
 }

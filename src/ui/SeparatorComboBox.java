@@ -21,11 +21,16 @@
  *******************************************************************************/
 package ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.plaf.basic.*;
+import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Vector;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.JSeparator;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
  *  Class that allows you to add a JSeparator to the ComboBoxModel.

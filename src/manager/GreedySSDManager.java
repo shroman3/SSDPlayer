@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import ui.WorkloadWidget;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.basic.BasicBlock;
@@ -35,6 +34,7 @@ import entities.basic.BasicPage;
 import entities.basic.BasicPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import ui.WorkloadWidget;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
@@ -47,8 +47,8 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	}
 	
 	@Override
-	public TraceParserGeneral<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice, GreedySSDManager> getTraseParser() {
-		return new BasicTraceParser<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice, GreedySSDManager>(this);
+	public TraceParserGeneral<BasicDevice, GreedySSDManager> getTraseParser() {
+		return new BasicTraceParser<BasicDevice, GreedySSDManager>(this);
 	}
 
 	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
@@ -62,11 +62,10 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	}
 	
 	@Override
-	public List<WorkloadWidget<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice, 
-		SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
+	public List<WorkloadWidget<BasicDevice,	SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
 		return creators;
 	}
 	

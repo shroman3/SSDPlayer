@@ -21,12 +21,6 @@
  *******************************************************************************/
 package ui;
 
-import entities.Device;
-import entities.StatisticsGetter;
-import general.Consts;
-import general.OneObjectCallback;
-import general.TwoObjectsCallback;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -54,6 +48,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import entities.Device;
+import entities.StatisticsGetter;
+import general.Consts;
+import general.OneObjectCallback;
+import general.TwoObjectsCallback;
 import manager.SSDManager;
 import manager.TraceParser;
 import manager.TraceParserGeneral;
@@ -74,7 +73,7 @@ public class TracePlayer extends JPanel {
 	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
 
 	private JProgressBar progressBar;
-	private TraceParser<?,?,?,?,?,?> parser;
+	private TraceParser<?,?> parser;
     
 	private JFileChooser traceChooser;
 	private JLabel stopLabel;
@@ -135,11 +134,11 @@ public class TracePlayer extends JPanel {
 	
 	private void initManagerSelection() {
 		Vector<Object> items = new Vector<>();
-		for (String manager : SSDManager.getAllManagers()) {			
+		for (String manager : SSDManager.getAllSimulationManagerNames()) {			
 			items.addElement(manager);
 		}
 		items.addElement( new JSeparator() );
-		for (String manager : SSDManager.getAllSimulators()) {			
+		for (String manager : SSDManager.getAllVisualizationManagerNames()) {			
 			items.addElement(manager);
 		}
 		managersList = new SeparatorComboBox(items);
@@ -163,7 +162,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
-		TraceParserGeneral<?,?,?,?,?,?> traseParser = manager.getTraseParser();
+		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
 		traceChooser.setCurrentDirectory(workingDirectory);
@@ -386,7 +385,7 @@ public class TracePlayer extends JPanel {
 		if (creatorsFrame != null) {
 			creatorsFrame = new LoadGeneratorsCreatorsFrame(SwingUtilities.windowForComponent(this), manager);
 			creatorsFrame.setVisible(true);
-			WorkloadGenerator<?,?,?,?,?,?> generator = creatorsFrame.getWorkloadGenerator();
+			WorkloadGenerator<?,?> generator = creatorsFrame.getWorkloadGenerator();
 			if (generator != null) {
 				parser = generator;
 				resetProgressBar(generator.getName(), generator.getTraceLength());

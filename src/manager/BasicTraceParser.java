@@ -23,13 +23,9 @@ package manager;
 
 import java.io.IOException;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 
-public class BasicTraceParser<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> extends TraceParserGeneral<P, B, T, C, D, S> {
+public class BasicTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParserGeneral<D,S> {
 
 	public BasicTraceParser(S manager) {
 		super(manager);

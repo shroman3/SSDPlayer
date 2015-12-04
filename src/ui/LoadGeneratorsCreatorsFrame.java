@@ -45,7 +45,7 @@ import utils.Utils;
 public class LoadGeneratorsCreatorsFrame extends JDialog {
 	private static final long serialVersionUID = 1L;
 
-	private WorkloadWidget<?,?,?,?,?,?> workloadWidget;
+	private WorkloadWidget<?,?> workloadWidget;
 	private boolean isCanceled = true;
 	private SSDManager<?, ?, ?, ?, ?> manager;
 
@@ -69,7 +69,7 @@ public class LoadGeneratorsCreatorsFrame extends JDialog {
 		initComponents();
 	}
 	
-	public WorkloadGenerator<?,?,?,?,?,?> getWorkloadGenerator() {
+	public WorkloadGenerator<?,?> getWorkloadGenerator() {
 		if (workloadWidget != null) {
 			return workloadWidget.createWorkloadGenerator();
 		}
@@ -94,7 +94,7 @@ public class LoadGeneratorsCreatorsFrame extends JDialog {
         inputPanel.add(workloadWidgetPanel);
 
         radioGroup = new ButtonGroup();
-        for (final WorkloadWidget<?,?,?,?,?,?> workloadWidget : manager.getWorkLoadGeneratorWidgets()) {
+        for (final WorkloadWidget<?,?> workloadWidget : manager.getWorkLoadGeneratorWidgets()) {
         	JRadioButton radio = new JRadioButton(workloadWidget.getDisplayName());
         	radio.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {         

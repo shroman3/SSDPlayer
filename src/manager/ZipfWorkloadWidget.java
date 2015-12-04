@@ -25,14 +25,10 @@ import java.text.DecimalFormat;
 
 import javax.swing.JFormattedTextField;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 
-public class ZipfWorkloadWidget <P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> 
-			extends UniformWorkloadWidget<P,B,T,C,D,S> {
+public class ZipfWorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
+			extends UniformWorkloadWidget<D,S> {
 	private static final long serialVersionUID = 1L;
 
 	private JFormattedTextField exponentInput;
@@ -45,8 +41,8 @@ public class ZipfWorkloadWidget <P extends Page, B extends Block<P>, T extends P
 	}
 
 	@Override
-	public WorkloadGenerator<P,B,T,C,D,S> createWorkloadGenerator() {
-		return new ZipfWorkloadGenerator<P,B,T,C,D,S>(manager, getWorkloadLength(), getSeed(), getExponent());
+	public WorkloadGenerator<D,S> createWorkloadGenerator() {
+		return new ZipfWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getExponent());
 	}
 
 	private double getExponent() {

@@ -25,15 +25,10 @@ import java.text.DecimalFormat;
 
 import javax.swing.JFormattedTextField;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 import ui.WorkloadWidget;
 
-public class UniformWorkloadWidget <P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>>
-	extends WorkloadWidget<P,B,T,C,D,S> {
+public class UniformWorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadWidget<D,S> {
 	private static final long serialVersionUID = 1L;
 
 	private JFormattedTextField seedInput;
@@ -50,8 +45,8 @@ public class UniformWorkloadWidget <P extends Page, B extends Block<P>, T extend
 	}
 
 	@Override
-	public WorkloadGenerator<P,B,T,C,D,S> createWorkloadGenerator() {
-		return new UniformWorkloadGenerator<P,B,T,C,D,S>(manager, getWorkloadLength(), getSeed());
+	public WorkloadGenerator<D,S> createWorkloadGenerator() {
+		return new UniformWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed());
 	}
 	
 	protected int getSeed() {

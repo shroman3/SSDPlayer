@@ -23,13 +23,9 @@ package manager;
 
 import java.io.IOException;
 
-import entities.reusable_visualization.VisualizationBlock;
-import entities.reusable_visualization.VisualizationChip;
 import entities.reusable_visualization.VisualizationDevice;
-import entities.reusable_visualization.VisualizationPage;
-import entities.reusable_visualization.VisualizationPlane;
 
-public class VisualizationTraceParser extends TraceParserGeneral<VisualizationPage, VisualizationBlock, VisualizationPlane, VisualizationChip, VisualizationDevice, ReusableVisualizationSSDManager> {
+public class VisualizationTraceParser extends TraceParserGeneral<VisualizationDevice, ReusableVisualizationSSDManager> {
 
 	public VisualizationTraceParser(ReusableVisualizationSSDManager manager) {
 		super(manager);

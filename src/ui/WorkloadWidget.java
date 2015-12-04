@@ -29,15 +29,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import entities.Block;
-import entities.Chip;
 import entities.Device;
-import entities.Page;
-import entities.Plane;
 import manager.SSDManager;
 import manager.WorkloadGenerator;
 
-public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> 
+public abstract class WorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
 	extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private String name;
@@ -58,7 +54,7 @@ public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T exte
 		addField(lengthInput, "Workload Length");
 	}
 	
-	public abstract WorkloadGenerator<P,B,T,C,D,S> createWorkloadGenerator();
+	public abstract WorkloadGenerator<D,S> createWorkloadGenerator();
 	
 	public String getDisplayName() {
 		return name;
