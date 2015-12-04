@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -38,8 +38,8 @@ public class ZipfWorkloadGenerator <P extends Page, B extends Block<P>, T extend
 	private int seed;
 	private double exponent;
 
-	public ZipfWorkloadGenerator(S manager, int traceLength, int seed, double exponent) {
-		super("Zipf", manager, traceLength);
+	public ZipfWorkloadGenerator(S manager, int traceLength, int seed, double exponent, int maxWriteSize, boolean isWriteSizeUniform) {
+		super("Zipf", manager, traceLength, maxWriteSize, isWriteSizeUniform);
 		this.seed = seed;
 		this.exponent = exponent;
 		JDKRandomGenerator jdkRandomGenerator = new JDKRandomGenerator();

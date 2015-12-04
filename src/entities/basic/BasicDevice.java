@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -23,7 +23,11 @@ package entities.basic;
 
 import entities.Device;
 
-
+/**
+ * 
+ * @author Or Mauda
+ *
+ */
 public class BasicDevice extends Device<BasicPage, BasicBlock, BasicPlane, BasicChip> {
 	public static class Builder extends Device.Builder<BasicPage, BasicBlock, BasicPlane, BasicChip> {
 		private BasicDevice device;		

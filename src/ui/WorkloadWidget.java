@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -23,17 +23,24 @@ package ui;
 
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import entities.Block;
 import entities.Chip;
 import entities.Device;
 import entities.Page;
 import entities.Plane;
+import manager.RAIDSSDManager;
 import manager.SSDManager;
 import manager.WorkloadGenerator;
 
@@ -42,9 +49,12 @@ public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T exte
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private JFormattedTextField lengthInput;
+	private JFormattedTextField maxWriteSize;
+	private boolean isWriteSizeUniform;
+	private ButtonGroup radioGroup;
+	private JPanel radioPanel;
 	protected S manager;
 
-	
 	
 	public WorkloadWidget(String name, S manager) {
 		this.name = name; 
@@ -56,6 +66,49 @@ public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T exte
 		lengthInput.setValue(10000);
 		
 		addField(lengthInput, "Workload Length");
+		
+		if (manager instanceof RAIDSSDManager) {
+			initWriteSize();
+		}
+	}
+	
+	private void initWriteSize() {
+		
+		maxWriteSize = new JFormattedTextField(new DecimalFormat());
+		maxWriteSize.setValue(1);
+		addField(maxWriteSize, "Max Write Size");
+		
+		
+        radioPanel = new JPanel();
+        add(new JLabel("Write Size Distribution"));
+        add(radioPanel);
+        
+        radioGroup = new ButtonGroup();
+        
+    	JRadioButton radioUniform = new JRadioButton("Uniform");
+    	radioUniform.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {         
+            	if (e.getStateChange()==1) {
+            		isWriteSizeUniform = true;
+                }
+            }
+    	});
+    	radioUniform.setSelected(true);
+    	
+    	radioGroup.add(radioUniform);
+    	radioPanel.add(radioUniform);
+    	
+    	JRadioButton radioZipf = new JRadioButton("Zipf");
+    	radioUniform.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {         
+            	if (e.getStateChange()==1) {
+            		isWriteSizeUniform = false;
+                }
+            }
+    	});
+    	
+    	radioGroup.add(radioZipf);
+    	radioPanel.add(radioZipf);
 	}
 	
 	public abstract WorkloadGenerator<P,B,T,C,D,S> createWorkloadGenerator();
@@ -64,13 +117,34 @@ public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T exte
 		return name;
 	}
 	
-	protected void addField(Component input, String label) {
+	protected void addField(final Component input, String label) {
 		add(new JLabel(label));
+		input.addFocusListener(new java.awt.event.FocusAdapter() {
+		    public void focusGained(java.awt.event.FocusEvent evt) {
+		        SwingUtilities.invokeLater(new Runnable() {
+		            @Override
+		            public void run() {
+		            	((JTextField) input).selectAll();
+		            }
+		        });
+		    }
+		});
 		add(input);
 	}
 	
 	protected int getWorkloadLength() {
 		return ((Number)lengthInput.getValue()).intValue();
+	}
+	
+	protected int getMaxWriteSize() {
+		if (manager instanceof RAIDSSDManager) {
+			return ((Number)maxWriteSize.getValue()).intValue();
+		}
+		return 1;
+	}
+	
+	protected boolean isWriteSizeUniform() {
+		return isWriteSizeUniform;
 	}
 
 	public void validateParms() {
@@ -80,6 +154,11 @@ public abstract class WorkloadWidget <P extends Page, B extends Block<P>, T exte
 		}
 		if (length > 1000000) {
 			throw new IllegalArgumentException("Generated trace cannot be longer than 1000000 operations");
+		}
+		if (manager instanceof RAIDSSDManager) {
+			if (getMaxWriteSize() < 1) {
+				throw new IllegalArgumentException("Max Write Size should be at least 1");
+			}
 		}
 	}
 }

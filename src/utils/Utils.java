@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -24,19 +24,25 @@ package utils;
 public class Utils {
 	public static void validateNotNull(Object param, String paramName) {
 		if (param == null) {
-			throw new IllegalArgumentException(paramName + " parameter is null(It shouldn't be)");
+			throw new IllegalArgumentException(paramName + " parameter is null (It shouldn't be)");
 		}
 	}
 	
 	public static void validateNotNegative(int param, String paramName) {
 		if (param < 0) {
-			throw new IllegalArgumentException(paramName + " parameter is negative(It shouldn't be)");
+			throw new IllegalArgumentException(paramName + " parameter is negative (It shouldn't be)");
 		}
 	}
 	
 	public static void validateNotNegative(double param, String paramName) {
 		if (param < 0) {
-			throw new IllegalArgumentException(paramName + " parameter is negative(It shouldn't be)");
+			throw new IllegalArgumentException(paramName + " parameter is negative (It shouldn't be)");
+		}
+	}
+	
+	public static void validateInteger(double param, String paramName) {
+		if (param != (int) param) {
+			throw new IllegalArgumentException(paramName + " parameter is not an Integer (It should be)");
 		}
 	}
 }

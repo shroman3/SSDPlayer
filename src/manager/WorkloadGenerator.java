@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -22,6 +22,10 @@
 package manager;
 
 import java.io.FileNotFoundException;
+import java.util.Random;
+
+import org.apache.commons.math3.distribution.ZipfDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
 
 import entities.Block;
 import entities.Chip;
@@ -39,13 +43,31 @@ public abstract class WorkloadGenerator <P extends Page, B extends Block<P>, T e
 	protected int lpRange;
 	private int lp;
 	private int temp;
+	private int maxWriteSize;
+	private Random random;
+	private ZipfDistribution zipf;
+	private boolean isWriteSizeUniform; // true value indicates the write size distribution is uniform, else zipf.
+	
+	public void setDevice(D device) {
+		this.device = device;
+	}
 	
 	protected abstract int getLP();
 
-	public WorkloadGenerator(String name, S manager, int traceLength) {
-		this.name = name;
-		this.traceLength = traceLength; 
+	public WorkloadGenerator(String name, S manager, int traceLength, int maxWriteSize, boolean isWriteSizeUniform) {
 		this.manager = manager;
+		this.isWriteSizeUniform = isWriteSizeUniform;
+		 if (manager instanceof RAIDSSDManager) {
+			 if (isWriteSizeUniform == true) {
+				 random = new Random();
+			 } else {
+				JDKRandomGenerator jdkRandomGenerator = new JDKRandomGenerator();
+				zipf = new ZipfDistribution(jdkRandomGenerator, maxWriteSize, 1);
+			 }
+		 }
+		this.name = name;
+		this.traceLength = traceLength;
+		this.maxWriteSize = maxWriteSize;
 		lpRange = manager.getLpRange();
 		device = manager.getEmptyDevice();
 	}
@@ -75,7 +97,11 @@ public abstract class WorkloadGenerator <P extends Page, B extends Block<P>, T e
 	public D parseNextCommand() {
 		if(device != null) {			
 			lp = getLP();
-			temp = getLPTemprature(lp);
+			if (manager.getManagerName().toLowerCase().contains("raid")) {
+				temp = getWriteSize();
+			} else {
+				temp = getLPTemprature(lp);				
+			}			
 			device =  manager.writeLP(device, lp, temp);
 		}
 		return device;
@@ -87,6 +113,17 @@ public abstract class WorkloadGenerator <P extends Page, B extends Block<P>, T e
 	}
 
 	protected int getLPTemprature(int lp) {
+		return 1/*dummy*/;
+	}
+	
+	private int getWriteSize() {
+		if (manager instanceof RAIDSSDManager) {
+			if (isWriteSizeUniform == true) {
+				return random.nextInt(maxWriteSize) + 1;
+			} else {
+				return zipf.sample();
+			}
+		}
 		return 1/*dummy*/;
 	}
 }

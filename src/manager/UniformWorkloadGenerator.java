@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -34,8 +34,8 @@ public class UniformWorkloadGenerator <P extends Page, B extends Block<P>, T ext
 	private Random random;
 	private int seed;
 
-	public UniformWorkloadGenerator(S manager, int traceLength, int seed) {
-		super("Uniform", manager, traceLength);
+	public UniformWorkloadGenerator(S manager, int traceLength, int seed, int maxWriteSize, boolean isWriteSizeUniform) {
+		super("Uniform", manager, traceLength, maxWriteSize, isWriteSizeUniform);
 		this.seed = seed;
 		random = new Random(seed);
 	}

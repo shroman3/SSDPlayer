@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import ui.AddressWidget;
 import ui.WorkloadWidget;
 import entities.Block;
 import entities.Chip;
@@ -246,6 +247,10 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		return null;
 	}
 	
+	public List<AddressWidget<P,B,T,C,D,SSDManager<P,B,T,C,D>>> getAddressGetterWidgets() {
+		return null;
+	}
+	
 	/**
 	 * IMPORTANT to call the super.initValues(xmlGetter) in the extending managers
 	 * Initializes SSD managers parameters from the XML config file
@@ -271,6 +276,10 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	
 	protected List<Integer> getListField(XMLGetter xmlGetter, String field) throws XMLParsingException {
 		return xmlGetter.getListField(getClass().getSimpleName(), field);
+	}
+	
+	protected List<Color> getColorsListField(XMLGetter xmlGetter, String field) throws XMLParsingException {
+		return xmlGetter.getColorsListField(getClass().getSimpleName(), field);
 	}
 	
 	protected Color getColorField(XMLGetter xmlGetter, String field) throws XMLParsingException {

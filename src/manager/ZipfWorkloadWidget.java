@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -46,7 +46,7 @@ public class ZipfWorkloadWidget <P extends Page, B extends Block<P>, T extends P
 
 	@Override
 	public WorkloadGenerator<P,B,T,C,D,S> createWorkloadGenerator() {
-		return new ZipfWorkloadGenerator<P,B,T,C,D,S>(manager, getWorkloadLength(), getSeed(), getExponent());
+		return new ZipfWorkloadGenerator<P,B,T,C,D,S>(manager, getWorkloadLength(), getSeed(), getExponent(), getMaxWriteSize(), isWriteSizeUniform());
 	}
 
 	private double getExponent() {

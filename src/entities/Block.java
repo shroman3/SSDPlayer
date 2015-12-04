@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -27,11 +27,17 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
+
+import manager.RAIDSSDManager;
+import manager.RAIDVisualizationSSDManager;
 import manager.SSDManager;
 import utils.Utils;
 
 /**
  * @author Roman
+ * November 2015: revised by Or Mauda for additional RAID functionality.
  *
  * Block basically is ordered collection of pages, but this entity stores more 
  * information like eraseCounter, block status, etc.
@@ -188,6 +194,161 @@ public abstract class Block<P extends Page> {
 		}
 		return builder.build();
 	}
+	
+	/**
+	 * @param stripe - Logical Page's stripe (part of address)
+	 * @param parityNumber - Logical Page's parity number (part of address)
+	 * @return new block with the Logical Page specified invalidated
+	 * if doesn't contain the specified LP returns itself..
+	 */
+	public Block<P> invalidate(int stripe, int parityNumber) {
+		boolean wasFound = false;
+		List<P> pages = new ArrayList<P>(getPagesNum());
+		for (P page : getPages()) {
+			if (page.isValid() && (page.getStripe() == stripe) && (page.getParityNumber() == parityNumber)) {
+				page = invalidatePage(page);
+				wasFound = true;
+			}
+			pages.add(page);
+		}
+		Builder<P> builder = getSelfBuilder();
+		builder.setPagesList(pages);
+		if (wasFound) {
+			builder.setValidCounter(getValidCounter()-1);
+		}
+		return builder.build();
+	}
+	
+	/**
+	 * Checks if the page with parity number and stripe is highlighted.
+	 *
+	 * @param parityNumber the parity number
+	 * @param stripe the stripe
+	 * @return the pair [wasFound, isHighlighted] (isHighlighted matter only when wasFound==true)
+	 */
+	public Pair<Boolean, Boolean> isHighlighted(int parityNumber, int stripe) {
+		for (P page : getPages()) {
+			if (page.getParityNumber() == parityNumber && page.getStripe() == stripe) {
+				if (page.isHighlighted() == true) {
+					return new Pair<Boolean, Boolean>(true, true);
+				} else {
+					return new Pair<Boolean, Boolean>(true, false);
+				}
+			}
+		}
+		return new Pair<Boolean, Boolean>(false, false);
+	}
+	
+	/**
+	 * Checks if the page with logical page 'lp' is highlighted.
+	 *
+	 * @param lp the logical page
+	 * @return the pair [wasFound, isHighlighted] (isHighlighted matter only when wasFound==true)
+	 */
+	public Pair<Boolean, Boolean> isHighlighted(int lp) {
+		for (P page : getPages()) {
+			if (page.getLp() == lp) {
+				if (page.isHighlighted() == true) {
+					return new Pair<Boolean, Boolean>(true, true);
+				} else {
+					return new Pair<Boolean, Boolean>(true, false);
+				}
+			}
+		}
+		return new Pair<Boolean, Boolean>(false, false);
+	}
+	
+	/**
+	 * Sets the highlight field of all pages with 'stripe' value.
+	 *
+	 * @param toHighlight - indicates if to highlight or to un-highlight
+	 * @param stripe the stripe to be highlighted or un-highlighted.
+	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated block.
+	 */
+	public Triplet<Integer, List<P>, Block<P>> setHighlightByPhysicalP(boolean toHighlight, int stripe) {
+		List<P> stripePages = new ArrayList<P>(0);
+		List<P> blockPages = new ArrayList<P>(getPagesNum());
+		Triplet<Integer, List<P>, Block<P>> details = new Triplet<Integer, List<P>, Block<P>>(-1, null, null); 
+		for (P page : getPages()) {
+			if (page.getStripe() == stripe) {
+				details = details.setAt0(stripe);
+				page = setHighlightedPage(page, toHighlight);
+				stripePages.add(page);
+			}
+			blockPages.add(page);
+		}
+		Builder<P> builder = getSelfBuilder();
+		builder.setPagesList(blockPages);
+		details = details.setAt2(builder.build());
+		details = details.setAt1(stripePages);
+		return details;
+	}
+	
+	/**
+	 * Sets the highlight field of all pages in this block with the same stripe as the page with lp.
+	 *
+	 * @param toHighlight - indicates if to highlight or to un-highlight
+	 * @param lp the lp
+	 * @param stripe the stripe to be highlighted or un-highlighted. IMPORTANT: set to -1 if unknown
+	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated block.
+	 */
+	public Triplet<Integer, List<P>, Block<P>> setHighlightByLogicalP(boolean toHighlight, int lp, int stripe) {
+		boolean wasFound = false;
+		List<P> stripePages = new ArrayList<P>(0);
+		List<P> blockPages = new ArrayList<P>(getPagesNum());
+		Triplet<Integer, List<P>, Block<P>> details = new Triplet<Integer, List<P>, Block<P>>(-1, null, null);
+		for (P page : getPages()) {
+			if (wasFound == false) {
+				if (page.getLp() == lp || (page.getStripe() == stripe && stripe != -1)) {
+					wasFound = true;
+					details = details.setAt0(page.getStripe());
+					page = setHighlightedPage(page, toHighlight);
+					stripePages.add(page);
+				}
+			} else {				
+				if ((page.getStripe() == details.getValue0()) || (page.getStripe() == stripe && stripe != -1)) {
+					page = setHighlightedPage(page, toHighlight);
+					stripePages.add(page);
+				}
+			}
+			blockPages.add(page);
+		}
+		Builder<P> builder = getSelfBuilder();
+		builder.setPagesList(blockPages);
+		details = details.setAt2(builder.build());
+		details = details.setAt1(stripePages);
+		return details;
+	}
+	
+	/**
+	 * Sets the highlight field of all pages in this block with the same stripe as the given parity page.
+	 *
+	 * @param toHighlight - indicates if to highlight or to un-highlight
+	 * @param parityNumber the parityNumber
+	 * @param stripe the stripe to be highlighted or un-highlighted.
+	 * @param parityMatters - if it's false, then highlight this stripe and ignore the parity. otherwise, don't ignore the parity. 
+	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated block.
+	 */
+	public Triplet<Integer, List<P>, Block<P>> setHighlightByParityP(boolean toHighlight, int parityNumber, int stripe, boolean parityMatters) {
+		List<P> stripePages = new ArrayList<P>(0);
+		List<P> blockPages = new ArrayList<P>(getPagesNum());
+		Triplet<Integer, List<P>, Block<P>> details = new Triplet<Integer, List<P>, Block<P>>(-1, null, null);
+		for (P page : getPages()) {
+			if (page.getStripe() == stripe) {
+				if (parityMatters == false || (parityMatters == true && parityNumber == page.getParityNumber())
+						|| page.getParityNumber() == 0)
+					details = details.setAt0(page.getStripe());
+					page = setHighlightedPage(page, toHighlight);
+					stripePages.add(page);
+			}
+			blockPages.add(page);
+		}
+		Builder<P> builder = getSelfBuilder();
+		builder.setPagesList(blockPages);
+		details = details.setAt2(builder.build());
+		details = details.setAt1(stripePages);
+		return details;
+	}
 
 	/**
 	 * @return new clean block with updated counters
@@ -238,6 +399,37 @@ public abstract class Block<P extends Page> {
 	private P invalidatePage(P page) {
 		Page.Builder builder = page.getSelfBuilder();
 		builder.setValid(false);
+		
+		
+		Boolean showOldData, showOldParity;
+		// if we're in RAID manager
+		if (manager.getManagerName().toLowerCase().contains("raid") == true) {
+			if (manager.getManagerName().toLowerCase().contains("raid simulation") == true) {
+				// RAID Visualization (that's correct - visualization is simulation)
+				showOldParity = ((RAIDVisualizationSSDManager) manager).toShowOldParity();
+				showOldData = ((RAIDVisualizationSSDManager) manager).toShowOldData();
+			} else {
+				// RAID Simulation
+				showOldParity = ((RAIDSSDManager) manager).toShowOldParity();
+				showOldData = ((RAIDSSDManager) manager).toShowOldData();
+			}
+			
+			if ((page.getParityNumber() <= 0 && showOldData == false) // we shouldn't highlight invalidated data pages
+					|| (page.getParityNumber() > 0 && showOldParity == false)) { // we shouldn't highlight invalidated parity pages
+				// when data and/or parity page is invalidated and it shouldn't be a part of the stripe
+				builder.setStripe(-1);
+				builder.setIsHighlighted(false);
+			}
+		}
+		
+		builder.setLp(-1);
+		return (P) builder.build();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private P setHighlightedPage(P page, boolean toHighlight) {
+		Page.Builder builder = page.getSelfBuilder();
+		builder.setIsHighlighted(toHighlight);
 		return (P) builder.build();
 	}
 		

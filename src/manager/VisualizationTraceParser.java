@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -45,5 +45,10 @@ public class VisualizationTraceParser extends TraceParserGeneral<VisualizationPa
 	@Override
 	public String getFileExtensions() {
 		return "log";
+	}
+
+	@Override
+	public void setDevice(VisualizationDevice device) {
+		this.device = device;
 	}
 }

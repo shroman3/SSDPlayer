@@ -6,21 +6,22 @@
 		<overprovisioning>7</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
 		<gc_threshold>30</gc_threshold>
-		<chips>1</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
+		<chips>8</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
 		<planes>2</planes>
-		<blocks>32</blocks>
-		<pages>32</pages>
+		<blocks>16</blocks>
+		<pages>16</pages>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>
 		<speed>9000</speed><!-- Number of frames per minute -->
 		<page_width>18</page_width>
 		<page_height>13</page_height>
-		<block_space>2</block_space><!-- spacing between the blocks in the plane -->
-		<pages_in_row>16</pages_in_row>
+		<block_space>5</block_space><!-- spacing between the blocks in the plane -->
+		<pages_in_row>4</pages_in_row>
 		<blocks_in_row>4</blocks_in_row>
-		<planes_in_row>1</planes_in_row>
-	</visual>
+		<planes_in_row>1</planes_in_row><!-- RAID stripes view-->
+		<show_old_parity>yes</show_old_parity>
+		<show_old_data>no</show_old_data></visual>
 	<ReusableVisualizationSSDManager>
 		<name>Reusable Simulation</name>
 		<clean_color r="255" g="255" b="255"/>
@@ -57,4 +58,37 @@
 		<clean_color r="255" g="255" b="255"/>
 		<written_color r="255" g="220" b="100"/>
 	</GreedySSDManager>
-</root>
+	<RAIDVisualizationSSDManager>
+		<name>RAID Simulation</name>
+		<clean_color r="255" g="255" b="255"></clean_color>
+		<parity_color r="150" g="150" b="150"></parity_color>
+		<parity_color r="200" g="100" b="30"></parity_color>
+		<data_color r="255" g="220" b="100"></data_color>
+		<stripe_size>3</stripe_size>
+		<stripe_frame_color r="255" g="0" b="0"></stripe_frame_color>
+		<stripe_frame_step r="140" g="64" b="32"></stripe_frame_step>
+		
+	</RAIDVisualizationSSDManager>
+	<RAID1SSDManager>
+		<name>RAID 1</name>
+		<clean_color r="255" g="255" b="255"></clean_color>
+		<parity_color r="150" g="150" b="150"></parity_color>
+		<data_color r="255" g="220" b="100"></data_color>
+		<stripe_frame_color r="225" g="0" b="0"></stripe_frame_color>
+		<stripe_frame_step r="140" g="64" b="32"></stripe_frame_step></RAID1SSDManager>
+	<RAID5SSDManager>
+		<name>RAID 5</name>
+		<clean_color r="255" g="255" b="255"></clean_color>
+		<parity_color r="150" g="150" b="150"></parity_color>
+		<data_color r="255" g="220" b="100"></data_color>
+		<stripe_frame_color r="225" g="0" b="0"></stripe_frame_color>
+		<stripe_frame_step r="140" g="64" b="32"></stripe_frame_step></RAID5SSDManager>
+	<RAID6SSDManager>
+		<name>RAID 6</name>
+		<clean_color r="255" g="255" b="255"></clean_color>
+		<parity_color r="150" g="150" b="150"></parity_color>
+		<parity_color r="50" g="100" b="200"></parity_color>
+		<data_color r="255" g="220" b="100"></data_color>
+		<stripe_frame_color r="225" g="0" b="0"></stripe_frame_color>
+		<stripe_frame_step r="140" g="64" b="32"></stripe_frame_step>
+		</RAID6SSDManager></root>

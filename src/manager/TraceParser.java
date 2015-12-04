@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -29,6 +29,11 @@ import entities.Device;
 import entities.Page;
 import entities.Plane;
 
+/**
+ * 
+ *  November 2015: revised by Or Mauda for additional RAID functionality.
+ *  
+ */
 public interface TraceParser<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>, S extends SSDManager<P, B, T, C, D>> {
 	void open(String fileName) throws FileNotFoundException;
 	void close();
@@ -38,4 +43,6 @@ public interface TraceParser<P extends Page, B extends Block<P>, T extends Plane
 	D parseNextCommand() throws Exception;
 	
 	D getCurrentDevice();
+	
+	void setDevice(D device);
 }
