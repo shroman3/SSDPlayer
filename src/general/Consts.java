@@ -26,11 +26,11 @@ import java.awt.Font;
 
 public class Consts {
 	public static class UI {
-		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 18);
-		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 16);
-		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 16);
-		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 14);
-		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 13);
+		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 11);
+		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 11);
+		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 9);
+		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 8);
 		public static final Font INVISIBLE_FONT = new Font("Segoe UI", Font.PLAIN, 0);
 	}
 	
