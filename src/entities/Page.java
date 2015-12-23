@@ -56,6 +56,11 @@ public abstract class Page {
 			return this;
 		}
 
+		public Builder setInvalidLp() {
+			page.lp = -1;
+			return this;
+		}
+		
 		public Builder setLp(int lp) {
 			Utils.validateNotNegative(lp, "logical page");
 			page.lp = lp;

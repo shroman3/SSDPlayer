@@ -154,7 +154,7 @@ public class RAIDVisualizationBlock extends RAIDBasicBlock<RAIDVisualizationPage
 			builder.setIsHighlighted(false);
 		}
 		
-		builder.setLp(-1);
+		builder.setInvalidLp();
 		return (RAIDVisualizationPage) builder.build();
 	}
 }

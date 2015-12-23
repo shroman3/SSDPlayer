@@ -142,7 +142,7 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		for (RAIDBasicPage page : getPages()) {
 			if (page.isClean()) {
 				RAIDPage.Builder builder = (RAIDPage.Builder) page.getSelfBuilder();
-				builder.setStripe(stripe).setParityNumber(parityNum).setClean(false).setLp(-1).setGC(false).setValid(true);
+				builder.setStripe(stripe).setParityNumber(parityNum).setClean(false).setInvalidLp().setGC(false).setValid(true);
 				return (RAIDBlock) addValidPage(index, builder.build());
 			}
 			++index;
@@ -165,7 +165,7 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 			builder.setIsHighlighted(false);
 		}
 		
-		builder.setLp(-1);
+		builder.setInvalidLp();
 		return (RAIDPage) builder.build();
 	}
 }

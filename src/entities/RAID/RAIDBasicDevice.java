@@ -178,7 +178,7 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated device.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet<Integer, List<P>, RAIDBasicDevice<P,B,T,C>> setHighlightByParityP(boolean toHighlight, int parityNumber, int stripe, boolean parityMatters) {
+	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P,B,T,C>> setHighlightByParityP(boolean toHighlight, int parityNumber, int stripe, boolean parityMatters) {
 		List<P> pages = new ArrayList<P>(0);
 		List<C> deviceChips = new ArrayList<C>();
 		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(-1, null, null);
