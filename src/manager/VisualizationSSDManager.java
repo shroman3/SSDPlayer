@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -21,11 +21,5 @@
  *******************************************************************************/
 package manager;
 
-import entities.Block;
-import entities.Chip;
-import entities.Device;
-import entities.Page;
-import entities.Plane;
-
-public abstract class VisualizationSSDManager<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>> extends SSDManager<P,B,T,C,D> {
+public interface VisualizationSSDManager {
 }

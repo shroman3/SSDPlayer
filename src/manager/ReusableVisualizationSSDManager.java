@@ -38,7 +38,8 @@ import entities.reusable_visualization.VisualizationPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 
-public class ReusableVisualizationSSDManager extends VisualizationSSDManager<VisualizationPage, VisualizationBlock, VisualizationPlane, VisualizationChip, VisualizationDevice> {
+public class ReusableVisualizationSSDManager extends SSDManager<VisualizationPage, VisualizationBlock, VisualizationPlane, VisualizationChip, VisualizationDevice> 
+		implements  VisualizationSSDManager {
 	private Color firstWriteColor;
 	private Color secondWriteColor;
 

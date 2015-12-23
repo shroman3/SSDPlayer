@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -28,6 +28,8 @@ import java.text.DecimalFormat;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import entities.Device;
 import manager.SSDManager;
@@ -60,8 +62,18 @@ public abstract class WorkloadWidget <D extends Device<?,?,?,?>, S extends SSDMa
 		return name;
 	}
 	
-	protected void addField(Component input, String label) {
+	protected void addField(final Component input, String label) {
 		add(new JLabel(label));
+		input.addFocusListener(new java.awt.event.FocusAdapter() {
+		    public void focusGained(java.awt.event.FocusEvent evt) {
+		        SwingUtilities.invokeLater(new Runnable() {
+		            @Override
+		            public void run() {
+		            	((JTextField) input).selectAll();
+		            }
+		        });
+		    }
+		});
 		add(input);
 	}
 	
