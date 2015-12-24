@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -26,7 +26,7 @@ import general.XMLParsingException;
 
 
 public class VisualConfig {
-	private static final String VISUAL_CONFIG = "visual";
+	public static final String VISUAL_CONFIG = "visual";
 	private int speed = -1;
 	private boolean showCounters = true;
 	

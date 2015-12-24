@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -33,7 +33,7 @@ public abstract class TraceParserGeneral<D extends Device<?,?,?,?>, S extends SS
 
 	private String operationLine;
 	private S manager;
-	private D device;
+	protected D device; //  November 2015: revised by Or Mauda for additional RAID functionality. changed from private to protected, to enable setDevice in RAID. 
 	private int lineNo = 0;
 
 	public TraceParserGeneral(S manager) {

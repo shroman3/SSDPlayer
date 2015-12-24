@@ -19,32 +19,10 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package general;
+package manager;
 
-import java.awt.Color;
-import java.awt.Font;
+import entities.Device;
 
-public class Consts {
-	public static class UI {
-		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 13);
-		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 11);
-		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 11);
-		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 9);
-		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 8);
-		public static final Font INVISIBLE_FONT = new Font("Segoe UI", Font.PLAIN, 0);
-	}
-	
-	public static class Colors {
-		public static final Color ACTIVE = Color.red;
-		public static final Color BG = Color.darkGray;
-		public static final Color SELECTED_BG = Color.gray;
-		public static final Color BORDER = Color.gray;
-		public static final Color TEXT = Color.lightGray;
-		public static final Color PAGE_TEXT = Color.black;
-		public static final Color BLACK = Color.black;
-		public static final Color CLEAN = Color.white;
-		public static final Color CONTROL = new Color(40,40,40);
-		public static final Color CONTROL_LIGHTER = new Color(50,50,50);
-		public static final Color HIGHLIGHT = new Color(85,85,85);
-	}
+public interface SettableTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParser<D,S> {
+	public void setDevice(D device);
 }
