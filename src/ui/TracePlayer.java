@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -48,6 +50,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import breakpoints.IBreakpoint;
 import entities.Device;
 import entities.StatisticsGetter;
 import general.Consts;
@@ -71,7 +74,8 @@ public class TracePlayer extends JPanel {
 	private JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
 	private JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
 	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
-
+	private JButton breakpointsButton = new JButton("Breakpoints");
+	
 	private JProgressBar progressBar;
 	private TraceParser<?,?> parser;
     
@@ -98,6 +102,11 @@ public class TracePlayer extends JPanel {
 
 	private TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice;
 
+	private Device<?,?,?,?> currentDevice;
+	
+	private List<IBreakpoint> breakpoints = new ArrayList<IBreakpoint>();
+	private ManageBreakpointsDialog breakpointsDialog;
+	
     public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice) {
     	Utils.validateNotNull(updateDevice, "Update device callback");
     	Utils.validateNotNull(resetDevice, "Reset device callback");
@@ -227,6 +236,16 @@ public class TracePlayer extends JPanel {
 			}
 		});
 		addButton(stopButton , "Stop Trace");
+		
+		breakpointsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showBreakpointsDialog();
+			}
+		});
+		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		breakpointsButton.setEnabled(true);
+		
 		add(Box.createRigidArea(new Dimension(5,0)));
 	}
 
@@ -358,6 +377,10 @@ public class TracePlayer extends JPanel {
 				updateDevice.message(updatedDevice);
 				setProgressBarFrame(currFrameCounter);
 				++currFrameCounter;
+				
+				Device<?,?,?,?> previousDevice = currentDevice;
+				currentDevice = updatedDevice;
+				checkBreakpoints(previousDevice, currentDevice);
 			} else {
 				System.out.println("Trace has ended before stop frame was reached");
 				return false;
@@ -367,6 +390,16 @@ public class TracePlayer extends JPanel {
 			return false;
 		}
     	return true;
+	}
+
+	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		for (IBreakpoint breakpoint : breakpoints) {
+			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
+				isPaused = true;
+				break;
+			}
+		}
+		
 	}
 
 	private void playPauseTrace() {
@@ -393,4 +426,9 @@ public class TracePlayer extends JPanel {
 			}
 		}
     }
+	
+	private void showBreakpointsDialog() {
+		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this));
+		breakpointsDialog.setVisible(true);
+	}
 }
