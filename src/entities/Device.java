@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -28,6 +28,9 @@ import org.javatuples.Pair;
 
 import utils.Utils;
 
+/**
+ * November 2015: revised by Or Mauda for additional RAID functionality.
+ */
 public abstract class Device<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>> {	
 	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>, D extends Chip<P,B,T>> {
 		private Device<P,B,T,D> device;
@@ -91,11 +94,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	public int getTotalWritten() {
 		return totalWritten;
 	}
-	
-	private int getChipsNum() {
-		return chipsList.size();
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Device<P,B,T,C> invokeCleaning() {
 		int moved = 0;
@@ -129,6 +128,10 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
 		return builder.build();
+	}
+	
+	protected int getChipsNum() {
+		return chipsList.size();
 	}
 	
 	protected int getChipIndex(int lp) {

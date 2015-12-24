@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -30,6 +30,7 @@ import utils.Utils;
 
 /**
  * @author Roman
+ * November 2015: revised by Or Mauda for additional RAID functionality.
  * 
  * The most small measure in the player, Page is immutable entity.
  * It contains the basic info on what it contains: isClean, isValid, isGC, logical page.
@@ -55,6 +56,11 @@ public abstract class Page {
 			return this;
 		}
 
+		public Builder setInvalidLp() {
+			page.lp = -1;
+			return this;
+		}
+		
 		public Builder setLp(int lp) {
 			Utils.validateNotNegative(lp, "logical page");
 			page.lp = lp;
@@ -111,6 +117,30 @@ public abstract class Page {
 		if (isGC()) {
 			return UIUtils.getGCTexture(color);
 		} 
+		return null;
+	}
+
+	/**
+	 * @return whether the page is highlighted.
+	 */
+	public boolean isHighlighted() {
+		return false;
+	}
+	
+	/**
+	 * Gets the stripe color.
+	 *
+	 * @return the stripe color. This method is overridden in RAID pages.
+	 */
+	public Color getStripeColor() {
+		return null;
+	}
+	
+	/**
+	 * Gets the stripe frame color.
+	 * @return the stripe frame color. This method is overridden in RAID pages.
+	 */
+	public Color getStripeFrameColor() {
 		return null;
 	}
 }
