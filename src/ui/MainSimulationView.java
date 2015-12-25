@@ -21,14 +21,6 @@
  *******************************************************************************/
 package ui;
 
-import entities.Device;
-import entities.StatisticsGetter;
-import general.Consts;
-import general.OneObjectCallback;
-import general.TwoObjectsCallback;
-import general.XMLGetter;
-import general.XMLParsingException;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -36,6 +28,7 @@ import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -47,16 +40,27 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import breakpoints.BreakpointsDeserializer;
+import breakpoints.IBreakpoint;
+import entities.Device;
+import entities.StatisticsGetter;
+import general.Consts;
+import general.OneObjectCallback;
+import general.TwoObjectsCallback;
+import general.XMLGetter;
+import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
-
-import org.xml.sax.SAXException;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
 	private static final String VERSION = "1.0";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
+	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private VisualConfig visualConfig;
+	private List<IBreakpoint> initialBreakpoints;
 	private JPanel devicePanel;
 	private JPanel statisticsPanel;
 	private DeviceView deviceView;
@@ -66,6 +70,8 @@ public class MainSimulationView extends JFrame {
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+			final List<IBreakpoint> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
+			
 			SSDManager.initializeManager(xmlGetter);
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 
@@ -73,7 +79,7 @@ public class MainSimulationView extends JFrame {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						MainSimulationView window = new MainSimulationView(visualConfig);
+						MainSimulationView window = new MainSimulationView(visualConfig, initialBreakpoints);
 						window.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -86,7 +92,7 @@ public class MainSimulationView extends JFrame {
 	}
 
 
-	public MainSimulationView(VisualConfig visualConfig) {
+	public MainSimulationView(VisualConfig visualConfig, List<IBreakpoint> initialBreakpoints) {
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -95,6 +101,7 @@ public class MainSimulationView extends JFrame {
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.visualConfig = visualConfig;
+		this.initialBreakpoints = initialBreakpoints;
 		initialize();
 	}
 
@@ -113,6 +120,7 @@ public class MainSimulationView extends JFrame {
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
+		
 		tracePlayer = new TracePlayer(visualConfig, new TwoObjectsCallback<Device<?,?,?,?>, Iterable<StatisticsGetter>>() {
 			@Override
 			public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
@@ -124,6 +132,8 @@ public class MainSimulationView extends JFrame {
 				updateDevice(device);				
 			}
 		});
+		tracePlayer.setInitialBreakpoints(initialBreakpoints);
+		
 		southPanel.add(tracePlayer);
 		statisticsPanel = new JPanel(new FlowLayout());
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
