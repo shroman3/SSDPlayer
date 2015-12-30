@@ -1,13 +1,7 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WritePpBreakpoint">
-			<physicalPage>0</physicalPage>
-		</breakpoint>
-		<breakpoint type="WritePpBreakpoint">
-			<physicalPage>221</physicalPage>
-		</breakpoint>
-		<breakpoint type="WritePpBreakpoint">
-			<physicalPage>7</physicalPage>
+		<breakpoint type="EraseBlockBreakpoint">
+			<blockIndex>33</blockIndex>
 		</breakpoint>
 	</breakpoints>
 </root>
