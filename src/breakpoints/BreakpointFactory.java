@@ -13,6 +13,7 @@ public class BreakpointFactory {
 		register(WritePpBreakpoint.class);
 		register(AllocateActiveBlockBreakpoint.class);
 		register(EraseBlockBreakpoint.class);
+		register(WriteAmplificationBreakpoint.class);
 	}
 	
 	public IBreakpoint getBreakpoint(String type, Element breakpointElement) throws InstantiationException, IllegalAccessException {

@@ -1,13 +1,15 @@
 package breakpoints;
 
+import manager.SSDManager;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import entities.Device;
 
 public class WritePpBreakpoint implements IBreakpoint {
-
 	private int mPhysicalPage;
+	private SSDManager<?, ?, ?, ?, ?> mManager;
 	
 	public WritePpBreakpoint() {
 	} 
@@ -33,6 +35,11 @@ public class WritePpBreakpoint implements IBreakpoint {
 		
 		this.mPhysicalPage = Integer.parseInt(physicalPageNodes.item(0).getTextContent());
 
+	}
+	
+	@Override
+	public void setManager(SSDManager<?, ?, ?, ?, ?> manager) {
+		mManager = manager;
 	}
 
 }

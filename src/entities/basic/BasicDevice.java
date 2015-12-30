@@ -22,6 +22,7 @@
 package entities.basic;
 
 import entities.Device;
+import entities.StatisticsGetter;
 
 
 public class BasicDevice extends Device<BasicPage, BasicBlock, BasicPlane, BasicChip> {

@@ -183,6 +183,4 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		int pageRelativeToBlockIndex = pageIndex - blockIndex * pagesInBlock;
 		return getBlockByIndex(blockIndex).getPage(pageRelativeToBlockIndex);
 	}
-	
-	
 }

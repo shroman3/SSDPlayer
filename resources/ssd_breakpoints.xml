@@ -1,7 +1,6 @@
 <root>
 	<breakpoints>
-		<breakpoint type="EraseBlockBreakpoint">
-			<blockIndex>33</blockIndex>
+		<breakpoint type="WriteAmplificationBreakpoint">
+			<value>1.25</value>
 		</breakpoint>
-	</breakpoints>
 </root>

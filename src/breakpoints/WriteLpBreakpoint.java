@@ -2,6 +2,8 @@ package breakpoints;
 
 import java.util.List;
 
+import manager.SSDManager;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -11,8 +13,8 @@ import entities.IDeviceAction;
 import entities.WriteLpAction;
 
 public class WriteLpBreakpoint implements IBreakpoint {
-
 	private int lp;
+	private SSDManager<?, ?, ?, ?, ?> mManager;
 
 	public WriteLpBreakpoint(){
 	}
@@ -39,6 +41,11 @@ public class WriteLpBreakpoint implements IBreakpoint {
 		}
 		
 		this.lp = Integer.parseInt(lpNodes.item(0).getTextContent());
+	}
+	
+	@Override
+	public void setManager(SSDManager<?, ?, ?, ?, ?> manager) {
+		mManager = manager;
 	}
 
 }
