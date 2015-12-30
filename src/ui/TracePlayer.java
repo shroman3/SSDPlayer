@@ -144,7 +144,6 @@ public class TracePlayer extends JPanel {
 	public void setInitialBreakpoints(List<IBreakpoint> initialBreakpoints) {
 		breakpoints = new ArrayList<IBreakpoint>();
 		breakpoints.addAll(initialBreakpoints);
-		setBreakpointsManager(manager);
 		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this));
 		breakpointsDialog.addBreakpoints(breakpoints);
 	}
@@ -179,6 +178,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
+		SSDManager.setCurrentManager(managerName);
 		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
@@ -187,17 +187,7 @@ public class TracePlayer extends JPanel {
 		traceChooser.setFileFilter(new FileNameExtensionFilter(manager.getManagerName() + " Trace Files", 
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
-		setBreakpointsManager(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
-	}
-	
-	private void setBreakpointsManager(SSDManager<?, ?, ?, ?, ?> manager2) {
-		if(breakpoints == null){
-			return;
-		}
-		for(IBreakpoint breakpoint : breakpoints){
-			breakpoint.setManager(manager2);
-		}
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {

@@ -1,7 +1,5 @@
 package breakpoints;
 
-import manager.SSDManager;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -11,7 +9,6 @@ import entities.Device;
 
 public class AllocateActiveBlockBreakpoint implements IBreakpoint {
 	private int mBlockIndex;
-	private SSDManager<?, ?, ?, ?, ?> mManager;
 	
 	public AllocateActiveBlockBreakpoint() {}
 	
@@ -41,10 +38,5 @@ public class AllocateActiveBlockBreakpoint implements IBreakpoint {
 	
 	private boolean isBlockActive(BlockStatus prevStatus) {
 		return prevStatus.getStatusName().equals(BlockStatusGeneral.ACTIVE.getStatusName());
-	}
-
-	@Override
-	public void setManager(SSDManager<?, ?, ?, ?, ?> manager) {
-		mManager = manager;
 	}
 }

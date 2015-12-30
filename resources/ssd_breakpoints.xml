@@ -1,6 +1,7 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WriteAmplificationBreakpoint">
-			<value>1.25</value>
+		<breakpoint type="WritesPerEraseBreakpoint">
+			<value>20.1</value>
 		</breakpoint>
+	</breakpoints>
 </root>

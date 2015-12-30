@@ -9,7 +9,6 @@ import entities.Device;
 
 public class EraseBlockBreakpoint implements IBreakpoint {
 	private int mBlockIndex;
-	private SSDManager<?, ?, ?, ?, ?> mManager;
 	
 	public EraseBlockBreakpoint() {
 	}
@@ -34,10 +33,4 @@ public class EraseBlockBreakpoint implements IBreakpoint {
 		
 		this.mBlockIndex = Integer.parseInt(blockIndexNodes.item(0).getTextContent());
 	}
-	
-	@Override
-	public void setManager(SSDManager<?, ?, ?, ?, ?> manager) {
-		mManager = manager;
-	}
-
 }
