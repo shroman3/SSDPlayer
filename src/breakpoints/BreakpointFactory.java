@@ -10,6 +10,7 @@ public class BreakpointFactory {
 	public BreakpointFactory() {
 		mTypeMap = new HashMap<>();
 		register(WriteLpBreakpoint.class);
+		register(AllocateActiveBlockBreakpoint.class);
 	}
 	
 	public IBreakpoint getBreakpoint(String type, Element breakpointElement) throws InstantiationException, IllegalAccessException {

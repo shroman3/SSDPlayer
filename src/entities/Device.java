@@ -83,7 +83,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 
 	abstract public Builder<P,B,T,C> getSelfBuilder();
 
-	public Iterable<C> getChips() {
+	public List<C> getChips() {
 		return chipsList;
 	}
 	
