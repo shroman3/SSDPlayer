@@ -408,8 +408,6 @@ public class TracePlayer extends JPanel {
 		}
 		
 	}
-
-	
 	
 	private void playPauseTrace() {
 		if (isPaused) {

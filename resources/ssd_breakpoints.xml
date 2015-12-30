@@ -1,10 +1,13 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>56</lp>
+		<breakpoint type="WritePpBreakpoint">
+			<physicalPage>0</physicalPage>
 		</breakpoint>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>110</lp>
+		<breakpoint type="WritePpBreakpoint">
+			<physicalPage>221</physicalPage>
+		</breakpoint>
+		<breakpoint type="WritePpBreakpoint">
+			<physicalPage>7</physicalPage>
 		</breakpoint>
 	</breakpoints>
 </root>
