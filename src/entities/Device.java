@@ -31,6 +31,10 @@ import utils.Utils;
 public abstract class Device<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>> {	
 	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>, D extends Chip<P,B,T>> {
 		private Device<P,B,T,D> device;
+		
+		protected void resetLog() {
+			device.setLog(new ActionLog());
+		}
 
 		abstract public Device<P,B,T,D> build();
 		
@@ -41,6 +45,11 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		
 		public Builder<P,B,T,D> setTotalWritten(int totalWritten) {
 			device.totalWritten = totalWritten;
+			return this;
+		}
+		
+		public Builder<P,B,T,D> setLog(ActionLog log) {
+			device.log = log;
 			return this;
 		}
 		
@@ -61,13 +70,15 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	private List<C> chipsList = null;
 	private int totalMoved = 0;
 	private int totalWritten = 0;
+	private ActionLog log = new ActionLog();;
 	
 	protected Device() {}	
 	
 	protected Device(Device<P,B,T,C> other) {
 		this.chipsList = new ArrayList<C>(other.chipsList);
 		this.totalMoved = other.totalMoved; 
-		this.totalWritten = other.totalWritten; 
+		this.totalWritten = other.totalWritten;
+		this.setLog(other.getLog());
 	}
 
 	abstract public Builder<P,B,T,C> getSelfBuilder();
@@ -126,12 +137,23 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		int chipIndex = getChipIndex(lp);
 		List<C> updatedChips = getNewChipsList();
 		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
+		ActionLog log = new ActionLog();
+		log.addAction(new WriteLpAction(lp));
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
+		builder.setLog(log);
 		return builder.build();
 	}
 	
 	protected int getChipIndex(int lp) {
 		return lp%getChipsNum();
+	}
+
+	public ActionLog getLog() {
+		return log;
+	}
+
+	private void setLog(ActionLog log) {
+		this.log = log;
 	}
 }

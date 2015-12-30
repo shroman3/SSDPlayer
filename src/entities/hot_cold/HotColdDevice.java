@@ -26,6 +26,7 @@ import java.util.Map;
 
 import manager.HotColdPartition;
 import manager.HotColdSSDManager;
+import entities.ActionLog;
 import entities.Device;
 
 
@@ -35,10 +36,12 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 
 		public Builder() {
 			setDevice(new HotColdDevice());
+			resetLog();
 		}
 		
 		public Builder(HotColdDevice device) {
 			setDevice(new HotColdDevice(device));
+			resetLog();
 		}
 		
 		public Builder setManager(HotColdSSDManager manager) {
@@ -83,7 +86,11 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 	public HotColdDevice writeLP(int lp, int temperature) {
 		HotColdDevice device = (HotColdDevice) super.writeLP(lp, temperature);
 		HotColdPartition partition = manager.getPartition(temperature);
-		return device.getSelfBuilder().setTotalWritten(partition, totalWrittenMap.get(partition) + 1).build();
+		ActionLog a = device.getLog();
+		return (HotColdDevice) device.getSelfBuilder()
+				.setTotalWritten(partition, totalWrittenMap.get(partition) + 1)
+				.setLog(a)
+				.build();
 	}
 
 	public int getTotalWritten(HotColdPartition partition) {

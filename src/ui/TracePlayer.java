@@ -402,23 +402,29 @@ public class TracePlayer extends JPanel {
 	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
 		for (IBreakpoint breakpoint : breakpoints) {
 			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
-				isPaused = true;
+				pauseTrace();
 				break;
 			}
 		}
 		
 	}
 
+	
+	
 	private void playPauseTrace() {
 		if (isPaused) {
 			isPaused = false;
 			playPauseButton.setIcon(iconPause);
 			playPauseButton.setToolTipText("Pause");
 		} else {
-			isPaused = true;
-			playPauseButton.setIcon(iconPlay);
-			playPauseButton.setToolTipText("Play");
+			pauseTrace();
 		}
+	}
+
+	private void pauseTrace() {
+		isPaused = true;
+		playPauseButton.setIcon(iconPlay);
+		playPauseButton.setToolTipText("Play");
 	}
 	
 	private void showGeneratorCreatorsTrace() {

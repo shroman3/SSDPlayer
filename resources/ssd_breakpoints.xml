@@ -1,0 +1,10 @@
+<root>
+	<breakpoints>
+		<breakpoint type="WriteLpBreakpoint">
+			<lp>56</lp>
+		</breakpoint>
+		<breakpoint type="WriteLpBreakpoint">
+			<lp>110</lp>
+		</breakpoint>
+	</breakpoints>
+</root>
