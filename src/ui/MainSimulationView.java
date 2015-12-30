@@ -46,6 +46,7 @@ import breakpoints.BreakpointsDeserializer;
 import breakpoints.IBreakpoint;
 import entities.Device;
 import entities.StatisticsGetter;
+import general.ConfigProperties;
 import general.Consts;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
@@ -73,6 +74,7 @@ public class MainSimulationView extends JFrame {
 			final List<IBreakpoint> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 			
 			SSDManager.initializeManager(xmlGetter);
+			ConfigProperties.initialize(xmlGetter);
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 
 			initLookAndFeel();
