@@ -36,10 +36,12 @@ public class VisualizationDevice extends Device<VisualizationPage, Visualization
 
 		public Builder() {
 			setDevice(new VisualizationDevice());
+			resetLog();
 		}
 		
 		public Builder(VisualizationDevice device) {
 			setDevice(new VisualizationDevice(device));
+			resetLog();
 		}
 		
 		@Override
