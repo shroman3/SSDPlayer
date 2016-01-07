@@ -61,6 +61,7 @@ import manager.TraceParser;
 import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
+import ui.breakpoints.ManageBreakpointsDialog;
 import utils.Utils;
 
 public class TracePlayer extends JPanel {
@@ -94,7 +95,7 @@ public class TracePlayer extends JPanel {
 
 	private SeparatorComboBox managersList;
 
-	private SSDManager<?,?,?,?,?> manager;
+	private static SSDManager<?,?,?,?,?> manager;
 
 	private LoadGeneratorsCreatorsFrame creatorsFrame;
 	
@@ -145,7 +146,11 @@ public class TracePlayer extends JPanel {
 		breakpoints = new ArrayList<IBreakpoint>();
 		breakpoints.addAll(initialBreakpoints);
 		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this));
-		breakpointsDialog.addBreakpoints(breakpoints);
+		breakpointsDialog.setBreakpoints(breakpoints);
+	}
+	
+	public static SSDManager<?,?,?,?,?> getManager() {
+		return manager;
 	}
 	
 	private void initManagerSelection() {
@@ -178,6 +183,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
+		SSDManager.setCurrentManager(managerName);
 		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
@@ -408,8 +414,6 @@ public class TracePlayer extends JPanel {
 		}
 		
 	}
-
-	
 	
 	private void playPauseTrace() {
 		if (isPaused) {
@@ -442,5 +446,8 @@ public class TracePlayer extends JPanel {
 	
 	private void showBreakpointsDialog() {
 		breakpointsDialog.setVisible(true);
+		breakpoints.clear();
+		
+		breakpoints.addAll(breakpointsDialog.getBreakpoints());
 	}
 }

@@ -71,6 +71,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static List<String> simulatorsList = new ArrayList<>();
 	private static List<String> visualizationsList = new ArrayList<>();
+	private static String currentManagerName =  null;
 	
 	/**
 	 * Initialize SSD manager using given configuration.
@@ -118,6 +119,14 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	
 	public static SSDManager<?,?,?,?,?> getManager(String managerName) {
 		return managersMap.get(managerName);
+	}
+	
+	public static void setCurrentManager(String managerName) {
+		currentManagerName = managerName;
+	}
+	
+	public static SSDManager<?, ?, ?, ?, ?> getCurrentManager(){
+		return getManager(currentManagerName);
 	}
 	
 	/**

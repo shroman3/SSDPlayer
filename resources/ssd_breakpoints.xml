@@ -3,8 +3,11 @@
 		<breakpoint type="WriteLpBreakpoint">
 			<lp>56</lp>
 		</breakpoint>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>110</lp>
+		<breakpoint type="AllocateActiveBlockBreakpoint">
+			<blockIndex>110</blockIndex>
+		</breakpoint>
+		<breakpoint type="WritesPerEraseBreakpoint">
+			<value>20.1</value>
 		</breakpoint>
 	</breakpoints>
 </root>
