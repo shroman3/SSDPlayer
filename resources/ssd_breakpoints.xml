@@ -1,13 +1,8 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>56</lp>
-		</breakpoint>
-		<breakpoint type="AllocateActiveBlockBreakpoint">
-			<blockIndex>110</blockIndex>
-		</breakpoint>
-		<breakpoint type="WritesPerEraseBreakpoint">
-			<value>20.1</value>
+		<breakpoint type="EraseCountBlockBreakpoint">
+			<blockIndex>1</blockIndex>
+			<count>2</count>
 		</breakpoint>
 	</breakpoints>
 </root>
