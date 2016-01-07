@@ -1,16 +1,12 @@
 package breakpoints;
 
-import manager.SSDManager;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.Device;
 
-public class WritePpBreakpoint implements IBreakpoint {
+public class WritePpBreakpoint extends BreakpointBase {
 	private int mPhysicalPage;
 	
 	public WritePpBreakpoint() {
+		super();
 	} 
 	
 	@Override
@@ -25,14 +21,26 @@ public class WritePpBreakpoint implements IBreakpoint {
 		return previousPageIsclean && !currentPageIsClean;
 	}
 
-	@Override
-	public void readXml(Element xmlElement) {
-		NodeList physicalPageNodes = xmlElement.getElementsByTagName("physicalPage");
-		if (physicalPageNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find physicalPage tag under breakpoint");
-		}
-		
-		this.mPhysicalPage = Integer.parseInt(physicalPageNodes.item(0).getTextContent());
+	public int getPhysicalPage() {
+		return mPhysicalPage;
+	}
 
+	public void setPhysicalPage(int physicalPage) {
+		this.mPhysicalPage = physicalPage;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Write physical page " + mPhysicalPage;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Write physical page P";
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("physicalPage", int.class, "Physical page"));
 	}
 }

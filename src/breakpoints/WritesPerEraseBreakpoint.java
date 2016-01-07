@@ -1,15 +1,11 @@
 package breakpoints;
 
+import entities.Device;
+import entities.StatisticsGetter;
 import manager.LogicalWritesPerEraseGetter;
 import manager.SSDManager;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import entities.Device;
-import entities.StatisticsGetter;
-
-public class WritesPerEraseBreakpoint implements IBreakpoint {
+public class WritesPerEraseBreakpoint extends BreakpointBase {
 	private double mValue;
 	
 	@Override
@@ -25,13 +21,27 @@ public class WritesPerEraseBreakpoint implements IBreakpoint {
 		return false;
 	}
 
-	@Override
-	public void readXml(Element xmlElement) {
-		NodeList physicalPageNodes = xmlElement.getElementsByTagName("value");
-		if (physicalPageNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find value tag under breakpoint");
-		}
-		
-		this.mValue = Float.parseFloat(physicalPageNodes.item(0).getTextContent());
+	public double getValue() {
+		return mValue;
 	}
+
+	public void setValue(double value) {
+		mValue = value;
+	}
+	
+	@Override
+	public String getDescription() {
+		return "Writes per erase reach " + mValue;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Writes per erase reach W";
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("value", double.class, "Writes per erase"));
+	}
+
 }

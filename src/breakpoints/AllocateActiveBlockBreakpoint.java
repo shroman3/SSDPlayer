@@ -1,16 +1,15 @@
 package breakpoints;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
 import entities.Device;
 
-public class AllocateActiveBlockBreakpoint implements IBreakpoint {
+public class AllocateActiveBlockBreakpoint extends BreakpointBase {
 	private int mBlockIndex;
 	
-	public AllocateActiveBlockBreakpoint() {}
+	public AllocateActiveBlockBreakpoint() {
+		super();
+	}
 	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
@@ -26,17 +25,30 @@ public class AllocateActiveBlockBreakpoint implements IBreakpoint {
 		return false;
 	}
 
-	@Override
-	public void readXml(Element xmlElement) {
-		NodeList blockIndexNodes = xmlElement.getElementsByTagName("blockIndex");
-		if (blockIndexNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find blockIndex tag under breakpoint");
-		}
-		
-		this.mBlockIndex = Integer.parseInt(blockIndexNodes.item(0).getTextContent());
+	public int getBlockIndex() {
+		return mBlockIndex;
+	}
+	
+	public void setBlockIndex(int blockIndex) {
+		mBlockIndex = blockIndex;
 	}
 	
 	private boolean isBlockActive(BlockStatus prevStatus) {
 		return prevStatus.getStatusName().equals(BlockStatusGeneral.ACTIVE.getStatusName());
+	}
+
+	@Override
+	public String getDescription() {
+		return "Allocate block " + mBlockIndex + " as active";
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return "Allocate block B as active";
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block"));
 	}
 }

@@ -1,16 +1,12 @@
 package breakpoints;
 
-import manager.SSDManager;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.Device;
 
-public class EraseBlockBreakpoint implements IBreakpoint {
+public class EraseBlockBreakpoint extends BreakpointBase {
 	private int mBlockIndex;
 	
 	public EraseBlockBreakpoint() {
+		super();
 	}
 	
 	@Override
@@ -24,13 +20,26 @@ public class EraseBlockBreakpoint implements IBreakpoint {
 		return previousBlockEraseCount < currentBlockEraseCount;
 	}
 
+	public int getBlockIndex() {
+		return mBlockIndex;
+	}
+
+	public void setBlockIndex(int blockIndex) {
+		mBlockIndex = blockIndex;
+	}
+
 	@Override
-	public void readXml(Element xmlElement) {
-		NodeList blockIndexNodes = xmlElement.getElementsByTagName("blockIndex");
-		if (blockIndexNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find blockIndex tag under breakpoint");
-		}
-		
-		this.mBlockIndex = Integer.parseInt(blockIndexNodes.item(0).getTextContent());
+	public String getDisplayName() {
+		return "Erase block B";
+	}
+
+	@Override
+	public String getDescription() {
+		return "Erase block " + mBlockIndex;
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block"));
 	}
 }

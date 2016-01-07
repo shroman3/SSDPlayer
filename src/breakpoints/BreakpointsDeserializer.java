@@ -13,20 +13,20 @@ import org.w3c.dom.NodeList;
 
 public class BreakpointsDeserializer {
 	public static List<IBreakpoint> deserialize(String bpFilePath) {
-		List<IBreakpoint> result = new ArrayList<IBreakpoint>();
+		BreakpointFactory.initBreakpointFactory();
 		
+		List<IBreakpoint> result = new ArrayList<IBreakpoint>();
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = builder.parse(new FileInputStream(bpFilePath));
 			
 			Element root = document.getDocumentElement();
 			NodeList breakpointNodes = root.getElementsByTagName("breakpoint");
-			BreakpointFactory bpFactory = new BreakpointFactory();
 			
 			for (int i = 0; i < breakpointNodes.getLength(); i++) {
 				Element breakpointElement = (Element) breakpointNodes.item(i);
 				String type = breakpointElement.getAttribute("type");
-				result.add(bpFactory.getBreakpoint(type, breakpointElement));
+				result.add(BreakpointFactory.getBreakpoint(type, breakpointElement));
 			}
 		} catch(Exception e) {
 			System.err.println(("Unable to load breakpoints from file (" + bpFilePath + ")\n" + e.getMessage()));

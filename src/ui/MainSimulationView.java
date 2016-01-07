@@ -42,6 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import breakpoints.BreakpointFactory;
 import breakpoints.BreakpointsDeserializer;
 import breakpoints.IBreakpoint;
 import entities.Device;

@@ -1,17 +1,17 @@
 package breakpoints;
 
+import entities.Device;
+import entities.StatisticsGetter;
 import manager.SSDManager;
 import manager.WriteAmplificationGetter;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import entities.Device;
-import entities.StatisticsGetter;
-
-public class WriteAmplificationBreakpoint implements IBreakpoint {
+public class WriteAmplificationBreakpoint extends BreakpointBase {
 	private double mValue;
 
+	public WriteAmplificationBreakpoint() {
+		super();
+	}
+	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
@@ -25,15 +25,27 @@ public class WriteAmplificationBreakpoint implements IBreakpoint {
 		return false;
 	}
 
-	@Override
-	public void readXml(Element xmlElement) {
-		NodeList physicalPageNodes = xmlElement.getElementsByTagName("value");
-		if (physicalPageNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find value tag under breakpoint");
-		}
-		
-		this.mValue = Double.parseDouble(physicalPageNodes.item(0).getTextContent());
-
+	public double getValue() {
+		return mValue;
 	}
 
+	public void setValue(double value) {
+		mValue = value;
+	}
+
+	
+	@Override
+	public String getDescription() {
+		return "Write Amplification reaches " + mValue;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return "Write Amplification reaches W";
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("value", double.class, "Value"));
+	}
 }
