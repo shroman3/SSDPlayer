@@ -178,6 +178,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
+		SSDManager.setCurrentManager(managerName);
 		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
@@ -408,8 +409,6 @@ public class TracePlayer extends JPanel {
 		}
 		
 	}
-
-	
 	
 	private void playPauseTrace() {
 		if (isPaused) {

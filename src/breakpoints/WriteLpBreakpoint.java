@@ -2,6 +2,8 @@ package breakpoints;
 
 import java.util.List;
 
+import manager.SSDManager;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -11,7 +13,6 @@ import entities.IDeviceAction;
 import entities.WriteLpAction;
 
 public class WriteLpBreakpoint implements IBreakpoint {
-
 	private int lp;
 
 	public WriteLpBreakpoint(){
@@ -33,12 +34,11 @@ public class WriteLpBreakpoint implements IBreakpoint {
 
 	@Override
 	public void readXml(Element xmlElement) {
-		NodeList lpNodes = xmlElement.getElementsByTagName("lp");
+		NodeList lpNodes = xmlElement.getElementsByTagName("logicalPage");
 		if (lpNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find lp tag under breakpoint");
+			throw new RuntimeException("Couldn't find logicalPage tag under breakpoint");
 		}
 		
 		this.lp = Integer.parseInt(lpNodes.item(0).getTextContent());
 	}
-
 }

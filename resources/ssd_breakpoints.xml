@@ -1,10 +1,7 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>56</lp>
-		</breakpoint>
-		<breakpoint type="WriteLpBreakpoint">
-			<lp>110</lp>
+		<breakpoint type="WritesPerEraseBreakpoint">
+			<value>20.1</value>
 		</breakpoint>
 	</breakpoints>
 </root>

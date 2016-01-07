@@ -21,6 +21,8 @@
  *******************************************************************************/
 package entities;
 
+import general.ConfigProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,5 +157,30 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 
 	private void setLog(ActionLog log) {
 		this.log = log;
+	}
+	
+	public C getChipByIndex(int chipIndex){
+		return chipsList.get(chipIndex);
+	}
+	
+	public T getPlaneByIndex(int planeIndex){
+		int planesInChip = ConfigProperties.getPlanesInChip();
+		int chipIndex = planeIndex / planesInChip;
+		int planeRelativeToChipIndex = planeIndex - chipIndex * planesInChip;
+		return getChipByIndex(chipIndex).getPlane(planeRelativeToChipIndex);
+	}
+	
+	public B getBlockByIndex(int blockIndex){
+		int blocksInPlain = ConfigProperties.getBlocksInPlane();
+		int planeIndex = blockIndex / blocksInPlain;
+		int blockRelativeToPlainIndex = blockIndex - planeIndex * blocksInPlain;
+		return getPlaneByIndex(planeIndex).getBlock(blockRelativeToPlainIndex);
+	}
+	
+	public P getPageByIndex(int pageIndex){
+		int pagesInBlock = ConfigProperties.getPagesInBlock();
+		int blockIndex = pageIndex / pagesInBlock;
+		int pageRelativeToBlockIndex = pageIndex - blockIndex * pagesInBlock;
+		return getBlockByIndex(blockIndex).getPage(pageRelativeToBlockIndex);
 	}
 }
