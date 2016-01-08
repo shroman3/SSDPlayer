@@ -141,5 +141,13 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 		builder.setPlanes(updatedPlanes);
 		return builder.build();
 	}
+
+	public int getNumOfClean() {
+		int cleanBlocks = 0;
+		for (Plane<?, ?> plane : planesList){
+			cleanBlocks += plane.getNumOfClean();
+		}
+		return cleanBlocks;
+	}
 	
 }

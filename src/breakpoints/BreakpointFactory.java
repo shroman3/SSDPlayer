@@ -21,6 +21,10 @@ public class BreakpointFactory {
 		register(WriteAmplificationBreakpoint.class);
 		register(WritesPerEraseBreakpoint.class);
 		register(EraseCountBlockBreakpoint.class);
+		register(EraseCountAnyBlockBreakpoint.class);
+		register(CleanBlocksInPlane.class);
+		register(CleanBlocksInChip.class);
+		register(CleanBlocksInDevice.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {

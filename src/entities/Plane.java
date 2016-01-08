@@ -157,7 +157,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return getNumOfClean();
 	}
 
-	protected int getNumOfClean() {
+	public int getNumOfClean() {
 		return numOfClean;
 	}
 	

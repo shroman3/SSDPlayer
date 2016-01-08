@@ -1,7 +1,6 @@
 <root>
 	<breakpoints>
-		<breakpoint type="EraseCountBlockBreakpoint">
-			<blockIndex>1</blockIndex>
+		<breakpoint type="CleanBlocksInDevice">
 			<count>2</count>
 		</breakpoint>
 	</breakpoints>

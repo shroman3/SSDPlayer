@@ -1,17 +1,14 @@
 package breakpoints;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.Device;
-import general.ConfigProperties;
 
-public class EraseCountBlockBreakpoint implements IBreakpoint {
+public class EraseCountBlockBreakpoint extends BreakpointBase {
 
-	private Integer mBlockIndex;
-	private Integer mCount;
+	private int mBlockIndex;
+	private int mCount;
 	
 	public EraseCountBlockBreakpoint() {
+		super();
 	}
 	
 	@Override
@@ -21,38 +18,39 @@ public class EraseCountBlockBreakpoint implements IBreakpoint {
 			return false;
 		}
 		
-		if (mBlockIndex != null){
-			return previousDevice.getBlockByIndex(mBlockIndex).getEraseCounter() != mCount 
-					&& currentDevice.getBlockByIndex(mBlockIndex).getEraseCounter() == mCount;			
-		}
-		
-		int numberOfBlocks = ConfigProperties.getBlocksInDevice();
-		for (int i=0; i < numberOfBlocks; i++){
-			boolean blockReachedCount = previousDevice.getBlockByIndex(i).getEraseCounter() != mCount 
-					&& currentDevice.getBlockByIndex(i).getEraseCounter() == mCount;
-			if(blockReachedCount){
-				return true;
-			}
-		}
-		return false; 
+		return previousDevice.getBlockByIndex(getBlockIndex()).getEraseCounter() != getCount() 
+				&& currentDevice.getBlockByIndex(getBlockIndex()).getEraseCounter() == getCount();			 
 	}
 
 	@Override
-	public void readXml(Element xmlElement) {
-		NodeList blockIndexNodes = xmlElement.getElementsByTagName("blockIndex");
-		if (blockIndexNodes.getLength() == 0) {
-			this.mBlockIndex = null;
-		}
-		else{
-			this.mBlockIndex = Integer.parseInt(blockIndexNodes.item(0).getTextContent());
-		}
-		
-		NodeList countNodes = xmlElement.getElementsByTagName("count");
-		if (blockIndexNodes.getLength() == 0) {
-			throw new RuntimeException("Couldn't find count tag under breakpoint");
-		}
-		
-		this.mCount = Integer.parseInt(countNodes.item(0).getTextContent());
+	public String getDisplayName() {
+		return "Block reaches erease count";
 	}
 
+	@Override
+	public String getDescription() {
+		return getBlockIndex() + " block reaches erase count of " + getCount();
+	}
+
+	@Override
+	public void addComponents() {
+		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block index"));
+		mComponents.add(new BreakpointComponent("count", int.class, "Erase count"));
+	}
+
+	public int getBlockIndex() {
+		return mBlockIndex;
+	}
+
+	public void setBlockIndex(int mBlockIndex) {
+		this.mBlockIndex = mBlockIndex;
+	}
+
+	public int getCount() {
+		return mCount;
+	}
+
+	public void setCount(int mCount) {
+		this.mCount = mCount;
+	}
 }
