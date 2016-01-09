@@ -7,6 +7,10 @@ public class CleanBlocksInChip extends BreakpointBase {
 	private int mChipIndex;
 	private int mCount;
 	
+	public CleanBlocksInChip() {
+		super();
+	}
+	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {

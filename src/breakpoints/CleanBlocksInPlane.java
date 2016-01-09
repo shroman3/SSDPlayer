@@ -6,6 +6,10 @@ public class CleanBlocksInPlane extends BreakpointBase {
 	private int mPlaneIndex;
 	private int mCount;
 	
+	public CleanBlocksInPlane() {
+		super();
+	}
+	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {

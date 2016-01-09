@@ -2,10 +2,11 @@ package breakpoints;
 
 import entities.Device;
 
-public class CleanBlocksInDevice extends BreakpointBase {
+public class PagesWritenInDevice extends BreakpointBase {
+
 	private int mCount;
-	
-	public CleanBlocksInDevice() {
+
+	public PagesWritenInDevice(){
 		super();
 	}
 	
@@ -13,26 +14,25 @@ public class CleanBlocksInDevice extends BreakpointBase {
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
 		if(previousDevice == null){
-			return false;
+			return currentDevice.getTotalWritten() == mCount; 
 		}
-		int prevClean =  previousDevice.getNumOfClean();
-		int currentClean = currentDevice.getNumOfClean();
-		return prevClean != currentClean && currentClean == mCount;
+		return currentDevice.getTotalWritten() == mCount 
+				&& previousDevice.getTotalWritten() != mCount;
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "Number of clean blocks in device";
+		return "X pages are writen in device";
 	}
 
 	@Override
 	public String getDescription() {
-		return  getCount() + " clean blocks in device";
+		return getCount() + " pages are writen in device";
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("count", int.class, "Number of clean blocks"));
+		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages writen"));
 	}
 
 	public int getCount() {
@@ -42,4 +42,5 @@ public class CleanBlocksInDevice extends BreakpointBase {
 	public void setCount(int mCount) {
 		this.mCount = mCount;
 	}
+
 }

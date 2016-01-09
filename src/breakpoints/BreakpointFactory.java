@@ -25,6 +25,9 @@ public class BreakpointFactory {
 		register(CleanBlocksInPlane.class);
 		register(CleanBlocksInChip.class);
 		register(CleanBlocksInDevice.class);
+		register(PagesWritenInDevice.class);
+		register(PagesWritenInChip.class);
+		register(PagesWritenInPlane.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {

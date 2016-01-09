@@ -1,7 +1,8 @@
 <root>
 	<breakpoints>
-		<breakpoint type="CleanBlocksInDevice">
-			<count>2</count>
+		<breakpoint type="PagesWritenInPlane">
+			<count>10</count>
+			<planeIndex>1</planeIndex>
 		</breakpoint>
 	</breakpoints>
 </root>
