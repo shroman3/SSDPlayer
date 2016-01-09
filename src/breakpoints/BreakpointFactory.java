@@ -28,6 +28,7 @@ public class BreakpointFactory {
 		register(PagesWritenInDevice.class);
 		register(PagesWritenInChip.class);
 		register(PagesWritenInPlane.class);
+		register(HotColdPartitionHoldsPrecentOfBlocks.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {

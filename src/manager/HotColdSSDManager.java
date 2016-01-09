@@ -65,7 +65,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return partitionsMap.get(temperature);
 	}
 
-	public Iterable<HotColdPartition> getPartitions() {
+	public List<HotColdPartition> getPartitions() {
 		return partitions;
 	}
 

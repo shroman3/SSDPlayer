@@ -1,8 +1,8 @@
 <root>
 	<breakpoints>
-		<breakpoint type="PagesWritenInPlane">
-			<count>10</count>
-			<planeIndex>1</planeIndex>
+		<breakpoint type="HotColdPartitionHoldsPrecentOfBlocks">
+			<precent>20</precent>
+			<partition>1</partition>
 		</breakpoint>
 	</breakpoints>
 </root>
