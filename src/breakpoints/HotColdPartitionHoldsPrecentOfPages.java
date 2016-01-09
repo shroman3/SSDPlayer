@@ -6,11 +6,11 @@ import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
 import general.ConfigProperties;
 
-public class HotColdPartitionHoldsPrecentOfBlocks extends BreakpointBase {
+public class HotColdPartitionHoldsPrecentOfPages extends BreakpointBase {
 	private int mPartition;
 	private int mPrecent;
 
-	public HotColdPartitionHoldsPrecentOfBlocks() {
+	public HotColdPartitionHoldsPrecentOfPages() {
 		super();
 	}
 	
@@ -42,17 +42,17 @@ public class HotColdPartitionHoldsPrecentOfBlocks extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "HotCold partition holds precent of blocks";
+		return "HotCold partition holds precent of pages";
 	}
 
 	@Override
 	public String getDescription() {
-		return "HotCold partition" + getPartition() + "holds " + getPrecent() + " precent of blocks";
+		return "HotCold partition " + getPartition() + " holds " + getPrecent() + " precent of pages";
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("precent", int.class, "Precent of blocks"));
+		mComponents.add(new BreakpointComponent("precent", int.class, "Precent of pages"));
 		mComponents.add(new BreakpointComponent("partition", int.class, "Partition"));
 	}
 
