@@ -6,10 +6,10 @@ import java.util.List;
 import ui.breakpoints.BreakpointUIComponent;
 
 public class BreakpointDescriptor {
-	private Class<? extends IBreakpoint> mBreakpointClass;
+	private Class<? extends BreakpointBase> mBreakpointClass;
 	private List<BreakpointUIComponent> mUIComponents;
 	
-	public BreakpointDescriptor(Class<? extends IBreakpoint> breakpointClass) {
+	public BreakpointDescriptor(Class<? extends BreakpointBase> breakpointClass) {
 		mBreakpointClass = breakpointClass;
 		mUIComponents = new ArrayList<>();
 		
@@ -28,7 +28,7 @@ public class BreakpointDescriptor {
 		
 	}
 	
-	public Class<? extends IBreakpoint> getBreakpointClass() {
+	public Class<? extends BreakpointBase> getBreakpointClass() {
 		return mBreakpointClass;
 	}
 	

@@ -42,9 +42,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import breakpoints.BreakpointFactory;
+import breakpoints.BreakpointBase;
 import breakpoints.BreakpointsDeserializer;
-import breakpoints.IBreakpoint;
 import entities.Device;
 import entities.StatisticsGetter;
 import general.ConfigProperties;
@@ -62,7 +61,7 @@ public class MainSimulationView extends JFrame {
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private VisualConfig visualConfig;
-	private List<IBreakpoint> initialBreakpoints;
+	private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
 	private JPanel statisticsPanel;
 	private DeviceView deviceView;
@@ -72,7 +71,7 @@ public class MainSimulationView extends JFrame {
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-			final List<IBreakpoint> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
+			final List<BreakpointBase> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 			
 			SSDManager.initializeManager(xmlGetter);
 			ConfigProperties.initialize(xmlGetter);
@@ -95,7 +94,7 @@ public class MainSimulationView extends JFrame {
 	}
 
 
-	public MainSimulationView(VisualConfig visualConfig, List<IBreakpoint> initialBreakpoints) {
+	public MainSimulationView(VisualConfig visualConfig, List<BreakpointBase> initialBreakpoints) {
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {

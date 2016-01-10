@@ -8,11 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -20,25 +20,29 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
-import breakpoints.BreakpointFactory;
-import breakpoints.IBreakpoint;
+import breakpoints.BreakpointBase;
 
-public class DefineBreakpointDialog  extends JDialog {
+public class DefineBreakpointDialog  extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	public static final String DIALOG_HEADER = "Define breakpoint";
 	
-	private IBreakpoint mBreakpoint;
-	private JComboBox<Class<? extends IBreakpoint>> mBreakpointsCBox;
+	private BreakpointBase mBreakpoint;
+	private JComboBox<IBreakpointCBoxEntry> mBreakpointsCBox;
+	private IBreakpointCBoxEntry mSelectedEntry;
 	private JPanel mBpPropertiesPanel;
 	private BreakpointViewBase mBreakpointView;
-	List<Class<? extends IBreakpoint>> mBreakpointClasses;
 	private boolean mIsCanceled;
+	private boolean mIsEdit;
+	private JPanel mRadioButtonsPanel;
 	
-	public DefineBreakpointDialog(Window parentWindow, IBreakpoint breakpoint) {
+	public DefineBreakpointDialog(Window parentWindow, BreakpointBase breakpoint) {
 		super(parentWindow, DIALOG_HEADER);
 		setDefaultLookAndFeelDecorated(true);
+		BreakpointsUIFactory.init();
+		if (breakpoint != null) mIsEdit = true;
 
 		addWindowListener(new WindowAdapter() {
 			 @Override
@@ -47,10 +51,7 @@ public class DefineBreakpointDialog  extends JDialog {
 			    }
 		});
 		
-		mBreakpointClasses = BreakpointFactory.getBreakpointClasses();
-
 		mBreakpointView = new BreakpointViewBase();
-		instantiateInitialBreakpoint(breakpoint);
 		
 		setModal(true);
 		setResizable(true);
@@ -58,19 +59,45 @@ public class DefineBreakpointDialog  extends JDialog {
         setSize(400, 200);
         setLocationRelativeTo(parentWindow);
 		initComponents();
-		displayBreakpoint();
+		instantiateInitialBreakpoint(breakpoint);
 	}
 
 	public void cancel() {
 		mIsCanceled = true;
 	}
 	
-	private void instantiateInitialBreakpoint(IBreakpoint breakpoint) {
+	private void instantiateInitialBreakpoint(BreakpointBase breakpoint) {
 		try {
 			if (breakpoint == null) {
-					mBreakpoint = BreakpointFactory.getBreakpointClasses().get(0).newInstance();
+				mBreakpointsCBox.setSelectedIndex(0);
+				IBreakpointCBoxEntry entry = (IBreakpointCBoxEntry) mBreakpointsCBox.getItemAt(0);
+				if (entry instanceof BreakpointsGroup) {
+					BreakpointsGroup groupEntry = (BreakpointsGroup) entry;
+					String firstKey = groupEntry.getGroup().firstKey();
+					mBreakpoint = groupEntry.getGroup().getOrDefault(firstKey, null).newInstance();
+				} else {
+					SingleBreakpoint singleBp = (SingleBreakpoint) entry;
+					mBreakpoint = singleBp.getBPClass().newInstance();
+				}
 			} else {
 				mBreakpoint = breakpoint;
+				
+				for (SingleBreakpoint entry : BreakpointsUIFactory.getSingleBreakpoints()) {
+					if (entry.getBPClass().getName().equals(mBreakpoint.getClass().getName())) {
+						mBreakpointsCBox.setSelectedItem(entry);
+						return;
+					}
+				}
+				
+				for (BreakpointsGroup group : BreakpointsUIFactory.getBreakpointGroups()) {
+					if (group.contains(mBreakpoint.getClass())) {
+						group.setSelectedItem(group.
+								getFirstKeyWithValueOrDefault(mBreakpoint.getClass(), null));
+						mBreakpointsCBox.setSelectedItem(group);
+						return;
+					}
+				}
+				
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
@@ -86,33 +113,49 @@ public class DefineBreakpointDialog  extends JDialog {
 		add(mainPanel);
 		initComboBox(mainPanel);
 		
+		mRadioButtonsPanel = new JPanel();
+		mRadioButtonsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		mRadioButtonsPanel.setMaximumSize(new Dimension(300, 10));
+		mRadioButtonsPanel.setBorder(BorderFactory.createEmptyBorder(3, -5, 5, 0));
+		mainPanel.add(mRadioButtonsPanel);
+
 		mBpPropertiesPanel = new JPanel();
 		mBpPropertiesPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		mBpPropertiesPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-		
 		mainPanel.add(mBpPropertiesPanel);
+
 		mainPanel.add(Box.createVerticalGlue());
 		addDialogButtons(mainPanel);
 	}
 
 	private void initComboBox(JPanel mainPanel) {
-		DefaultComboBoxModel<Class<? extends IBreakpoint>> cBoxModel = new DefaultComboBoxModel<Class<? extends IBreakpoint>>();
-		for (Class<? extends IBreakpoint> bpClass : mBreakpointClasses) {
+		DefaultComboBoxModel<IBreakpointCBoxEntry> cBoxModel = new DefaultComboBoxModel<IBreakpointCBoxEntry>();
+		
+		for (SingleBreakpoint bpClass : BreakpointsUIFactory.getSingleBreakpoints()) {
 			cBoxModel.addElement(bpClass);
+		}
+		for (BreakpointsGroup bpGroup : BreakpointsUIFactory.getBreakpointGroups()) {
+			cBoxModel.addElement(bpGroup);
 		}
 		
 		mBreakpointsCBox = new JComboBox<>(cBoxModel);
 		mBreakpointsCBox.setRenderer(new DisplayNameRenderer());
 		mBreakpointsCBox.setPreferredSize(new Dimension(mBreakpointsCBox.getPreferredSize().width, 30));
 		mBreakpointsCBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-		mBreakpointsCBox.setSelectedItem(mBreakpoint.getClass());
 		mBreakpointsCBox.addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					mBreakpoint = ((Class<? extends IBreakpoint>) mBreakpointsCBox.getSelectedItem()).newInstance();
-					displayBreakpoint();
+					mSelectedEntry = ((IBreakpointCBoxEntry) mBreakpointsCBox.getSelectedItem());
+					if (mSelectedEntry instanceof BreakpointsGroup) {
+						displayGroupRadioButtons();
+					} else {
+						mBreakpoint = ((SingleBreakpoint) mSelectedEntry).getBPClass().newInstance();
+						mRadioButtonsPanel.removeAll();
+						mRadioButtonsPanel.revalidate();
+						
+						displayBreakpoint();
+					}
 				} catch (InstantiationException | IllegalAccessException e1) {
 					e1.printStackTrace();
 				}
@@ -122,6 +165,30 @@ public class DefineBreakpointDialog  extends JDialog {
 		mainPanel.add(mBreakpointsCBox);
 	}
 	
+	private void displayGroupRadioButtons() {
+		mRadioButtonsPanel.removeAll();
+		BreakpointsGroup bpGroup = (BreakpointsGroup) mSelectedEntry;
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		for (String groupEntry : bpGroup.getGroup().keySet()) {
+			JRadioButton radioButton = new JRadioButton(groupEntry);
+			if (bpGroup.getSelectedItem() != null 
+					&& bpGroup.getSelectedItem().equals(groupEntry)) {
+				radioButton.setSelected(true);
+			}
+			radioButton.setActionCommand(groupEntry);
+			radioButton.addActionListener(this);
+			buttonGroup.add(radioButton);
+			mRadioButtonsPanel.add(radioButton);
+		}
+		
+		//Set first radio button to be selected
+		actionPerformed(new ActionEvent(this, 0, bpGroup.getSelectedItem()));
+		mRadioButtonsPanel.revalidate();
+	}
+
+	
+	
 	private void displayBreakpoint() {
 		if (mBreakpoint == null) return;
 		
@@ -129,9 +196,10 @@ public class DefineBreakpointDialog  extends JDialog {
 		mBpPropertiesPanel.removeAll();
 		mBpPropertiesPanel.add(mBreakpointView);
 		mBpPropertiesPanel.revalidate();
+		mIsEdit = false;
 	}
 	
-	public IBreakpoint getBreakpoint() {
+	public BreakpointBase getBreakpoint() {
 		if (mIsCanceled) return null;
 		
 		return mBreakpointView.createBreakpoint();
@@ -170,16 +238,24 @@ public class DefineBreakpointDialog  extends JDialog {
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
-			@SuppressWarnings("unchecked")
-			Class<? extends IBreakpoint> bpClass = (Class<? extends IBreakpoint>) value;
+			IBreakpointCBoxEntry bpEntry = (IBreakpointCBoxEntry) value;
 			String displayName = "";
-			try {
-				displayName = (String) bpClass.getMethod("getDisplayName").invoke(bpClass.newInstance());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			displayName = (String) bpEntry.getDisplayName();
 			
 			return super.getListCellRendererComponent(list, displayName, index, !isSelected, cellHasFocus);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		try {
+			BreakpointsGroup bpGroup = (BreakpointsGroup) mSelectedEntry;
+			if (mIsEdit == false) {
+				mBreakpoint = bpGroup.getGroup().get(e.getActionCommand()).newInstance();
+			}
+			displayBreakpoint();
+		} catch (InstantiationException | IllegalAccessException exception) {
+			exception.printStackTrace();
 		}
 	}
 }
