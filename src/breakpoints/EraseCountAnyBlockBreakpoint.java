@@ -30,7 +30,7 @@ public class EraseCountAnyBlockBreakpoint extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "Any block reaches erease count";
+		return "Any block reaches erase count";
 	}
 
 	@Override

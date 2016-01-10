@@ -25,11 +25,12 @@ public class BreakpointFactory {
 		register(CleanBlocksInPlane.class);
 		register(CleanBlocksInChip.class);
 		register(CleanBlocksInDevice.class);
-		register(PagesWritenInDevice.class);
-		register(PagesWritenInChip.class);
-		register(PagesWritenInPlane.class);
-		register(HotColdPartitionHoldsPrecentOfPages.class);
-		register(ReusableLevelPagesPrecent.class);
+		register(PagesWrittenInDevice.class);
+		register(PagesWrittenInChip.class);
+		register(PagesWrittenInPlane.class);
+		register(HotColdPartitionHoldsPercentOfPages.class);
+		register(ReusableLevelPagesPercent.class);
+		register(ReusableBlockRecycled.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {

@@ -3,12 +3,12 @@ package breakpoints;
 import entities.Device;
 import entities.Plane;
 
-public class PagesWritenInPlane extends BreakpointBase {
+public class PagesWrittenInPlane extends BreakpointBase {
 
 	private int mCount;
 	private int mPlaneIndex;
 
-	public PagesWritenInPlane(){
+	public PagesWrittenInPlane(){
 		super();
 	}
 	
@@ -24,17 +24,17 @@ public class PagesWritenInPlane extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "X pages are writen in plane";
+		return "X pages are written in plane";
 	}
 
 	@Override
 	public String getDescription() {
-		return getCount() + " pages are writen in plane " + mPlaneIndex;
+		return getCount() + " pages are written in plane " + mPlaneIndex;
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages writen"));
+		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages written"));
 		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane index"));
 	}
 

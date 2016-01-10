@@ -6,11 +6,11 @@ import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
 import general.ConfigProperties;
 
-public class HotColdPartitionHoldsPrecentOfPages extends BreakpointBase {
+public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
 	private int mPartition;
-	private int mPrecent;
+	private int mPercent;
 
-	public HotColdPartitionHoldsPrecentOfPages() {
+	public HotColdPartitionHoldsPercentOfPages() {
 		super();
 	}
 	
@@ -36,23 +36,23 @@ public class HotColdPartitionHoldsPrecentOfPages extends BreakpointBase {
 		if(totalNumberOfPages == 0){
 			return false;
 		}
-		double precent = (numberOfPagesInPartition / (double)totalNumberOfPages) * 100;
-		return Math.abs(precent  - mPrecent) < 1 ;
+		double percent = (numberOfPagesInPartition / (double)totalNumberOfPages) * 100;
+		return Math.abs(percent  - mPercent) < 1 ;
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "HotCold partition holds precent of pages";
+		return "HotCold partition holds percent of pages";
 	}
 
 	@Override
 	public String getDescription() {
-		return "HotCold partition " + getPartition() + " holds " + getPrecent() + " precent of pages";
+		return "HotCold partition " + getPartition() + " holds " + getPercent() + " percent of pages";
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("precent", int.class, "Precent of pages"));
+		mComponents.add(new BreakpointComponent("percent", int.class, "Percent of pages"));
 		mComponents.add(new BreakpointComponent("partition", int.class, "Partition"));
 	}
 
@@ -64,12 +64,12 @@ public class HotColdPartitionHoldsPrecentOfPages extends BreakpointBase {
 		this.mPartition = mPartition;
 	}
 
-	public int getPrecent() {
-		return mPrecent;
+	public int getPercent() {
+		return mPercent;
 	}
 
-	public void setPrecent(int mPrecent) {
-		this.mPrecent = mPrecent;
+	public void setPercent(int mPercent) {
+		this.mPercent = mPercent;
 	}
 
 }

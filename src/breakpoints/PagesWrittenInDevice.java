@@ -2,11 +2,11 @@ package breakpoints;
 
 import entities.Device;
 
-public class PagesWritenInDevice extends BreakpointBase {
+public class PagesWrittenInDevice extends BreakpointBase {
 
 	private int mCount;
 
-	public PagesWritenInDevice(){
+	public PagesWrittenInDevice(){
 		super();
 	}
 	
@@ -22,17 +22,17 @@ public class PagesWritenInDevice extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "X pages are writen in device";
+		return "X pages are written in device";
 	}
 
 	@Override
 	public String getDescription() {
-		return getCount() + " pages are writen in device";
+		return getCount() + " pages are written in device";
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages writen"));
+		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages written"));
 	}
 
 	public int getCount() {

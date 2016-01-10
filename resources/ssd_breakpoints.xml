@@ -1,12 +1,7 @@
 <root>
 	<breakpoints>
-		<breakpoint type="HotColdPartitionHoldsPrecentOfPages">
-			<precent>25</precent>
-			<partition>1</partition>
-		</breakpoint>
-	<breakpoint type="ReusableLevelPagesPrecent">
-			<precent>80</precent>
-			<level>1</level>
+		<breakpoint type="ReusableBlockRecycled">
+			<blockIndex>1</blockIndex>
 		</breakpoint>
 	</breakpoints>
 </root>

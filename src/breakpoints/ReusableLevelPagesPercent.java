@@ -5,11 +5,11 @@ import entities.reusable.ReusableDevice;
 import entities.reusable.ReusablePage;
 import general.ConfigProperties;
 
-public class ReusableLevelPagesPrecent extends BreakpointBase {
+public class ReusableLevelPagesPercent extends BreakpointBase {
 	private int mLevel;
-	private int mPrecent;
+	private int mPercent;
 
-	public ReusableLevelPagesPrecent() {
+	public ReusableLevelPagesPercent() {
 		super();
 	}
 	
@@ -35,8 +35,8 @@ public class ReusableLevelPagesPrecent extends BreakpointBase {
 		if(totalNumberOfPages == 0){
 			return false;
 		}
-		double precent = (numberOfPagesInLevel / (double)totalNumberOfPages) * 100;
-		return Math.abs(precent  - mPrecent) < 1 ;
+		double percent = (numberOfPagesInLevel / (double)totalNumberOfPages) * 100;
+		return Math.abs(percent  - mPercent) < 1 ;
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class ReusableLevelPagesPrecent extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Reusable " + mPrecent + " percent of pages in write level " + mLevel;
+		return "Reusable " + mPercent + " percent of pages in write level " + mLevel;
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("precent", int.class, "Precent of pages"));
+		mComponents.add(new BreakpointComponent("percent", int.class, "Percent of pages"));
 		mComponents.add(new BreakpointComponent("level", int.class, "Level"));
 	}
 
@@ -63,12 +63,12 @@ public class ReusableLevelPagesPrecent extends BreakpointBase {
 		this.mLevel = mLevel;
 	}
 
-	public int getPrecent() {
-		return mPrecent;
+	public int getPercent() {
+		return mPercent;
 	}
 
-	public void setPrecent(int mPrecent) {
-		this.mPrecent = mPrecent;
+	public void setPercent(int mPercent) {
+		this.mPercent = mPercent;
 	}
 
 }
