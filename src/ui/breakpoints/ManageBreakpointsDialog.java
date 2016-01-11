@@ -46,7 +46,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		setModal(true);
 		setResizable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setSize(350, 350);
+		setSize(460, 350);
 		setLocationRelativeTo(parentWindow);
 		initComponents();
 	}

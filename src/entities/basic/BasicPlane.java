@@ -103,7 +103,8 @@ public class BasicPlane extends Plane<BasicPage, BasicBlock> {
 		cleanBlocks.set(active, activeBlock);
 		cleanBlocks.set(pickedToClean.getValue0(), (BasicBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(cleanBlocks);
+		int gcInvocations = (toMove > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
+		builder.setBlocks(cleanBlocks).setTotalGCInvocations(gcInvocations);
 		return new Pair<>(builder.build(), toMove);
 	}
 }

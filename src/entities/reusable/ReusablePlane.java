@@ -129,8 +129,10 @@ public class ReusablePlane extends Plane<ReusablePage, ReusableBlock> {
 			cleanBlocks.set(active, activeBlock);
 			cleanBlocks.set(pickedToClean.getValue0(), (ReusableBlock) pickedToClean.getValue1().eraseBlock());
 		}
+		
+		int gcInvocations = (toMove > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(cleanBlocks);
+		builder.setBlocks(cleanBlocks).setTotalGCInvocations(gcInvocations);
 		return new Pair<ReusablePlane, Integer>(builder.build(), toMove);
 	}
 

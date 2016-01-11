@@ -55,6 +55,11 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 			chip.totalWritten = totalWritten;
 			return this;
 		}
+
+		public Builder<P,B,T> setTotalGCInvocations(int number) {
+			chip.totalGCInvocations = number;
+			return this;
+		}
 		
 		protected void setChip(Chip<P,B,T> chip) {
 			this.chip = chip;
@@ -63,12 +68,14 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	
 	private List<T> planesList;
 	private int totalWritten = 0;
+	private int totalGCInvocations = 0;
 	
 	protected Chip() {}	
 	
 	protected Chip(Chip<P,B,T> other) {
 		this.planesList = new ArrayList<T>(other.planesList);
 		this.totalWritten = other.getTotalWritten();
+		this.totalGCInvocations = other.totalGCInvocations;
 	}
 	
 	abstract public Builder<P,B,T> getSelfBuilder();
@@ -105,8 +112,10 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 			moved += clean.getValue1();
 			cleanPlanes.add((T) clean.getValue0());
 		}
+		
+		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T> builder = getSelfBuilder();
-		builder.setPlanes(cleanPlanes);
+		builder.setPlanes(cleanPlanes).setTotalGCInvocations(gcInvocations);
 		return new Pair<Chip<P, B, T>, Integer>(builder.build(), moved);
 	}
 	
@@ -160,5 +169,9 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 
 	public int getTotalWritten() {
 		return totalWritten;
+	}
+
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
 	}
 }
