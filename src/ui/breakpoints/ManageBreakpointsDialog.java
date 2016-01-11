@@ -1,6 +1,7 @@
 package ui.breakpoints;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import breakpoints.BreakpointBase;
@@ -156,6 +158,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		constraints.insets = new Insets(1,1,1,3);
 		
 		JLabel breakpointLabel = new JLabel(breakpoint.getDescription());
+		breakpointLabel.setOpaque(true);
 		breakpointPanel.add(breakpointLabel, constraints);
 	}
 
@@ -225,6 +228,21 @@ public class ManageBreakpointsDialog extends JDialog {
 			mNoBreakpointsPanel.setVisible(false);
 		} else {
 			mNoBreakpointsPanel.setVisible(true);
+		}
+	}
+
+	public void updateHitBreakpoints() {
+		for (IBreakpoint breakpoint : mBreakpoints.keySet()) {
+			JLabel label = (JLabel) mBreakpoints.get(breakpoint).getComponent(0);
+			if (breakpoint.isHit()) {
+				float[] hsbValues = new float[3];
+				Color.RGBtoHSB(198, 13, 0, hsbValues);
+				label.setForeground(Color.getHSBColor(hsbValues[0], hsbValues[1], hsbValues[2]));
+			} else {
+				label.setForeground(UIManager.getColor("text"));
+			}
+			
+			label.revalidate();
 		}
 	}
 }

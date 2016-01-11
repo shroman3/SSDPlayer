@@ -407,13 +407,18 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		boolean anyHits = false;
+		
 		for (IBreakpoint breakpoint : breakpoints) {
 			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
-				pauseTrace();
-				break;
+				breakpoint.setIsHit(true);
+				anyHits = true;
+			} else {
+				breakpoint.setIsHit(false);
 			}
 		}
 		
+		if (anyHits) pauseTrace();
 	}
 	
 	private void playPauseTrace() {
@@ -446,9 +451,10 @@ public class TracePlayer extends JPanel {
     }
 	
 	private void showBreakpointsDialog() {
+		breakpointsDialog.updateHitBreakpoints();
 		breakpointsDialog.setVisible(true);
-		breakpoints.clear();
 		
+		breakpoints.clear();
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
 	}
 }

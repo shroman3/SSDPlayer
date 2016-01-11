@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -73,7 +76,7 @@ public class DefineBreakpointDialog  extends JDialog implements ActionListener {
 				IBreakpointCBoxEntry entry = (IBreakpointCBoxEntry) mBreakpointsCBox.getItemAt(0);
 				if (entry instanceof BreakpointsGroup) {
 					BreakpointsGroup groupEntry = (BreakpointsGroup) entry;
-					String firstKey = groupEntry.getGroup().firstKey();
+					String firstKey = groupEntry.getGroup().keySet().iterator().next();
 					mBreakpoint = groupEntry.getGroup().getOrDefault(firstKey, null).newInstance();
 				} else {
 					SingleBreakpoint singleBp = (SingleBreakpoint) entry;
@@ -130,11 +133,16 @@ public class DefineBreakpointDialog  extends JDialog implements ActionListener {
 
 	private void initComboBox(JPanel mainPanel) {
 		DefaultComboBoxModel<IBreakpointCBoxEntry> cBoxModel = new DefaultComboBoxModel<IBreakpointCBoxEntry>();
+		List<SingleBreakpoint> singleBreakpoints = BreakpointsUIFactory.getSingleBreakpoints();
 		
-		for (SingleBreakpoint bpClass : BreakpointsUIFactory.getSingleBreakpoints()) {
+		for (int i = 0; i < singleBreakpoints.size(); i++) {
+			SingleBreakpoint bpClass = singleBreakpoints.get(i);
 			cBoxModel.addElement(bpClass);
 		}
-		for (BreakpointsGroup bpGroup : BreakpointsUIFactory.getBreakpointGroups()) {
+
+		List<BreakpointsGroup> breakpointGroups = BreakpointsUIFactory.getBreakpointGroups();
+		for (int i = 0; i < breakpointGroups.size(); i++) {
+			BreakpointsGroup bpGroup = breakpointGroups.get(i);
 			cBoxModel.addElement(bpGroup);
 		}
 		
@@ -150,7 +158,9 @@ public class DefineBreakpointDialog  extends JDialog implements ActionListener {
 					if (mSelectedEntry instanceof BreakpointsGroup) {
 						displayGroupRadioButtons();
 					} else {
-						mBreakpoint = ((SingleBreakpoint) mSelectedEntry).getBPClass().newInstance();
+						if (!mIsEdit) {
+							mBreakpoint = ((SingleBreakpoint) mSelectedEntry).getBPClass().newInstance();
+						}
 						mRadioButtonsPanel.removeAll();
 						mRadioButtonsPanel.revalidate();
 						
@@ -170,7 +180,11 @@ public class DefineBreakpointDialog  extends JDialog implements ActionListener {
 		BreakpointsGroup bpGroup = (BreakpointsGroup) mSelectedEntry;
 		
 		ButtonGroup buttonGroup = new ButtonGroup();
-		for (String groupEntry : bpGroup.getGroup().keySet()) {
+		
+		Set<String> keySet = bpGroup.getGroup().keySet();
+		Iterator<String> iterator = keySet.iterator();
+		for (int i = 0; i < keySet.size(); i++) {
+			String groupEntry = iterator.next();
 			JRadioButton radioButton = new JRadioButton(groupEntry);
 			if (bpGroup.getSelectedItem() != null 
 					&& bpGroup.getSelectedItem().equals(groupEntry)) {

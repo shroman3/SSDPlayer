@@ -1,22 +1,23 @@
 package ui.breakpoints;
 
+import java.util.LinkedHashMap;
 import java.util.SortedMap;
 
 import breakpoints.BreakpointBase;
 
 public class BreakpointsGroup implements IBreakpointCBoxEntry {
-	private SortedMap<String, Class<? extends BreakpointBase>> mGroup;
+	private LinkedHashMap<String, Class<? extends BreakpointBase>> mGroup;
 	private String mDisplayName;
 	private String mSelectedItem;
 	
-	public BreakpointsGroup(SortedMap<String, Class<? extends BreakpointBase>> group, 
+	public BreakpointsGroup(LinkedHashMap<String, Class<? extends BreakpointBase>> group, 
 			String displayName) {
 		mGroup = group;
 		mDisplayName = displayName;
 	}
 	
 	public String getSelectedItem() {
-		if (mSelectedItem == null) return mGroup.firstKey();
+		if (mSelectedItem == null) return mGroup.keySet().iterator().next();
 		
 		return mSelectedItem;
 	}
@@ -25,7 +26,7 @@ public class BreakpointsGroup implements IBreakpointCBoxEntry {
 		mSelectedItem = selectedItem;
 	}
 	
-	public SortedMap<String, Class<? extends BreakpointBase>> getGroup() {
+	public LinkedHashMap<String, Class<? extends BreakpointBase>> getGroup() {
 		return mGroup;
 	}
 	
