@@ -28,4 +28,12 @@ public class ConfigProperties {
 	public static int getPagesInBlock() {
 		return mPagesInBlock;
 	}
+	
+	public static int getBlocksInDevice() {
+		return mBlocksInPlane * mPlanesInChip * mChipsInDevice;
+	}
+	
+	public static int getPagesInDevice() {
+		return getBlocksInDevice() * mPagesInBlock;
+	}
 }

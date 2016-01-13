@@ -183,4 +183,12 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		int pageRelativeToBlockIndex = pageIndex - blockIndex * pagesInBlock;
 		return getBlockByIndex(blockIndex).getPage(pageRelativeToBlockIndex);
 	}
+
+	public int getNumOfClean() {
+		int cleanBlocks = 0;
+		for (Chip<?, ?, ?> chip : chipsList){
+			cleanBlocks += chip.getNumOfClean();
+		}
+		return cleanBlocks;
+	}
 }

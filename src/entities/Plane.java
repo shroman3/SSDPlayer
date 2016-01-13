@@ -28,6 +28,7 @@ import manager.SSDManager;
 
 import org.javatuples.Pair;
 
+import entities.Chip.Builder;
 import utils.Utils;
 
 /**
@@ -57,6 +58,11 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			return this;
 		}
 		
+		public Builder<P,B> setTotalWritten(int totalWritten) {
+			plane.totalWritten = totalWritten;
+			return this;
+		}
+		
 		protected void setPlane(Plane<P,B> plane) {
 			this.plane = plane;
 		}
@@ -74,12 +80,14 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	private int activeBlockIndex = -1;
 	private int lowestEraseCleanBlockIndex = -1;
 	private int lowestValidBlockIndex = -1;
+	private int totalWritten = 0;
 
 	protected Plane() {}
 
 	protected Plane(Plane<P,B> other) {
 		this.blocksList = new ArrayList<B>(other.blocksList);
 		this.manager = other.manager;
+		this.totalWritten = other.totalWritten;
 		initValues();
 	}
 	
@@ -157,7 +165,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return getNumOfClean();
 	}
 
-	protected int getNumOfClean() {
+	public int getNumOfClean() {
 		return numOfClean;
 	}
 	
@@ -216,5 +224,9 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			}
 			++i;
 		}
+	}
+
+	public int getTotalWritten() {
+		return totalWritten ;
 	}
 }

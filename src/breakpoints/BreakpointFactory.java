@@ -20,6 +20,17 @@ public class BreakpointFactory {
 		register(EraseBlockBreakpoint.class);
 		register(WriteAmplificationBreakpoint.class);
 		register(WritesPerEraseBreakpoint.class);
+		register(EraseCountBlockBreakpoint.class);
+		register(EraseCountAnyBlockBreakpoint.class);
+		register(CleanBlocksInPlane.class);
+		register(CleanBlocksInChip.class);
+		register(CleanBlocksInDevice.class);
+		register(PagesWrittenInDevice.class);
+		register(PagesWrittenInChip.class);
+		register(PagesWrittenInPlane.class);
+		register(HotColdPartitionHoldsPercentOfPages.class);
+		register(ReusableLevelPagesPercent.class);
+		register(ReusableBlockRecycled.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {

@@ -80,7 +80,7 @@ public class BasicPlane extends Plane<BasicPage, BasicBlock> {
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setBlocks(updatedBlocks).setTotalWritten(getTotalWritten() + 1);
 		return builder.build();
 	}
 	

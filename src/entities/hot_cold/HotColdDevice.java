@@ -22,6 +22,7 @@
 package entities.hot_cold;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import manager.HotColdPartition;
@@ -95,5 +96,9 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 
 	public int getTotalWritten(HotColdPartition partition) {
 		return totalWrittenMap.get(partition);
+	}
+	
+	public List<HotColdPartition> getPartitions(){
+		return manager.getPartitions();
 	}
 }

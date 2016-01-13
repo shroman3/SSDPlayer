@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.javatuples.Pair;
 
+import entities.Device.Builder;
+
 
 /**
  * @author Roman
@@ -49,17 +51,24 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 			return this;
 		}
 		
+		public Builder<P,B,T> setTotalWritten(int totalWritten) {
+			chip.totalWritten = totalWritten;
+			return this;
+		}
+		
 		protected void setChip(Chip<P,B,T> chip) {
 			this.chip = chip;
 		}
 	}
 	
 	private List<T> planesList;
+	private int totalWritten = 0;
 	
 	protected Chip() {}	
 	
 	protected Chip(Chip<P,B,T> other) {
 		this.planesList = new ArrayList<T>(other.planesList);
+		this.totalWritten = other.getTotalWritten();
 	}
 	
 	abstract public Builder<P,B,T> getSelfBuilder();
@@ -131,15 +140,25 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	@SuppressWarnings("unchecked")
 	public Chip<P, B, T> writeLP(int lp, int arg) {
 		int index = getMinValidCountPlaneIndex();
-		return setPlane(index, (T) getPlane(index).writeLP(lp, arg));
-	}
-
-	public Chip<P, B, T> setPlane(int index, T t) {
+		
+		T newPlane = (T) getPlane(index).writeLP(lp, arg);
 		List<T> updatedPlanes = getNewPlanesList();
-		updatedPlanes.set(index, t);
+		updatedPlanes.set(index, newPlane);
 		Builder<P, B, T> builder = getSelfBuilder();
-		builder.setPlanes(updatedPlanes);
+		builder.setPlanes(updatedPlanes).setTotalWritten(getTotalWritten()  + 1);;
 		return builder.build();
 	}
-	
+
+
+	public int getNumOfClean() {
+		int cleanBlocks = 0;
+		for (Plane<?, ?> plane : planesList){
+			cleanBlocks += plane.getNumOfClean();
+		}
+		return cleanBlocks;
+	}
+
+	public int getTotalWritten() {
+		return totalWritten;
+	}
 }

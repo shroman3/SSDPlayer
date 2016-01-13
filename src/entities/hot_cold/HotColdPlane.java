@@ -111,7 +111,7 @@ public class HotColdPlane extends Plane<HotColdPage, HotColdBlock> {
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setBlocks(updatedBlocks).setTotalWritten(getTotalWritten() + 1);
 		return builder.build();
 	}
 	
