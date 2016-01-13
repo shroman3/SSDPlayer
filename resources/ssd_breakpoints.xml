@@ -1,7 +1,15 @@
 <root>
 	<breakpoints>
-		<breakpoint type="ReusableBlockRecycled">
-			<blockIndex>1</blockIndex>
+		<breakpoint type="WriteAmplificationBreakpoint">
+			<value>1.3</value>
 		</breakpoint>
 	</breakpoints>
+	<breakpoint type="AllocateActiveBlockBreakpoint">
+			<blockIndex>5</blockIndex>
+		</breakpoint>
+		
+		
+		<breakpoint type="WritePpBreakpoint">
+			<physicalPage>8</physicalPage>
+		</breakpoint>
 </root>
