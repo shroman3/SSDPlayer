@@ -165,7 +165,6 @@ public class MainSimulationView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				deviceView.setDevice(device);
-				devicePanel.updateUI();
 				statisticsView.updateStatistics(device);
 				statisticsPanel.updateUI();
 			}

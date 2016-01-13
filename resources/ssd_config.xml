@@ -6,14 +6,14 @@
 		<overprovisioning>7</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
 		<gc_threshold>30</gc_threshold>
-		<chips>1</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
-		<planes>2</planes>
+		<chips>2</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
+		<planes>4</planes>
 		<blocks>32</blocks>
 		<pages>32</pages>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>
-		<speed>9000</speed><!-- Number of frames per minute -->
+		<speed>15000</speed><!-- Number of frames per minute -->
 		<page_width>18</page_width>
 		<page_height>13</page_height>
 		<block_space>2</block_space><!-- spacing between the blocks in the plane -->

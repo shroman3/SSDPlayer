@@ -54,6 +54,9 @@ public class PlaneView extends JPanel {
 	}
 
 	public void setPlane(Plane<?,?> plane) {
+		if(this.plane == plane){
+			return;
+		}
     	this.plane = plane;
 		int blockIndex = 0;
 		for (Block<?> block :  plane.getBlocks()) {

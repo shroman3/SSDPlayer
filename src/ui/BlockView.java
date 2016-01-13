@@ -65,7 +65,11 @@ public class BlockView extends Component {
 	}
 
     public void setBlock(Block<?> block) {
+    	if(this.block == block){
+    		return;
+    	}
     	this.block = block;
+    	this.repaint();
     }
     
 	private void initSizesAndSpacing(Block<?> block, VisualConfig visualConfig) {

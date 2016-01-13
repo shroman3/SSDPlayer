@@ -112,7 +112,9 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 			moved += clean.getValue1();
 			cleanPlanes.add((T) clean.getValue0());
 		}
-		
+		if(moved == 0){
+			return new Pair<Chip<P, B, T>, Integer>(this, moved);
+		}
 		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T> builder = getSelfBuilder();
 		builder.setPlanes(cleanPlanes).setTotalGCInvocations(gcInvocations);
