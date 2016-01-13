@@ -9,12 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import breakpoints.BreakpointBase;
 import breakpoints.BreakpointFactory;
-import breakpoints.IBreakpoint;
 
 public class BreakpointViewBase extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private IBreakpoint mBreakpoint;
+	private BreakpointBase mBreakpoint;
 	private List<BreakpointUIComponent> mUIComponents;
 	private JPanel mFieldsPanel;
 	
@@ -23,7 +23,7 @@ public class BreakpointViewBase extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 	}
 	
-	public void setBreakpoint(IBreakpoint breakpoint) {
+	public void setBreakpoint(BreakpointBase breakpoint) {
 		mBreakpoint = breakpoint;
 		mUIComponents = BreakpointFactory.getBreakpointUIComponents(mBreakpoint.getClass());
 		displayBreakpoint();
@@ -59,7 +59,7 @@ public class BreakpointViewBase extends JPanel {
 		}
 	}
 	
-	public IBreakpoint createBreakpoint() {
+	public BreakpointBase createBreakpoint() {
 		for (BreakpointUIComponent uiComponent : mUIComponents) {
 			JTextField textField = uiComponent.getComponent();
 			if (textField == null) continue;

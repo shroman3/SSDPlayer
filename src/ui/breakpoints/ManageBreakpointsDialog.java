@@ -1,6 +1,7 @@
 package ui.breakpoints;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,8 +25,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import breakpoints.BreakpointBase;
 import breakpoints.IBreakpoint;
 
 public class ManageBreakpointsDialog extends JDialog {
@@ -35,7 +38,7 @@ public class ManageBreakpointsDialog extends JDialog {
 	private Window mParentWindow;
 	private JPanel mBreakpointsListPanel;
 	private JPanel mNoBreakpointsPanel;
-	private HashMap<IBreakpoint, JPanel> mBreakpoints;
+	private HashMap<BreakpointBase, JPanel> mBreakpoints;
 	
 	public ManageBreakpointsDialog(Window parentWindow) {
 		super(parentWindow, DIALOG_HEADER);
@@ -70,7 +73,7 @@ public class ManageBreakpointsDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				DefineBreakpointDialog newBpDialog = new DefineBreakpointDialog(mParentWindow, null);
 				newBpDialog.setVisible(true);
-				IBreakpoint breakpoint = newBpDialog.getBreakpoint();
+				BreakpointBase breakpoint = newBpDialog.getBreakpoint();
 				if (breakpoint != null) {
 					addBreakpoint(breakpoint);
 					mBreakpointsListPanel.revalidate();
@@ -102,27 +105,27 @@ public class ManageBreakpointsDialog extends JDialog {
 		mainPanel.add(mNoBreakpointsPanel);
 	}
 	
-	public List<IBreakpoint> getBreakpoints() {
-		Set<IBreakpoint> breakpoints = mBreakpoints.keySet();
-		List<IBreakpoint> res = new ArrayList<>();
+	public List<BreakpointBase> getBreakpoints() {
+		Set<BreakpointBase> breakpoints = mBreakpoints.keySet();
+		List<BreakpointBase> res = new ArrayList<>();
 		
-		for (IBreakpoint bp : breakpoints) {
+		for (BreakpointBase bp : breakpoints) {
 			res.add(bp);
 		}
 		
 		return res;
 	}
 
-	public void setBreakpoints(List<IBreakpoint> breakpoints) {
+	public void setBreakpoints(List<BreakpointBase> breakpoints) {
 		mBreakpoints.clear();
-		for (IBreakpoint breakpoint : breakpoints) {
+		for (BreakpointBase breakpoint : breakpoints) {
 			addBreakpoint(breakpoint);
 		}
 		
 		updateNoBreakpointsLabelVisibility();
 	}
 
-	public void addBreakpoint(IBreakpoint breakpoint) {
+	public void addBreakpoint(BreakpointBase breakpoint) {
 		JPanel breakpointPanel = new JPanel();
 		buildBreakpointPanel(breakpoint, breakpointPanel);
 		
@@ -131,7 +134,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		updateNoBreakpointsLabelVisibility();
 	}
 
-	private void buildBreakpointPanel(IBreakpoint breakpoint, JPanel breakpointPanel) {
+	private void buildBreakpointPanel(BreakpointBase breakpoint, JPanel breakpointPanel) {
 		breakpointPanel.setLayout(new GridBagLayout());
 		addBreakpointLabel(breakpoint, breakpointPanel);
 		addEditButton(breakpointPanel, breakpoint);
@@ -155,10 +158,11 @@ public class ManageBreakpointsDialog extends JDialog {
 		constraints.insets = new Insets(1,1,1,3);
 		
 		JLabel breakpointLabel = new JLabel(breakpoint.getDescription());
+		breakpointLabel.setOpaque(true);
 		breakpointPanel.add(breakpointLabel, constraints);
 	}
 
-	private void addEditButton(final JPanel breakpointPanel, final IBreakpoint breakpoint) {
+	private void addEditButton(final JPanel breakpointPanel, final BreakpointBase breakpoint) {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.EAST;
 		constraints.insets = new Insets(1,5,1,1);
@@ -170,7 +174,7 @@ public class ManageBreakpointsDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				DefineBreakpointDialog editBpDialog = new DefineBreakpointDialog(mParentWindow, breakpoint);
 				editBpDialog.setVisible(true);
-				IBreakpoint newBreakpoint = editBpDialog.getBreakpoint();
+				BreakpointBase newBreakpoint = editBpDialog.getBreakpoint();
 				if (newBreakpoint != null) {
 					editBreakpoint(breakpointPanel, breakpoint, newBreakpoint);
 				}
@@ -180,8 +184,8 @@ public class ManageBreakpointsDialog extends JDialog {
 		breakpointPanel.add(editButton, constraints);
 	}
 	
-	private void editBreakpoint(JPanel breakpointPanel, final IBreakpoint oldBreakpoint, 
-			IBreakpoint newBreakpoint) {
+	private void editBreakpoint(JPanel breakpointPanel, final BreakpointBase oldBreakpoint, 
+			BreakpointBase newBreakpoint) {
 		breakpointPanel.removeAll();
 		mBreakpoints.remove(oldBreakpoint);
 		mBreakpoints.put(newBreakpoint, breakpointPanel);
@@ -224,6 +228,21 @@ public class ManageBreakpointsDialog extends JDialog {
 			mNoBreakpointsPanel.setVisible(false);
 		} else {
 			mNoBreakpointsPanel.setVisible(true);
+		}
+	}
+
+	public void updateHitBreakpoints() {
+		for (IBreakpoint breakpoint : mBreakpoints.keySet()) {
+			JLabel label = (JLabel) mBreakpoints.get(breakpoint).getComponent(0);
+			if (breakpoint.isHit()) {
+				float[] hsbValues = new float[3];
+				Color.RGBtoHSB(198, 13, 0, hsbValues);
+				label.setForeground(Color.getHSBColor(hsbValues[0], hsbValues[1], hsbValues[2]));
+			} else {
+				label.setForeground(UIManager.getColor("text"));
+			}
+			
+			label.revalidate();
 		}
 	}
 }

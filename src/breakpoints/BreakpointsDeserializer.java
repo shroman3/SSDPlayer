@@ -12,10 +12,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class BreakpointsDeserializer {
-	public static List<IBreakpoint> deserialize(String bpFilePath) {
+	public static List<BreakpointBase> deserialize(String bpFilePath) {
 		BreakpointFactory.initBreakpointFactory();
 		
-		List<IBreakpoint> result = new ArrayList<IBreakpoint>();
+		List<BreakpointBase> result = new ArrayList<BreakpointBase>();
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = builder.parse(new FileInputStream(bpFilePath));
@@ -30,7 +30,7 @@ public class BreakpointsDeserializer {
 			}
 		} catch(Exception e) {
 			System.err.println(("Unable to load breakpoints from file (" + bpFilePath + ")\n" + e.getMessage()));
-			return new ArrayList<IBreakpoint>(); 
+			return new ArrayList<BreakpointBase>(); 
 		}
 		
 		return result;

@@ -8,7 +8,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public abstract class BreakpointBase implements IBreakpoint {
-	List<BreakpointComponent> mComponents = new ArrayList<>();
+	protected List<BreakpointComponent> mComponents = new ArrayList<>();
+	protected boolean mIsHit;
 
 	public BreakpointBase() {
 		addComponents();
@@ -34,5 +35,15 @@ public abstract class BreakpointBase implements IBreakpoint {
 	@Override
 	public List<BreakpointComponent> getComponents() {
 		return mComponents;
+	}
+	
+	@Override
+	public boolean isHit() {
+		return mIsHit;
+	}
+	
+	@Override
+	public void setIsHit(boolean value) {
+		mIsHit = value;
 	}
 }

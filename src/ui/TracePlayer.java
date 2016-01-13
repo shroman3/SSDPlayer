@@ -50,6 +50,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import breakpoints.BreakpointBase;
 import breakpoints.IBreakpoint;
 import entities.Device;
 import entities.StatisticsGetter;
@@ -105,7 +106,7 @@ public class TracePlayer extends JPanel {
 
 	private Device<?,?,?,?> currentDevice;
 	
-	private List<IBreakpoint> breakpoints;
+	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
 	
     public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice) {
@@ -142,8 +143,8 @@ public class TracePlayer extends JPanel {
 		}
 	}
 	
-	public void setInitialBreakpoints(List<IBreakpoint> initialBreakpoints) {
-		breakpoints = new ArrayList<IBreakpoint>();
+	public void setInitialBreakpoints(List<BreakpointBase> initialBreakpoints) {
+		breakpoints = new ArrayList<BreakpointBase>();
 		breakpoints.addAll(initialBreakpoints);
 		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this));
 		breakpointsDialog.setBreakpoints(breakpoints);
@@ -406,13 +407,18 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		boolean anyHits = false;
+		
 		for (IBreakpoint breakpoint : breakpoints) {
 			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
-				pauseTrace();
-				break;
+				breakpoint.setIsHit(true);
+				anyHits = true;
+			} else {
+				breakpoint.setIsHit(false);
 			}
 		}
 		
+		if (anyHits) pauseTrace();
 	}
 	
 	private void playPauseTrace() {
@@ -445,9 +451,10 @@ public class TracePlayer extends JPanel {
     }
 	
 	private void showBreakpointsDialog() {
+		breakpointsDialog.updateHitBreakpoints();
 		breakpointsDialog.setVisible(true);
-		breakpoints.clear();
 		
+		breakpoints.clear();
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
 	}
 }

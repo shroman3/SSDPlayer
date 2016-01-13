@@ -22,6 +22,7 @@ public class WriteAmplificationBreakpoint extends BreakpointBase {
 				return oldValue < mValue && currentValue >= mValue;
 			}
 		}
+		
 		return false;
 	}
 
