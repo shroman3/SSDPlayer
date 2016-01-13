@@ -2,9 +2,6 @@ package breakpoints;
 
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.ActionLog;
 import entities.Device;
 import entities.IDeviceAction;

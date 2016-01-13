@@ -62,6 +62,11 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			plane.totalWritten = totalWritten;
 			return this;
 		}
+
+		public Builder<P,B> setTotalGCInvocations(int number) {
+			plane.totalGCInvocations = number;
+			return this;
+		}
 		
 		protected void setPlane(Plane<P,B> plane) {
 			this.plane = plane;
@@ -81,13 +86,15 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	private int lowestEraseCleanBlockIndex = -1;
 	private int lowestValidBlockIndex = -1;
 	private int totalWritten = 0;
+	private int totalGCInvocations = 0;
 
 	protected Plane() {}
 
 	protected Plane(Plane<P,B> other) {
 		this.blocksList = new ArrayList<B>(other.blocksList);
 		this.manager = other.manager;
-		this.totalWritten = other.totalWritten;
+		this.totalWritten = other.totalWritten;		
+		this.totalGCInvocations = other.totalGCInvocations;
 		initValues();
 	}
 	
@@ -198,6 +205,10 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return block.getStatus() == BlockStatusGeneral.USED;
 	}
 
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
+	}
+	
 	/**
 	 * On creation this methods initializes the counters of the plane
 	 */

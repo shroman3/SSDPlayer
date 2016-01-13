@@ -31,6 +31,9 @@ public class BreakpointFactory {
 		register(HotColdPartitionHoldsPercentOfPages.class);
 		register(ReusableLevelPagesPercent.class);
 		register(ReusableBlockRecycled.class);
+		register(PlaneGCNthTime.class);
+		register(ChipGCNthTime.class);
+		register(DeviceGCNthTime.class);
 	}
 	
 	public static IBreakpoint getBreakpoint(String type, Element breakpointElement) throws Exception {
