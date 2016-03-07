@@ -35,11 +35,15 @@ import entities.basic.BasicPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.BlocksZoomLevel;
+import zoom.BlocksZoomSubOption;
+import zoom.SmallBlocksZoomLevel;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
 
 	GreedySSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getWritenPageColor() {
@@ -76,6 +80,21 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 		statisticsGetters.add(new WriteAmplificationGetter());
 		statisticsGetters.add(new ValidDistributionGetter(this));
 		return statisticsGetters;
+	}
+	
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		
+		BlocksZoomLevel blocksZoomLevel = new BlocksZoomLevel();
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		supportedZoomLevel.add(blocksZoomLevel);
+		
+		SmallBlocksZoomLevel smallBlocksZoomLevel = new SmallBlocksZoomLevel();
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		supportedZoomLevel.add(smallBlocksZoomLevel);
 	}
 	
 	@Override

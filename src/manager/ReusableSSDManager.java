@@ -29,6 +29,9 @@ import manager.SecondWriteStatistics.BlockStateDistributionGetter;
 import manager.SecondWriteStatistics.ValidDistributionGetter;
 import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
 import ui.WorkloadWidget;
+import zoom.BlocksZoomLevel;
+import zoom.BlocksZoomSubOption;
+import zoom.SmallBlocksZoomLevel;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.reusable.ReusableBlock;
@@ -44,6 +47,7 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	private Color secondWriteColor;
 
 	ReusableSSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getWriteLevelColor(int writeLevel) {
@@ -91,6 +95,23 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 		secondWriteColor = getColorField(xmlGetter, "second_write");
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		
+		BlocksZoomLevel blocksZoomLevel = new BlocksZoomLevel();
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_WRITE_LVL);
+		supportedZoomLevel.add(blocksZoomLevel);
+		
+		SmallBlocksZoomLevel smallBlocksZoomLevel = new SmallBlocksZoomLevel();
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_WRITE_LVL);
+		supportedZoomLevel.add(smallBlocksZoomLevel);
+	}
+	
 	@Override
 	protected ReusableDevice getEmptyDevice(List<ReusableChip> chips) {
 		ReusableDevice.Builder builder = new ReusableDevice.Builder();

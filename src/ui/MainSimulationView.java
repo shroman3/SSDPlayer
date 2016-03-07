@@ -54,6 +54,7 @@ import general.XMLGetter;
 import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
+import ui.zoom.ZoomLevelDialog;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
@@ -145,7 +146,7 @@ public class MainSimulationView extends JFrame {
 					}
 				});
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
-
+		
 		southPanel.add(tracePlayer);
 		statisticsPanel = new JPanel(new FlowLayout());
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);

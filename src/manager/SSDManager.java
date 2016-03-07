@@ -41,6 +41,9 @@ import entities.StatisticsGetter;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.DetailedZoomLevel;
+import zoom.PagesZoomLevel;
+import zoom.ZoomLevel;
 
 
 /**
@@ -154,6 +157,8 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int blocksInPlane = -1;
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
+	
+	protected List<ZoomLevel> supportedZoomLevel = new ArrayList<>();
 
 	/**
 	 * @return get trace parser for this manager
@@ -365,6 +370,15 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 			pages.add(page);
 		}
 		return pages;
+	}
+	
+	protected void setSupportedZoomLevels() {
+		supportedZoomLevel.add(new DetailedZoomLevel());
+		supportedZoomLevel.add(new PagesZoomLevel());
+	}
+	
+	public List<ZoomLevel> getSupportedZoomLevels() {
+		return supportedZoomLevel;
 	}
 	
 	D getEmptyDevice() {

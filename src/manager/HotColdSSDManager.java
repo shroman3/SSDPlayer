@@ -39,6 +39,9 @@ import general.XMLParsingException;
 import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
 import manager.HotColdStatistics.PartitionDistributionGetter;
 import ui.WorkloadWidget;
+import zoom.BlocksZoomLevel;
+import zoom.BlocksZoomSubOption;
+import zoom.SmallBlocksZoomLevel;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
 	private int minTemperature;
@@ -50,6 +53,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	
 
 	HotColdSSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getTemperatureColor(int temperature) {
@@ -174,6 +178,23 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return (int) (end*weight + start*(1-weight));
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		
+		BlocksZoomLevel blocksZoomLevel = new BlocksZoomLevel();
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		blocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_TEMP);
+		supportedZoomLevel.add(blocksZoomLevel);
+		
+		SmallBlocksZoomLevel smallBlocksZoomLevel = new SmallBlocksZoomLevel();
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
+		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_TEMP);
+		supportedZoomLevel.add(smallBlocksZoomLevel);
+	}
+	
 	@Override
 	protected HotColdDevice getEmptyDevice(List<HotColdChip> chips) {
 		HotColdDevice.Builder builder = new HotColdDevice.Builder();

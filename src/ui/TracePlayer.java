@@ -63,6 +63,7 @@ import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.ManageBreakpointsDialog;
+import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
 
 public class TracePlayer extends JPanel {
@@ -109,6 +110,8 @@ public class TracePlayer extends JPanel {
 	
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
+	
+	private ZoomLevelDialog zoomDialog;
 	
     public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice) {
     	Utils.validateNotNull(updateDevice, "Update device callback");
@@ -195,6 +198,11 @@ public class TracePlayer extends JPanel {
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
+		setZoomLevelOptions(manager);
+	}
+
+	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
+		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager);
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {
@@ -271,11 +279,6 @@ public class TracePlayer extends JPanel {
 		zoomButton.setEnabled(true);
 		
 		add(Box.createRigidArea(new Dimension(5,0)));
-	}
-
-	protected void showZoomDialog() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void openTrace() {
@@ -471,5 +474,9 @@ public class TracePlayer extends JPanel {
 		
 		breakpoints.clear();
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
+	}
+	
+	private void showZoomDialog() {
+		zoomDialog.setVisible(true);
 	}
 }
