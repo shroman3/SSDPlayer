@@ -71,8 +71,13 @@ public class MainSimulationView extends JFrame {
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+<<<<<<< HEAD
 			final List<BreakpointBase> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 			
+=======
+			final List<IBreakpoint> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
+
+>>>>>>> 84ea093... Started adding zoom dialog
 			SSDManager.initializeManager(xmlGetter);
 			ConfigProperties.initialize(xmlGetter);
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
@@ -85,16 +90,20 @@ public class MainSimulationView extends JFrame {
 						window.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
-					} 
+					}
 				}
 			});
 		} catch (ParserConfigurationException | SAXException | IOException | XMLParsingException e) {
-			throw new RuntimeException("Unable to load config XML file(" + CONFIG_XML + ")\n"+ e.getMessage());
+			throw new RuntimeException("Unable to load config XML file(" + CONFIG_XML + ")\n" + e.getMessage());
 		}
 	}
 
+<<<<<<< HEAD
 
 	public MainSimulationView(VisualConfig visualConfig, List<BreakpointBase> initialBreakpoints) {
+=======
+	public MainSimulationView(VisualConfig visualConfig, List<IBreakpoint> initialBreakpoints) {
+>>>>>>> 84ea093... Started adding zoom dialog
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -112,36 +121,37 @@ public class MainSimulationView extends JFrame {
 	 */
 	private void initialize() {
 		setExtendedState(MAXIMIZED_BOTH);
-		getContentPane().setLayout(new BorderLayout(3,3));
-		
+		getContentPane().setLayout(new BorderLayout(3, 3));
+
 		devicePanel = new JPanel(new FlowLayout());
 		JScrollPane scrollableDevicePane = new JScrollPane(devicePanel);
 		scrollableDevicePane.setBorder(BorderFactory.createEmptyBorder());
 		getContentPane().add(scrollableDevicePane, BorderLayout.CENTER);
-		
+
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
-		
-		tracePlayer = new TracePlayer(visualConfig, new TwoObjectsCallback<Device<?,?,?,?>, Iterable<StatisticsGetter>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
-				resetDevice(device, statisticsGetters);
-			}
-		}, new OneObjectCallback<Device<?,?,?,?>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device) {
-				updateDevice(device);				
-			}
-		});
+
+		tracePlayer = new TracePlayer(visualConfig,
+				new TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>>() {
+					@Override
+					public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
+						resetDevice(device, statisticsGetters);
+					}
+				}, new OneObjectCallback<Device<?, ?, ?, ?>>() {
+					@Override
+					public void message(Device<?, ?, ?, ?> device) {
+						updateDevice(device);
+					}
+				});
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
-		
+
 		southPanel.add(tracePlayer);
 		statisticsPanel = new JPanel(new FlowLayout());
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
 		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
 		southPanel.add(scrollableStatisticsPane);
-		
+
 		setMinimumSize(new Dimension(550, 550));
 	}
 
@@ -152,7 +162,7 @@ public class MainSimulationView extends JFrame {
 				deviceView = new DeviceView(visualConfig, device);
 				devicePanel.add(deviceView);
 				devicePanel.updateUI();
-				
+
 				statisticsPanel.removeAll();
 				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
 				statisticsPanel.add(statisticsView);
@@ -187,18 +197,17 @@ public class MainSimulationView extends JFrame {
 		UIManager.put("controlLHighlight", Consts.Colors.HIGHLIGHT);
 		UIManager.put("ComboBox.background", Consts.Colors.CONTROL);
 		UIManager.put("Button.background", Consts.Colors.CONTROL);
-		
-		
+
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		    if ("Nimbus".equals(info.getName())) {
-		        try {
+			if ("Nimbus".equals(info.getName())) {
+				try {
 					UIManager.setLookAndFeel(info.getClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				}
-		        break;
-		    }
+				break;
+			}
 		}
 	}
 }
-
