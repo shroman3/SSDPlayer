@@ -4,33 +4,40 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.util.Enumeration;
 import java.util.HashMap;
 
+import javax.swing.AbstractButton;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import manager.SSDManager;
-import zoom.ZoomLevel;
+import zoom.IZoomLevel;
 
-public class ZoomLevelDialog extends JDialog implements ActionListener {
+public class ZoomLevelDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private static final String DIALOG_HEADER = "Zoom Level";
 	
 	private SSDManager<?, ?, ?, ?, ?> mManager;
-	private String mZoomLevel;
-	private HashMap<String, ZoomLevel> mAvailableZoomLevels;
-	private HashMap<String, JPanel> mZoomLevelOptionsPanels;
+	private JPanel mMainPanel;
+	private ButtonGroup mRadioGroup;
+	private String mSelectedZoomLevel;
+	private HashMap<String, IZoomLevel> mZoomLevels;
 	
 	public ZoomLevelDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager) {
 		super(parentWindow, DIALOG_HEADER);
 		
 		mManager = manager;
-		mAvailableZoomLevels = new HashMap<>();
+		mZoomLevels = new HashMap<>();
+		
 		setDefaultLookAndFeelDecorated(true);
 		setModal(true);
 		setResizable(false);
@@ -38,55 +45,115 @@ public class ZoomLevelDialog extends JDialog implements ActionListener {
 		setSize(460, 250);
 		setLocationRelativeTo(parentWindow);
 		initComponents();
+		addDialogButtons();
+		this.addComponentListener(new ShownListener());
 	}
 
 	private void initComponents() {
-		JPanel mainPanel = new JPanel();
-		mainPanel.setBorder(new EmptyBorder(5, 5, 5 , 5));
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		add(mainPanel);
+		mMainPanel = new JPanel();
+		mMainPanel.setBorder(new EmptyBorder(5, 5, 5 , 5));
+		mMainPanel.setLayout(new BoxLayout(mMainPanel, BoxLayout.Y_AXIS));
+		add(mMainPanel);
 		
-		addManagerZoomLevels(mainPanel);
+		addManagerZoomLevels();
 	}
 
-	private void addManagerZoomLevels(JPanel mainPanel) {
+	private void addManagerZoomLevels() {
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+		mZoomLevels.clear();
 		
-		ButtonGroup group = new ButtonGroup();
-		for (ZoomLevel zoomLevel : mManager.getSupportedZoomLevels()) {
+		mRadioGroup = new ButtonGroup();
+		boolean selected = false;
+		JRadioButton firstButton = null;
+		
+		for (IZoomLevel zoomLevel : mManager.getSupportedZoomLevels()) {
 			JRadioButton zoomLevelButton = new JRadioButton(zoomLevel.getName());
-			zoomLevelButton.setActionCommand(zoomLevel.getName());
-			zoomLevelButton.addActionListener(this);
 			
-			radioPanel.add(zoomLevelButton);
-			group.add(zoomLevelButton);
-			mAvailableZoomLevels.put(zoomLevel.getName(), zoomLevel);
-			
-			JPanel subOptionsPanel = new JPanel(new GridLayout(0, 1));
-			
-			if (!zoomLevel.getSubOptions().isEmpty()) {
-				ButtonGroup subGroup = new ButtonGroup();
-				
-				for (String subOption : zoomLevel.getSubOptions()) {
-//					JRadioButton zoomLevelButton = new JRadioButton(zoomLevel.getName());
-//					zoomLevelButton.setActionCommand(zoomLevel.getName());
-//					zoomLevelButton.addActionListener(this);
-				}
+			if (firstButton == null) {
+				firstButton = zoomLevelButton;
 			}
 			
+			if (zoomLevel.getName().equals(mSelectedZoomLevel)) {
+				zoomLevelButton.setSelected(true);
+				selected = true;
+			}
+			
+			radioPanel.add(zoomLevelButton);
+			mRadioGroup.add(zoomLevelButton);
+			
+			mZoomLevels.put(zoomLevel.getName(), zoomLevel);
 		}
 		
-		mainPanel.add(radioPanel);
+		if (!selected) {
+			firstButton.setSelected(true);
+			mSelectedZoomLevel = firstButton.getText();
+		}
+		
+		mMainPanel.add(radioPanel);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String zoomLevelName = e.getActionCommand();
-		ZoomLevel zoomLevel = mAvailableZoomLevels.get(zoomLevelName);
+	private void addDialogButtons() {
+		Box buttonsBox = Box.createHorizontalBox();
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setDefaultCapable(true);
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ZoomLevelDialog.this.setVisible(false);
+				ZoomLevelDialog.this.dispose();
+			}
+		});
 		
-		if (!zoomLevel.getSubOptions().isEmpty()) {
-			
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setZoomLevel();
+				setVisible(false);
+				dispose();
+			}
+		});
+		buttonsBox.add(Box.createHorizontalGlue());
+		buttonsBox.add(cancelButton);
+		buttonsBox.add(okButton);
+		mMainPanel.add(buttonsBox);
+	}
+
+	private void setZoomLevel() {
+		Enumeration<AbstractButton> buttons = mRadioGroup.getElements();
+		
+		while (buttons.hasMoreElements()) {
+			JRadioButton jbutton = (JRadioButton) buttons.nextElement();
+			if (jbutton.isSelected()) {
+				mSelectedZoomLevel = jbutton.getText();
+				mZoomLevels.get(mSelectedZoomLevel).applyZoom(mManager);
+			}
 		}
 	}
 	
+	class ShownListener implements ComponentListener {
+		@Override
+		public void componentShown(ComponentEvent e) {
+			Enumeration<AbstractButton> buttons = mRadioGroup.getElements();
+			
+			while (buttons.hasMoreElements()) {
+				JRadioButton jbutton = (JRadioButton) buttons.nextElement();
+				if (jbutton.getText().equals(mSelectedZoomLevel)) {
+					jbutton.setSelected(true);
+				}
+			}
+		}
+
+		@Override
+		public void componentResized(ComponentEvent e) {
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent e) {
+		}
+
+		@Override
+		public void componentHidden(ComponentEvent e) {
+		}
+	}
 }

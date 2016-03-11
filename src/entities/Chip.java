@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.javatuples.Pair;
 
-import entities.Device.Builder;
-
 
 /**
  * @author Roman

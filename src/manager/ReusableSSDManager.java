@@ -25,13 +25,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.SecondWriteStatistics.BlockStateDistributionGetter;
-import manager.SecondWriteStatistics.ValidDistributionGetter;
-import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
-import ui.WorkloadWidget;
-import zoom.BlocksZoomLevel;
-import zoom.BlocksZoomSubOption;
-import zoom.SmallBlocksZoomLevel;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.reusable.ReusableBlock;
@@ -41,6 +34,16 @@ import entities.reusable.ReusablePage;
 import entities.reusable.ReusablePlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import manager.SecondWriteStatistics.BlockStateDistributionGetter;
+import manager.SecondWriteStatistics.ValidDistributionGetter;
+import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
+import ui.WorkloadWidget;
+import zoom.BlocksAvgWriteZoomLevel;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
+import zoom.SBlocksAvgWriteZoomLevel;
+import zoom.SBlocksEraseCountZoomLevel;
+import zoom.SBlocksValidCountZoomLevel;
 
 public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice> {
 	private Color firstWriteColor;
@@ -98,18 +101,12 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	@Override
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
-		
-		BlocksZoomLevel blocksZoomLevel = new BlocksZoomLevel();
-		blocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
-		blocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
-		blocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_WRITE_LVL);
-		supportedZoomLevel.add(blocksZoomLevel);
-		
-		SmallBlocksZoomLevel smallBlocksZoomLevel = new SmallBlocksZoomLevel();
-		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
-		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
-		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.AVG_WRITE_LVL);
-		supportedZoomLevel.add(smallBlocksZoomLevel);
+		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new BlocksAvgWriteZoomLevel());
+		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksAvgWriteZoomLevel());
 	}
 	
 	@Override

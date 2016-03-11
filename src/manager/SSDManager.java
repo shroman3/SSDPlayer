@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +43,8 @@ import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
 import zoom.DetailedZoomLevel;
+import zoom.IZoomLevel;
 import zoom.PagesZoomLevel;
-import zoom.ZoomLevel;
 
 
 /**
@@ -158,7 +159,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
 	
-	protected List<ZoomLevel> supportedZoomLevel = new ArrayList<>();
+	protected Set<IZoomLevel> supportedZoomLevels = new LinkedHashSet<>();
 
 	/**
 	 * @return get trace parser for this manager
@@ -373,12 +374,12 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	}
 	
 	protected void setSupportedZoomLevels() {
-		supportedZoomLevel.add(new DetailedZoomLevel());
-		supportedZoomLevel.add(new PagesZoomLevel());
+		supportedZoomLevels.add(new DetailedZoomLevel());
+		supportedZoomLevels.add(new PagesZoomLevel());
 	}
 	
-	public List<ZoomLevel> getSupportedZoomLevels() {
-		return supportedZoomLevel;
+	public Set<IZoomLevel> getSupportedZoomLevels() {
+		return supportedZoomLevels;
 	}
 	
 	D getEmptyDevice() {

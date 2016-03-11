@@ -2,8 +2,8 @@ package zoom;
 
 import manager.SSDManager;
 
-public class DetailedZoomLevel implements IZoomLevel {
-	public static final String NAME = "Detailed";
+public class SBlocksEraseCountZoomLevel implements IZoomLevel  {
+	public static final String NAME = "Small Blocks - erase count";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager) {

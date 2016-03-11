@@ -42,7 +42,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+<<<<<<< HEAD
 import breakpoints.BreakpointBase;
+=======
+>>>>>>> 0b92a12... Finished ui for zoom - waiting to integrate with functionality
 import breakpoints.BreakpointsDeserializer;
 import entities.Device;
 import entities.StatisticsGetter;
@@ -54,7 +57,6 @@ import general.XMLGetter;
 import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
-import ui.zoom.ZoomLevelDialog;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;

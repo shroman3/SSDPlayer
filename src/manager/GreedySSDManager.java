@@ -35,9 +35,12 @@ import entities.basic.BasicPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
-import zoom.BlocksZoomLevel;
-import zoom.BlocksZoomSubOption;
-import zoom.SmallBlocksZoomLevel;
+import zoom.BlocksAvgTempZoomLevel;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
+import zoom.SBlocksAvgTempZoomLevel;
+import zoom.SBlocksEraseCountZoomLevel;
+import zoom.SBlocksValidCountZoomLevel;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
@@ -83,21 +86,6 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	}
 	
 	@Override
-	protected void setSupportedZoomLevels() {
-		super.setSupportedZoomLevels();
-		
-		BlocksZoomLevel blocksZoomLevel = new BlocksZoomLevel();
-		blocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
-		blocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
-		supportedZoomLevel.add(blocksZoomLevel);
-		
-		SmallBlocksZoomLevel smallBlocksZoomLevel = new SmallBlocksZoomLevel();
-		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.ERASE_COUNT);
-		smallBlocksZoomLevel.addSubOption(BlocksZoomSubOption.VALID_COUNT);
-		supportedZoomLevel.add(smallBlocksZoomLevel);
-	}
-	
-	@Override
 	protected BasicDevice getEmptyDevice(List<BasicChip> emptyChips) {
 		BasicDevice.Builder builder = new BasicDevice.Builder();
 		builder.setChips(emptyChips);
@@ -125,5 +113,14 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 		builder.setManager(this).setEraseCounter(0).setInGC(false)
 				.setStatus(BlockStatusGeneral.CLEAN).setPagesList(pages);
 		return builder.build();
+	}
+	
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
 	}
 }

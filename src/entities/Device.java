@@ -21,8 +21,6 @@
  *******************************************************************************/
 package entities;
 
-import general.ConfigProperties;
-
 import java.util.ArrayList;
 import java.util.List;
 

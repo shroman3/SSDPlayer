@@ -1,10 +1,5 @@
 package breakpoints;
 
-import manager.SSDManager;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import entities.Device;
 
 public class EraseBlockBreakpoint extends BreakpointBase {
