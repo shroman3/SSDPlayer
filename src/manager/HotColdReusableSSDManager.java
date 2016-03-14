@@ -32,6 +32,8 @@ import entities.reusable.ReusablePlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.BlocksAvgTempZoomLevel;
+import zoom.SBlocksAvgTempZoomLevel;
 
 public class HotColdReusableSSDManager extends ReusableSSDManager {
 	private int tempLimit;
@@ -62,4 +64,10 @@ public class HotColdReusableSSDManager extends ReusableSSDManager {
 		return super.isSecondWrite(hasSecondWriteBlock, temperature) && (temperature < getTempLimit());
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		supportedZoomLevels.add(new BlocksAvgTempZoomLevel());
+		supportedZoomLevels.add(new SBlocksAvgTempZoomLevel());
+	}
 }

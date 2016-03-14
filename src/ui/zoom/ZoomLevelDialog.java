@@ -42,7 +42,7 @@ public class ZoomLevelDialog extends JDialog {
 		setModal(true);
 		setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setSize(460, 250);
+		setSize(350, 250);
 		setLocationRelativeTo(parentWindow);
 		initComponents();
 		addDialogButtons();
