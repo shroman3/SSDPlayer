@@ -3,23 +3,25 @@ package zoom;
 import manager.SSDManager;
 import manager.VisualConfig;
 
-public class BlocksAvgTempZoomLevel implements IZoomLevel  {
-	public static final String NAME = "Average temperature";
+public class SmallBlocksEraseCountZoomLevel implements IZoomLevel  {
+	public static final String NAME = "Erase count";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig) {
 		visualConfig.restoreXmlValues();
+		visualConfig.smallerPages();
 		visualConfig.setShowPages(false);
-		visualConfig.setBlocksColorMeaning(VisualConfig.BlockColorMeaning.AVERAGE_TEMPERATURE);
+		visualConfig.setBlocksColorMeaning(VisualConfig.BlockColorMeaning.ERASE_COUNT);
 	}
 
 	@Override
 	public String getName() {
 		return NAME;
 	}
-
+	
 	@Override
 	public String getGroup() {
-		return "Blocks";
+		return "Small Blocks";
 	}
+
 }

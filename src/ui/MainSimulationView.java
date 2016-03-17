@@ -133,6 +133,12 @@ public class MainSimulationView extends JFrame {
 					public void message(Device<?, ?, ?, ?> device) {
 						updateDevice(device);
 					}
+				}, new OneObjectCallback<Boolean>() {
+					@Override
+					public void message(Boolean repaintDevice) {
+						deviceView.repaintDevice();
+						devicePanel.updateUI();
+					}
 				});
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		

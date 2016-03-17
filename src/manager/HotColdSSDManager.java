@@ -42,9 +42,9 @@ import ui.WorkloadWidget;
 import zoom.BlocksAvgTempZoomLevel;
 import zoom.BlocksEraseCountZoomLevel;
 import zoom.BlocksValidCountZoomLevel;
-import zoom.SBlocksAvgTempZoomLevel;
-import zoom.SBlocksEraseCountZoomLevel;
-import zoom.SBlocksValidCountZoomLevel;
+import zoom.SmallBlocksAvgTempZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
 	private int minTemperature;
@@ -61,6 +61,10 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 
 	public Color getTemperatureColor(int temperature) {
 		return colorsMap.get(temperature);
+	}
+	
+	public int getMaxTemperature(){
+		return maxTemperature;
 	}
 	
 	@Override
@@ -185,7 +189,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
 		supportedZoomLevels.add(new BlocksAvgTempZoomLevel());
-		supportedZoomLevels.add(new SBlocksAvgTempZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksAvgTempZoomLevel());
 	}
 	
 	@Override

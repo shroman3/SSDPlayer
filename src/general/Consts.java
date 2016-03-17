@@ -23,6 +23,7 @@ package general;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 public class Consts {
 	public static class UI {
@@ -47,4 +48,17 @@ public class Consts {
 		public static final Color CONTROL_LIGHTER = new Color(50,50,50);
 		public static final Color HIGHLIGHT = new Color(85,85,85);
 	}
+	
+	@SuppressWarnings("serial")
+	public static ArrayList<Color> ColorRange = new ArrayList<Color>() {{
+		 add(Color.white);
+		 add(new Color(242, 242, 242));
+		 add(new Color(217, 217, 217));
+		 add(new Color(102, 102, 255));
+		 add(new Color(51, 51, 255));
+		 add(new Color(0, 0, 255));
+		 add(new Color(0, 0, 153));
+		 add(new Color(0, 0, 102));
+		 add(new Color(0, 0, 51));
+	}};
 }

@@ -21,7 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import entities.Device;
+import entities.StatisticsGetter;
+import general.OneObjectCallback;
+import general.TwoObjectsCallback;
 import manager.SSDManager;
+import manager.VisualConfig;
 import zoom.IZoomLevel;
 
 public class ZoomLevelDialog extends JDialog {
@@ -35,12 +40,17 @@ public class ZoomLevelDialog extends JDialog {
 	private HashMap<String, IZoomLevel> mZoomLevels;
 	private HashMap<String, JPanel> mZoomGroupPanels;
 	
-	public ZoomLevelDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager) {
+	private VisualConfig visualConfig;
+	private OneObjectCallback<Boolean> resetDevice;
+	
+	public ZoomLevelDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig, OneObjectCallback<Boolean> resetDevice) {
 		super(parentWindow, DIALOG_HEADER);
 		
+		this.resetDevice = resetDevice;
 		mManager = manager;
 		mZoomLevels = new HashMap<>();
 		mZoomGroupPanels = new HashMap<>();
+		this.visualConfig = visualConfig; 
 		
 		setDefaultLookAndFeelDecorated(true);
 		setModal(true);
@@ -51,6 +61,7 @@ public class ZoomLevelDialog extends JDialog {
 		initComponents();
 		addDialogButtons();
 		this.addComponentListener(new ShownListener());
+		visualConfig.restoreXmlValues();
 	}
 
 	private void initComponents() {
@@ -157,9 +168,10 @@ public class ZoomLevelDialog extends JDialog {
 			JRadioButton jbutton = (JRadioButton) buttons.nextElement();
 			if (jbutton.isSelected()) {
 				mSelectedZoomLevel = jbutton.getActionCommand();
-				mZoomLevels.get(mSelectedZoomLevel).applyZoom(mManager);
+				mZoomLevels.get(mSelectedZoomLevel).applyZoom(mManager, visualConfig);
 			}
 		}
+		resetDevice.message(true);
 	}
 	
 	class ShownListener implements ComponentListener {

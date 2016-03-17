@@ -33,7 +33,7 @@ import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
 import zoom.BlocksAvgTempZoomLevel;
-import zoom.SBlocksAvgTempZoomLevel;
+import zoom.SmallBlocksAvgTempZoomLevel;
 
 public class HotColdReusableSSDManager extends ReusableSSDManager {
 	private int tempLimit;
@@ -68,6 +68,6 @@ public class HotColdReusableSSDManager extends ReusableSSDManager {
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
 		supportedZoomLevels.add(new BlocksAvgTempZoomLevel());
-		supportedZoomLevels.add(new SBlocksAvgTempZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksAvgTempZoomLevel());
 	}
 }

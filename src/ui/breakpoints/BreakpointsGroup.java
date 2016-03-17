@@ -1,7 +1,6 @@
 package ui.breakpoints;
 
 import java.util.LinkedHashMap;
-import java.util.SortedMap;
 
 import breakpoints.BreakpointBase;
 

@@ -31,8 +31,12 @@ import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
+import manager.VisualConfig;
+
 public class UIUtils {
 	private static final BasicStroke BOLD_STROKE = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+	private static final BasicStroke THIN_STROKE = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+
 
 	public static TexturePaint getGCTexture(Color color) {
 		BufferedImage bi = new BufferedImage(4, 4, BufferedImage.TYPE_INT_RGB);
@@ -62,12 +66,39 @@ public class UIUtils {
 	    return new TexturePaint(bi, r);
 	}
 	
-	public static void drawInvalidPage(Graphics2D g2d, int x, int y, int width, int height) {
+	public static void drawInvalidPage(Graphics2D g2d, int x, int y, int width, int height, VisualConfig visualConfig) {
 		g2d.setColor(Consts.Colors.BLACK);
 		Stroke oldStroke = g2d.getStroke(); 
-		g2d.setStroke(BOLD_STROKE);
-		g2d.drawLine(x, y, x + width, y + height);
-		g2d.drawLine(x + width, y, x, y + height);
+		if(visualConfig.isThinCross()){
+			g2d.setStroke(THIN_STROKE);
+			g2d.drawLine(x, y, x + width, y + height);
+		}
+		else{
+			g2d.setStroke(BOLD_STROKE);
+			g2d.drawLine(x, y, x + width, y + height);
+			g2d.drawLine(x + width, y, x, y + height);			
+		}
 		g2d.setStroke(oldStroke);
 	}
+	
+	 /**
+     * Make a color brighten.
+     *
+     * @param color Color to make brighten.
+     * @param fraction Darkness fraction.
+     * @return Lighter color.
+     */
+    public static Color brighten(Color color, double fraction) {
+
+        int red = (int) Math.round(Math.min(255, color.getRed() + 255 * fraction));
+        int green = (int) Math.round(Math.min(255, color.getGreen() + 255 * fraction));
+        int blue = (int) Math.round(Math.min(255, color.getBlue() + 255 * fraction));
+
+        int alpha = color.getAlpha();
+
+        return new Color(red, green, blue, alpha);
+
+    }
+
+	
 }

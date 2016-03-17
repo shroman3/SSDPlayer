@@ -47,8 +47,8 @@ import zoom.BlocksValidCountZoomLevel;
 import zoom.DetailedZoomLevel;
 import zoom.IZoomLevel;
 import zoom.PagesZoomLevel;
-import zoom.SBlocksEraseCountZoomLevel;
-import zoom.SBlocksValidCountZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 
 /**
@@ -382,8 +382,8 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		supportedZoomLevels.add(new PagesZoomLevel());
 		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
 		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksEraseCountZoomLevel());
 	}
 	
 	public Set<IZoomLevel> getSupportedZoomLevels() {

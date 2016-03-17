@@ -33,6 +33,7 @@ import utils.Utils;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
+import entities.hot_cold.HotColdPage;
 import general.Consts;
 
 public class ReusableBlock extends Block<ReusablePage> {
@@ -175,5 +176,26 @@ public class ReusableBlock extends Block<ReusablePage> {
 			}
 		}
 		return false;
+	}
+	
+	public Color getBlockWriteLevelColor() { 
+		int colorRangeIndex = Math.max(0, (int)((getAveragePageWriteLevel() - 1) * (Consts.ColorRange.size()-1)));
+		return Consts.ColorRange.get(colorRangeIndex);
+	}
+
+	private float getAveragePageWriteLevel() {
+		float writeLevelSum = 0;
+		int count = 0;
+		for(ReusablePage page : this.getPages()){
+			if(page.getWriteLevel() >= 1){
+				count++;
+				writeLevelSum += page.getWriteLevel();
+			}
+		}
+		if(count == 0){
+			return 0;
+		}
+		
+		return writeLevelSum/count;
 	}
 }

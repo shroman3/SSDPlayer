@@ -41,9 +41,9 @@ import ui.WorkloadWidget;
 import zoom.BlocksAvgWriteZoomLevel;
 import zoom.BlocksEraseCountZoomLevel;
 import zoom.BlocksValidCountZoomLevel;
-import zoom.SBlocksAvgWriteZoomLevel;
-import zoom.SBlocksEraseCountZoomLevel;
-import zoom.SBlocksValidCountZoomLevel;
+import zoom.SmallBlocksAvgWriteZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice> {
 	private Color firstWriteColor;
@@ -102,7 +102,7 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
 		supportedZoomLevels.add(new BlocksAvgWriteZoomLevel());
-		supportedZoomLevels.add(new SBlocksAvgWriteZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksAvgWriteZoomLevel());
 	}
 	
 	@Override

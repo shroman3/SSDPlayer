@@ -24,59 +24,169 @@ package manager;
 import general.XMLGetter;
 import general.XMLParsingException;
 
-
-public class VisualConfig {
+public class VisualConfig {	
+	public enum BlockColorMeaning {
+		VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
+	}
+	
+	
 	private static final String VISUAL_CONFIG = "visual";
+	
+	private int xmlSpeed = -1;
+	private boolean xmlShowCounters = true;
+	private int xmlPageWidth = -1;
+	private int xmlPageHeight = -1;
+	private int xmlBlockSpace = -1;
+	private int xmlPagesInRow = -1;
+	private int xmlBlocksInRow = -1;
+	private int xmlPlanesInRow = -1;
+	private boolean xmlThinCross = false;
+	private boolean xmlMovedPattern = true;
+	private boolean xmlShowPages = true;
+	private BlockColorMeaning xmlBlocksColorMeaning = BlockColorMeaning.NONE;
+
 	private int speed = -1;
 	private boolean showCounters = true;
-	
 	private int pageWidth = -1;
 	private int pageHeight = -1;
 	private int blockSpace = -1;
 	private int pagesInRow = -1;
 	private int blocksInRow = -1;
 	private int planesInRow = -1;
+	private boolean thinCross = false;
+	private boolean movedPattern = true;
+	private boolean showPages = true;
+	private BlockColorMeaning blocksColorMeaning = BlockColorMeaning.NONE;
+
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
-		this.showCounters = xmlGetter.getBooleanField(VISUAL_CONFIG, "show_counters");
-		this.speed = xmlGetter.getIntField(VISUAL_CONFIG, "speed");
-		this.pageWidth =xmlGetter.getIntField(VISUAL_CONFIG, "page_width");
-		this.pageHeight = xmlGetter.getIntField(VISUAL_CONFIG, "page_height");
-		this.blockSpace = xmlGetter.getIntField(VISUAL_CONFIG, "block_space");
-		this.pagesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "pages_in_row");
-		this.blocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
-		this.planesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
+		this.xmlShowCounters = xmlGetter.getBooleanField(VISUAL_CONFIG, "show_counters");
+		this.xmlSpeed = xmlGetter.getIntField(VISUAL_CONFIG, "speed");
+		this.xmlPageWidth =xmlGetter.getIntField(VISUAL_CONFIG, "page_width");
+		this.xmlPageHeight = xmlGetter.getIntField(VISUAL_CONFIG, "page_height");
+		this.xmlBlockSpace = xmlGetter.getIntField(VISUAL_CONFIG, "block_space");
+		this.xmlPagesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "pages_in_row");
+		this.xmlBlocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
+		this.xmlPlanesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
+		
+		restoreXmlValues();
+	}
+	
+	public void restoreXmlValues(){
+		setSpeed(xmlSpeed);
+		setShowCounters(xmlShowCounters);
+		setPageWidth(xmlPageWidth);
+		setPageHeight(xmlPageHeight);
+		setBlockSpace(xmlBlockSpace);
+		setPagesInRow(xmlPagesInRow);
+		setBlocksInRow(xmlBlocksInRow);
+		setPlanesInRow(xmlPlanesInRow);
+		setThinCross(xmlThinCross);
+		setMovedPattern(xmlMovedPattern);
+		setShowPages(xmlShowPages);
+		setBlocksColorMeaning(xmlBlocksColorMeaning);
 	}
 
 	public int getSpeed() {
 		return speed;
 	}
 
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
 	public boolean isShowCounters() {
 		return showCounters;
+	}
+
+	public void setShowCounters(boolean showCounters) {
+		this.showCounters = showCounters;
 	}
 
 	public int getPageWidth() {
 		return pageWidth;
 	}
-	
+
+	public void setPageWidth(int pageWidth) {
+		this.pageWidth = pageWidth;
+	}
+
 	public int getPageHeight() {
 		return pageHeight;
+	}
+
+	public void setPageHeight(int pageHeight) {
+		this.pageHeight = pageHeight;
 	}
 
 	public int getBlockSpace() {
 		return blockSpace;
 	}
 
+	public void setBlockSpace(int blockSpace) {
+		this.blockSpace = blockSpace;
+	}
+
 	public int getPagesInRow() {
 		return pagesInRow;
 	}
-	
+
+	public void setPagesInRow(int pagesInRow) {
+		this.pagesInRow = pagesInRow;
+	}
+
 	public int getBlocksInRow() {
 		return blocksInRow;
 	}
-	
+
+	public void setBlocksInRow(int blocksInRow) {
+		this.blocksInRow = blocksInRow;
+	}
+
 	public int getPlanesInRow() {
 		return planesInRow;
 	}
+
+	public void setPlanesInRow(int planesInRow) {
+		this.planesInRow = planesInRow;
+	}
+
+	public boolean isThinCross() {
+		return thinCross;
+	}
+
+	public void setThinCross(boolean thinCross) {
+		this.thinCross = thinCross;
+	}
+
+	public boolean isMovedPattern() {
+		return movedPattern;
+	}
+
+	public void setMovedPattern(boolean movedPattern) {
+		this.movedPattern = movedPattern;
+	}
+
+	public boolean isShowPages() {
+		return showPages;
+	}
+
+	public void setShowPages(boolean showPages) {
+		this.showPages = showPages;
+	}
+
+	public BlockColorMeaning getBlocksColorMeaning() {
+		return blocksColorMeaning;
+	}
+
+	public void setBlocksColorMeaning(BlockColorMeaning blocksColorMeaning) {
+		this.blocksColorMeaning = blocksColorMeaning;
+	}
+	
+	public void smallerPages(){
+		setPageHeight((int)Math.floor(getPageHeight()/ Math.sqrt(2)));
+		setPageWidth((int)Math.floor(getPageWidth()/ Math.sqrt(2)));
+		setBlockSpace(getBlockSpace()/2);
+	}
+	
 }

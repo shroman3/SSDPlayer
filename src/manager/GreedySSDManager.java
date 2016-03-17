@@ -38,9 +38,9 @@ import ui.WorkloadWidget;
 import zoom.BlocksAvgTempZoomLevel;
 import zoom.BlocksEraseCountZoomLevel;
 import zoom.BlocksValidCountZoomLevel;
-import zoom.SBlocksAvgTempZoomLevel;
-import zoom.SBlocksEraseCountZoomLevel;
-import zoom.SBlocksValidCountZoomLevel;
+import zoom.SmallBlocksAvgTempZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
