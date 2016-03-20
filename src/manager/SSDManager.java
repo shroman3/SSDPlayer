@@ -42,9 +42,13 @@ import entities.StatisticsGetter;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
 import zoom.DetailedZoomLevel;
 import zoom.IZoomLevel;
 import zoom.PagesZoomLevel;
+import zoom.SBlocksEraseCountZoomLevel;
+import zoom.SBlocksValidCountZoomLevel;
 
 
 /**
@@ -376,6 +380,10 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	protected void setSupportedZoomLevels() {
 		supportedZoomLevels.add(new DetailedZoomLevel());
 		supportedZoomLevels.add(new PagesZoomLevel());
+		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
 	}
 	
 	public Set<IZoomLevel> getSupportedZoomLevels() {

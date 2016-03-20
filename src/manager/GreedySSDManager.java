@@ -114,13 +114,4 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 				.setStatus(BlockStatusGeneral.CLEAN).setPagesList(pages);
 		return builder.build();
 	}
-	
-	@Override
-	protected void setSupportedZoomLevels() {
-		super.setSupportedZoomLevels();
-		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
-		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
-	}
 }

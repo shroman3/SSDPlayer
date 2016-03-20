@@ -7,7 +7,7 @@ public class DetailedZoomLevel implements IZoomLevel {
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager) {
-		//
+		System.out.println("Applying " + getGroup() + " " + NAME);
 	}
 
 	@Override
@@ -15,4 +15,8 @@ public class DetailedZoomLevel implements IZoomLevel {
 		return NAME;
 	}
 
+	@Override
+	public String getGroup() {
+		return null;
+	}
 }

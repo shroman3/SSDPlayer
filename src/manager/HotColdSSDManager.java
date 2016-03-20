@@ -184,11 +184,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	@Override
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
-		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
-		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
 		supportedZoomLevels.add(new BlocksAvgTempZoomLevel());
-		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
 		supportedZoomLevels.add(new SBlocksAvgTempZoomLevel());
 	}
 	

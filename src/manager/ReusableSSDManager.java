@@ -101,11 +101,7 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	@Override
 	protected void setSupportedZoomLevels() {
 		super.setSupportedZoomLevels();
-		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
-		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
 		supportedZoomLevels.add(new BlocksAvgWriteZoomLevel());
-		supportedZoomLevels.add(new SBlocksEraseCountZoomLevel());
-		supportedZoomLevels.add(new SBlocksValidCountZoomLevel());
 		supportedZoomLevels.add(new SBlocksAvgWriteZoomLevel());
 	}
 	

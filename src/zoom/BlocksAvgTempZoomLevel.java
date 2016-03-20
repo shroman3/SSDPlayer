@@ -3,11 +3,11 @@ package zoom;
 import manager.SSDManager;
 
 public class BlocksAvgTempZoomLevel implements IZoomLevel  {
-	public static final String NAME = "Blocks - average temperature";
+	public static final String NAME = "Average temperature";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager) {
-		System.out.println("Applying Blocks - average temperature");
+		System.out.println("Applying " + getGroup() + " " + NAME);
 	}
 
 	@Override
@@ -15,4 +15,8 @@ public class BlocksAvgTempZoomLevel implements IZoomLevel  {
 		return NAME;
 	}
 
+	@Override
+	public String getGroup() {
+		return "Blocks";
+	}
 }

@@ -3,11 +3,11 @@ package zoom;
 import manager.SSDManager;
 
 public class BlocksAvgWriteZoomLevel implements IZoomLevel  {
-	public static final String NAME = "Blocks - average write level";
+	public static final String NAME = "Average write level";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager) {
-		System.out.println("Applying Blocks - average write level");
+		System.out.println("Applying " + getGroup() + " " + NAME);
 	}
 
 	@Override
@@ -15,4 +15,8 @@ public class BlocksAvgWriteZoomLevel implements IZoomLevel  {
 		return NAME;
 	}
 
+	@Override
+	public String getGroup() {
+		return "Blocks";
+	}
 }

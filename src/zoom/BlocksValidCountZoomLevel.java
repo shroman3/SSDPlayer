@@ -3,11 +3,11 @@ package zoom;
 import manager.SSDManager;
 
 public class BlocksValidCountZoomLevel implements IZoomLevel {
-	public static final String NAME = "Blocks - valid count";
+	public static final String NAME = "Valid count";
 		
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager) {
-		System.out.println("Applying Blocks - valid count");
+		System.out.println("Applying " + getGroup() + " " + NAME);
 	}
 
 	@Override
@@ -15,4 +15,8 @@ public class BlocksValidCountZoomLevel implements IZoomLevel {
 		return NAME;
 	}
 
+	@Override
+	public String getGroup() {
+		return "Blocks";
+	}
 }
