@@ -2,10 +2,10 @@ package breakpoints;
 
 import entities.Device;
 
-public class DeviceGCNthTime extends BreakpointBase {
+public class GCNthTimeDevice extends BreakpointBase {
 	private int mValue;
 	
-	public DeviceGCNthTime() {
+	public GCNthTimeDevice() {
 		super();
 	}
 	

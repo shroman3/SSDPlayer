@@ -26,7 +26,8 @@ public class BreakpointsDeserializer {
 			for (int i = 0; i < breakpointNodes.getLength(); i++) {
 				Element breakpointElement = (Element) breakpointNodes.item(i);
 				String type = breakpointElement.getAttribute("type");
-				result.add(BreakpointFactory.getBreakpoint(type, breakpointElement));
+				String level = breakpointElement.getAttribute("level");
+				result.add(BreakpointFactory.getBreakpoint(type + level, breakpointElement));
 			}
 		} catch(Exception e) {
 			System.err.println(("Unable to load breakpoints from file (" + bpFilePath + ")\n" + e.getMessage()));

@@ -1,15 +1,8 @@
 <root>
 	<breakpoints>
-		<breakpoint type="WriteAmplificationBreakpoint">
-			<value>1.1</value>
+		<breakpoint type="PagesWritten" level="Chip">
+			<count>2</count>
+			<chipIndex>0</chipIndex>
 		</breakpoint>
 	</breakpoints>
-	<breakpoint type="AllocateActiveBlockBreakpoint">
-			<blockIndex>5</blockIndex>
-		</breakpoint>
-		
-		
-		<breakpoint type="WritePpBreakpoint">
-			<physicalPage>8</physicalPage>
-		</breakpoint>
 </root>

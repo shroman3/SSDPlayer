@@ -2,11 +2,11 @@ package breakpoints;
 
 import entities.Device;
 
-public class PlaneGCNthTime extends BreakpointBase {
+public class GCNthTimePlane extends BreakpointBase {
 	private int mPlaneIndex;
 	private int mValue;
 	
-	public PlaneGCNthTime() {
+	public GCNthTimePlane() {
 		super();
 	}
 	

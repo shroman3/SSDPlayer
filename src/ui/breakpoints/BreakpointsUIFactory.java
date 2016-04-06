@@ -6,15 +6,15 @@ import java.util.List;
 
 import breakpoints.BreakpointBase;
 import breakpoints.BreakpointFactory;
-import breakpoints.ChipGCNthTime;
-import breakpoints.CleanBlocksInChip;
-import breakpoints.CleanBlocksInDevice;
-import breakpoints.CleanBlocksInPlane;
-import breakpoints.DeviceGCNthTime;
-import breakpoints.PagesWrittenInChip;
-import breakpoints.PagesWrittenInDevice;
-import breakpoints.PagesWrittenInPlane;
-import breakpoints.PlaneGCNthTime;
+import breakpoints.GCNthTimeChip;
+import breakpoints.CleanBlocksChip;
+import breakpoints.CleanBlocksDevice;
+import breakpoints.CleanBlocksPlane;
+import breakpoints.GCNthTimeDevice;
+import breakpoints.PagesWrittenChip;
+import breakpoints.PagesWrittenDevice;
+import breakpoints.PagesWrittenPlane;
+import breakpoints.GCNthTimePlane;
 
 public class BreakpointsUIFactory {
 	private static List<BreakpointsGroup> mGroups;
@@ -25,21 +25,21 @@ public class BreakpointsUIFactory {
 		mSingleBreakpoints = new ArrayList<>();
 		
 		LinkedHashMap<String, Class<? extends BreakpointBase>> gcGroup = new LinkedHashMap<>();
-		gcGroup.put("Device", DeviceGCNthTime.class);
-		gcGroup.put("Chip", ChipGCNthTime.class);
-		gcGroup.put("Plane", PlaneGCNthTime.class);
+		gcGroup.put("Device", GCNthTimeDevice.class);
+		gcGroup.put("Chip", GCNthTimeChip.class);
+		gcGroup.put("Plane", GCNthTimePlane.class);
 		registerGroup(gcGroup, "Invoke garbage collection in the i-th time");
 		
 		LinkedHashMap<String, Class<? extends BreakpointBase>> cleanBlocksGroup = new LinkedHashMap<>();
-		cleanBlocksGroup.put("Device", CleanBlocksInDevice.class);
-		cleanBlocksGroup.put("Chip", CleanBlocksInChip.class);
-		cleanBlocksGroup.put("Plane", CleanBlocksInPlane.class);
+		cleanBlocksGroup.put("Device", CleanBlocksDevice.class);
+		cleanBlocksGroup.put("Chip", CleanBlocksChip.class);
+		cleanBlocksGroup.put("Plane", CleanBlocksPlane.class);
 		registerGroup(cleanBlocksGroup, "Number of clean blocks is X");
 		
 		LinkedHashMap<String, Class<? extends BreakpointBase>> writtenPagesGroup = new LinkedHashMap<>();
-		writtenPagesGroup.put("Device", PagesWrittenInDevice.class);
-		writtenPagesGroup.put("Chip", PagesWrittenInChip.class);
-		writtenPagesGroup.put("Plane", PagesWrittenInPlane.class);
+		writtenPagesGroup.put("Device", PagesWrittenDevice.class);
+		writtenPagesGroup.put("Chip", PagesWrittenChip.class);
+		writtenPagesGroup.put("Plane", PagesWrittenPlane.class);
 		registerGroup(writtenPagesGroup, "L pages are written");
 		
 		registerSingleBreakpoints();

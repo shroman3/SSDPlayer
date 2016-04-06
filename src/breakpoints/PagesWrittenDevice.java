@@ -2,11 +2,11 @@ package breakpoints;
 
 import entities.Device;
 
-public class PagesWrittenInDevice extends BreakpointBase {
+public class PagesWrittenDevice extends BreakpointBase {
 
 	private int mCount;
 
-	public PagesWrittenInDevice(){
+	public PagesWrittenDevice(){
 		super();
 	}
 	

@@ -2,11 +2,11 @@ package breakpoints;
 
 import entities.Device;
 
-public class ChipGCNthTime extends BreakpointBase {
+public class GCNthTimeChip extends BreakpointBase {
 	private int mChipIndex;
 	private int mValue;
 	
-	public ChipGCNthTime() {
+	public GCNthTimeChip() {
 		super();
 	}
 	

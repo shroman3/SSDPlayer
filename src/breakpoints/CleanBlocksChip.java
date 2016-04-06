@@ -3,11 +3,11 @@ package breakpoints;
 import entities.Chip;
 import entities.Device;
 
-public class CleanBlocksInChip extends BreakpointBase {
+public class CleanBlocksChip extends BreakpointBase {
 	private int mChipIndex;
 	private int mCount;
 	
-	public CleanBlocksInChip() {
+	public CleanBlocksChip() {
 		super();
 	}
 	

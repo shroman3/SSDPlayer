@@ -22,18 +22,18 @@ public class BreakpointFactory {
 		register(WritesPerEraseBreakpoint.class);
 		register(EraseCountBlockBreakpoint.class);
 		register(EraseCountAnyBlockBreakpoint.class);
-		register(CleanBlocksInPlane.class);
-		register(CleanBlocksInChip.class);
-		register(CleanBlocksInDevice.class);
-		register(PagesWrittenInDevice.class);
-		register(PagesWrittenInChip.class);
-		register(PagesWrittenInPlane.class);
+		register(CleanBlocksPlane.class);
+		register(CleanBlocksChip.class);
+		register(CleanBlocksDevice.class);
+		register(PagesWrittenDevice.class);
+		register(PagesWrittenChip.class);
+		register(PagesWrittenPlane.class);
 		register(HotColdPartitionHoldsPercentOfPages.class);
 		register(ReusableLevelPagesPercent.class);
 		register(ReusableBlockRecycled.class);
-		register(PlaneGCNthTime.class);
-		register(ChipGCNthTime.class);
-		register(DeviceGCNthTime.class);
+		register(GCNthTimePlane.class);
+		register(GCNthTimeChip.class);
+		register(GCNthTimeDevice.class);
 	}
 	
 	public static BreakpointBase getBreakpoint(String type, Element breakpointElement) throws Exception {

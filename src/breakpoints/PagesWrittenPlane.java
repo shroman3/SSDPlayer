@@ -3,12 +3,12 @@ package breakpoints;
 import entities.Device;
 import entities.Plane;
 
-public class PagesWrittenInPlane extends BreakpointBase {
+public class PagesWrittenPlane extends BreakpointBase {
 
 	private int mCount;
 	private int mPlaneIndex;
 
-	public PagesWrittenInPlane(){
+	public PagesWrittenPlane(){
 		super();
 	}
 	
