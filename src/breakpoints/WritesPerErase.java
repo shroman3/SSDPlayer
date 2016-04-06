@@ -5,7 +5,7 @@ import entities.StatisticsGetter;
 import manager.LogicalWritesPerEraseGetter;
 import manager.SSDManager;
 
-public class WritesPerEraseBreakpoint extends BreakpointBase {
+public class WritesPerErase extends BreakpointBase {
 	private double mValue;
 	
 	@Override

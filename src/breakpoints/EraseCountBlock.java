@@ -2,12 +2,12 @@ package breakpoints;
 
 import entities.Device;
 
-public class EraseCountBlockBreakpoint extends BreakpointBase {
+public class EraseCountBlock extends BreakpointBase {
 
 	private int mBlockIndex;
 	private int mCount;
 	
-	public EraseCountBlockBreakpoint() {
+	public EraseCountBlock() {
 		super();
 	}
 	

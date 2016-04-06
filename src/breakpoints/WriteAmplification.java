@@ -5,10 +5,10 @@ import entities.StatisticsGetter;
 import manager.SSDManager;
 import manager.WriteAmplificationGetter;
 
-public class WriteAmplificationBreakpoint extends BreakpointBase {
+public class WriteAmplification extends BreakpointBase {
 	private double mValue;
 
-	public WriteAmplificationBreakpoint() {
+	public WriteAmplification() {
 		super();
 	}
 	

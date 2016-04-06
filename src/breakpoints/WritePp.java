@@ -2,10 +2,10 @@ package breakpoints;
 
 import entities.Device;
 
-public class WritePpBreakpoint extends BreakpointBase {
+public class WritePp extends BreakpointBase {
 	private int mPhysicalPage;
 	
-	public WritePpBreakpoint() {
+	public WritePp() {
 		super();
 	} 
 	

@@ -7,10 +7,10 @@ import entities.Device;
 import entities.IDeviceAction;
 import entities.WriteLpAction;
 
-public class WriteLpBreakpoint extends BreakpointBase {
+public class WriteLp extends BreakpointBase {
 	private int lp;
 
-	public WriteLpBreakpoint() {
+	public WriteLp() {
 		super();
 	}
 	

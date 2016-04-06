@@ -3,11 +3,11 @@ package breakpoints;
 import entities.Device;
 import general.ConfigProperties;
 
-public class EraseCountAnyBlockBreakpoint extends BreakpointBase {
+public class EraseCountAnyBlock extends BreakpointBase {
 
 	private int mCount;
 	
-	public EraseCountAnyBlockBreakpoint() {
+	public EraseCountAnyBlock() {
 	}
 	
 	@Override

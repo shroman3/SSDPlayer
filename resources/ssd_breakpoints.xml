@@ -1,8 +1,113 @@
 <root>
 	<breakpoints>
-		<breakpoint type="PagesWritten" level="Chip">
-			<count>2</count>
-			<chipIndex>0</chipIndex>
-		</breakpoint>
+<!-- 		Allocate block B as active -->
+<!-- 		<breakpoint type="AllocateActiveBlock"> -->
+<!-- 			<blockIndex>0</blockIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Number of clean blocks in plane	-->
+<!-- 		<breakpoint type="CleanBlocks" level="Plane"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 		</breakpoint> -->
+
+<!--  		Number of clean blocks in chip	-->
+<!-- 		<breakpoint type="CleanBlocks" level="Chip"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 		</breakpoint> -->
+
+<!--  		Number of clean blocks in device	-->
+<!-- 		<breakpoint type="CleanBlocks" level="Device"> -->
+<!-- 			<count>2</count> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Erase block B	-->
+<!-- 		<breakpoint type="EraseBlock"> -->
+<!-- 			<blockIndex>0</blockIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Any block reaches erase count	-->
+<!-- 		<breakpoint type="EraseCountAnyBlock"> -->
+<!-- 			<count>2</count> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Block reaches erase count	-->
+<!-- 		<breakpoint type="EraseCountBlock"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<blockIndex>0</blockIndex> -->
+<!-- 		</breakpoint> -->
+
+<!--  		Invoke garbage collection in the i-th time in plane P	-->
+<!-- 		<breakpoint type="GCNthTime" level="Plane"> -->
+<!-- 			<value>2</value> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Invoke garbage collection in the i-th time in chip C	-->
+<!-- 		<breakpoint type="GCNthTime" level="Chip"> -->
+<!-- 			<value>2</value> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Invoke garbage collection in the i-th time in the device	-->
+<!-- 		<breakpoint type="GCNthTime" level="Device"> -->
+<!-- 			<value>2</value> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		HotCold partition holds percent of pages	-->
+<!-- 		<breakpoint type="HotColdPartitionHoldsPercentOfPages"> -->
+<!-- 			<percent>20</percent> -->
+<!-- 			<partition>0</partition> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		X pages are written in plane	-->
+<!-- 		<breakpoint type="PagesWritten" level="Plane"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		X pages are written in chip	-->
+<!-- 		<breakpoint type="PagesWritten" level="Chip"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		X pages are written in device	-->
+<!-- 		<breakpoint type="PagesWritten" level="Device"> -->
+<!-- 			<count>2</count> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Reusable block B is recycled	-->
+<!-- 		<breakpoint type="ReusableBlockRecycled"> -->
+<!-- 			<blockIndex>2</blockIndex> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Reusable percent of pages in write level	-->
+<!-- 		<breakpoint type="ReusableLevelPagesPercent"> -->
+<!-- 			<percent>10</percent> -->
+<!-- 			<level>0</level> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Write Amplification reaches W	-->
+<!-- 		<breakpoint type="WriteAmplification"> -->
+<!-- 			<value>1.1</value> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Write logical page L	-->
+<!-- 		<breakpoint type="WriteLp"> -->
+<!-- 			<lp>0</lp> -->
+<!-- 		</breakpoint> -->
+		
+<!--  		Write physical page P	-->
+<!-- 		<breakpoint type="WritePp"> -->
+<!-- 			<physicalPage>0</physicalPage> -->
+<!-- 		</breakpoint> -->
+	
+<!--  		Writes per erase reach W	-->
+<!-- 		<breakpoint type="WritesPerErase"> -->
+<!-- 			<value>1.1</value> -->
+<!-- 		</breakpoint> -->
+	
 	</breakpoints>
 </root>

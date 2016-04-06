@@ -14,14 +14,14 @@ public class BreakpointFactory {
 	public static void initBreakpointFactory() {
 		mTypeMap = new HashMap<>();
 		
-		register(WriteLpBreakpoint.class);
-		register(WritePpBreakpoint.class);
-		register(AllocateActiveBlockBreakpoint.class);
-		register(EraseBlockBreakpoint.class);
-		register(WriteAmplificationBreakpoint.class);
-		register(WritesPerEraseBreakpoint.class);
-		register(EraseCountBlockBreakpoint.class);
-		register(EraseCountAnyBlockBreakpoint.class);
+		register(WriteLp.class);
+		register(WritePp.class);
+		register(AllocateActiveBlock.class);
+		register(EraseBlock.class);
+		register(WriteAmplification.class);
+		register(WritesPerErase.class);
+		register(EraseCountBlock.class);
+		register(EraseCountAnyBlock.class);
 		register(CleanBlocksPlane.class);
 		register(CleanBlocksChip.class);
 		register(CleanBlocksDevice.class);

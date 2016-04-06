@@ -4,10 +4,10 @@ import entities.BlockStatus;
 import entities.BlockStatusGeneral;
 import entities.Device;
 
-public class AllocateActiveBlockBreakpoint extends BreakpointBase {
+public class AllocateActiveBlock extends BreakpointBase {
 	private int mBlockIndex;
 	
-	public AllocateActiveBlockBreakpoint() {
+	public AllocateActiveBlock() {
 		super();
 	}
 	
