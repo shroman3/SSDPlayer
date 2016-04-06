@@ -42,10 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-<<<<<<< HEAD
 import breakpoints.BreakpointBase;
-=======
->>>>>>> 0b92a12... Finished ui for zoom - waiting to integrate with functionality
 import breakpoints.BreakpointsDeserializer;
 import entities.Device;
 import entities.StatisticsGetter;
@@ -74,13 +71,8 @@ public class MainSimulationView extends JFrame {
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-<<<<<<< HEAD
 			final List<BreakpointBase> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 			
-=======
-			final List<IBreakpoint> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
-
->>>>>>> 84ea093... Started adding zoom dialog
 			SSDManager.initializeManager(xmlGetter);
 			ConfigProperties.initialize(xmlGetter);
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
@@ -101,12 +93,7 @@ public class MainSimulationView extends JFrame {
 		}
 	}
 
-<<<<<<< HEAD
-
 	public MainSimulationView(VisualConfig visualConfig, List<BreakpointBase> initialBreakpoints) {
-=======
-	public MainSimulationView(VisualConfig visualConfig, List<IBreakpoint> initialBreakpoints) {
->>>>>>> 84ea093... Started adding zoom dialog
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
