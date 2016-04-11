@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 
 import entities.Device;
@@ -86,6 +87,8 @@ public abstract class GeneralStatisticsGraph extends Component {
 //		Graphics2D g2d2 = (Graphics2D) g2d.create();
 		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
 		g2d.setStroke(dashed);
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 		g2d.drawLine(VER_ASIX, TITLE_HIEGHT + HEIGHT/2, VER_ASIX + graphWidth, TITLE_HIEGHT + HEIGHT/2);
 		g2d.drawLine(VER_ASIX, TITLE_HIEGHT + HEIGHT*3/4, VER_ASIX + graphWidth, TITLE_HIEGHT + HEIGHT*3/4);
@@ -96,7 +99,7 @@ public abstract class GeneralStatisticsGraph extends Component {
 		//gets rid of the copy
 //        g2d.dispose();
 
-		g2d.setFont(Consts.UI.SMALL_FONT); 
+		g2d.setFont(Consts.UI.SMALLER_FONT); 
 		g2d.setColor(Consts.Colors.TEXT);
 		g2d.drawString(statisticsTitle, (width/2) - (g2d.getFontMetrics().stringWidth(statisticsTitle)/2), TITLE_HIEGHT - SPACING/2);
 		completeDrawing(g2d);

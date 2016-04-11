@@ -146,11 +146,17 @@ public class MainSimulationView extends JFrame {
 		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
 		
 		JPanel triggeredBreakpointsPanel = new JPanel(new FlowLayout());
+		triggeredBreakpointsPanel.setPreferredSize(new Dimension(450, 150));
+		triggeredBreakpointsPanel.setMaximumSize(new Dimension(450, 150));
+		
 		triggeredBreakpointsView = new TriggeredBreakpointsView();
 		tracePlayer.setTriggeredBreakpointsView(triggeredBreakpointsView);
 		
 		triggeredBreakpointsPanel.add(triggeredBreakpointsView);
 		JScrollPane scrollableBreakpointsPane = new JScrollPane(triggeredBreakpointsPanel);
+		scrollableBreakpointsPane.setPreferredSize(new Dimension(450, 150));
+		scrollableBreakpointsPane.setMaximumSize(new Dimension(450, 150));
+		
 		scrollableBreakpointsPane.setBorder(BorderFactory.createEmptyBorder());
 
 		statisticsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
