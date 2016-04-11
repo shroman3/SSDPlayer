@@ -493,6 +493,7 @@ public class TracePlayer extends JPanel {
     }
 	
 	private void showBreakpointsDialog() {
+		pauseTrace();
 		breakpointsDialog.updateHitBreakpoints();
 		breakpointsDialog.setVisible(true);
 		
