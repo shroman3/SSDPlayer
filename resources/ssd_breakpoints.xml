@@ -89,7 +89,7 @@
 <!-- 			<level>0</level> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		Write Amplification reaches W	-->
+<!--  		Write Amplification reaches W	 -->
 <!-- 		<breakpoint type="WriteAmplification"> -->
 <!-- 			<value>1.1</value> -->
 <!-- 		</breakpoint> -->

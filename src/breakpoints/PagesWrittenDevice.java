@@ -43,4 +43,12 @@ public class PagesWrittenDevice extends BreakpointBase {
 		this.mCount = mCount;
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof PagesWrittenDevice)) return false; 
+		PagesWrittenDevice otherCasted = (PagesWrittenDevice) other;
+		
+		return mCount == otherCasted.getCount();
+	}
+
 }

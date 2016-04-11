@@ -44,4 +44,12 @@ public class GCNthTimeDevice extends BreakpointBase {
 		mComponents.add(new BreakpointComponent("value", int.class, "Value"));
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof GCNthTimeDevice)) return false; 
+		GCNthTimeDevice otherCasted = (GCNthTimeDevice) other;
+		
+		return mValue == otherCasted.getValue();
+	}
+
 }

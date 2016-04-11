@@ -45,4 +45,12 @@ public class WritesPerErase extends BreakpointBase {
 		mComponents.add(new BreakpointComponent("value", double.class, "Writes per erase"));
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof WritesPerErase)) return false; 
+		WritesPerErase otherCasted = (WritesPerErase) other;
+		
+		return Double.compare(mValue,otherCasted.getValue()) == 0;
+	}
+
 }

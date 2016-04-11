@@ -240,6 +240,16 @@ public class TracePlayer extends JPanel {
 		addButton(generateButton, "Generate New Workload");
 		generateButton.setEnabled(true);
 		
+		breakpointsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showBreakpointsDialog();
+			}
+		});
+		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		breakpointsButton.setEnabled(true);
+		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.Colors.ACTIVE));
+		
 		playPauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -284,7 +294,7 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
 		zoomButton.setEnabled(true);
-		
+
 		add(Box.createRigidArea(new Dimension(5,0)));
 	}
 

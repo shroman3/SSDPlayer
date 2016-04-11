@@ -53,4 +53,13 @@ public class CleanBlocksChip extends BreakpointBase {
 	public void setCount(int mCount) {
 		this.mCount = mCount;
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof CleanBlocksChip)) return false; 
+		CleanBlocksChip otherCasted = (CleanBlocksChip) other;
+		
+		return mChipIndex == otherCasted.getChipIndex()
+				&& mCount == otherCasted.getCount();
+	}
 }

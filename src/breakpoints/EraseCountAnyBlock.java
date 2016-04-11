@@ -50,4 +50,12 @@ public class EraseCountAnyBlock extends BreakpointBase {
 	public void setCount(int mCount) {
 		this.mCount = mCount;
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof EraseCountAnyBlock)) return false; 
+		EraseCountAnyBlock otherCasted = (EraseCountAnyBlock) other;
+		
+		return mCount == otherCasted.getCount();
+	}
 }

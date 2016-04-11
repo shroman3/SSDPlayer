@@ -53,4 +53,13 @@ public class PagesWrittenChip extends BreakpointBase {
 		this.mChipIndex = mChipIndex;
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof PagesWrittenChip)) return false; 
+		PagesWrittenChip otherCasted = (PagesWrittenChip) other;
+		
+		return mCount == otherCasted.getCount()
+				&& mChipIndex == otherCasted.getChipIndex();
+	}
+
 }

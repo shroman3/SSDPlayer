@@ -72,4 +72,13 @@ public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
 		this.mPercent = mPercent;
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof HotColdPartitionHoldsPercentOfPages)) return false; 
+		HotColdPartitionHoldsPercentOfPages otherCasted = (HotColdPartitionHoldsPercentOfPages) other;
+		
+		return mPercent == otherCasted.getPercent()
+				&& mPartition == otherCasted.getPartition();
+	}
+
 }

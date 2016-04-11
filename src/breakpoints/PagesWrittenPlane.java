@@ -50,8 +50,17 @@ public class PagesWrittenPlane extends BreakpointBase {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int mPlaneIndex) {
-		this.mPlaneIndex = mPlaneIndex;
+	public void setPlaneIndex(int planeIndex) {
+		mPlaneIndex = planeIndex;
+	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof PagesWrittenPlane)) return false; 
+		PagesWrittenPlane otherCasted = (PagesWrittenPlane) other;
+		
+		return mCount == otherCasted.getCount()
+				&& mPlaneIndex == otherCasted.getPlaneIndex();
 	}
 
 }

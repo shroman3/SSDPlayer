@@ -50,4 +50,12 @@ public class WriteLp extends BreakpointBase {
 	public void addComponents() {
 		mComponents.add(new BreakpointComponent("lp", int.class, "Logical page"));
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof WriteLp)) return false; 
+		WriteLp otherCasted = (WriteLp) other;
+		
+		return lp == otherCasted.getLp();
+	}
 }

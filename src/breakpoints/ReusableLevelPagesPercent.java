@@ -71,4 +71,13 @@ public class ReusableLevelPagesPercent extends BreakpointBase {
 		this.mPercent = mPercent;
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof ReusableLevelPagesPercent)) return false; 
+		ReusableLevelPagesPercent otherCasted = (ReusableLevelPagesPercent) other;
+		
+		return mLevel == otherCasted.getLevel()
+				&& mPercent == otherCasted.getPercent();
+	}
+
 }

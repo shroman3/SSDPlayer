@@ -42,4 +42,12 @@ public class CleanBlocksDevice extends BreakpointBase {
 	public void setCount(int mCount) {
 		this.mCount = mCount;
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof CleanBlocksDevice)) return false; 
+		CleanBlocksDevice otherCasted = (CleanBlocksDevice) other;
+		
+		return mCount == otherCasted.getCount();
+	}
 }

@@ -125,12 +125,16 @@ public class ManageBreakpointsDialog extends JDialog {
 		updateNoBreakpointsLabelVisibility();
 	}
 
-	public void addBreakpoint(BreakpointBase breakpoint) {
+	public void addBreakpoint(BreakpointBase newBreakpoint) {
+		for (BreakpointBase bp : mBreakpoints.keySet()) {
+			if (bp.isEquals(newBreakpoint)) return;
+		}
+		
 		JPanel breakpointPanel = new JPanel();
-		buildBreakpointPanel(breakpoint, breakpointPanel);
+		buildBreakpointPanel(newBreakpoint, breakpointPanel);
 		
 		mBreakpointsListPanel.add(breakpointPanel);
-		mBreakpoints.put(breakpoint, breakpointPanel);
+		mBreakpoints.put(newBreakpoint, breakpointPanel);
 		updateNoBreakpointsLabelVisibility();
 	}
 

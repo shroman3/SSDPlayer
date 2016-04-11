@@ -53,4 +53,13 @@ public class GCNthTimePlane extends BreakpointBase {
 		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane"));
 		mComponents.add(new BreakpointComponent("value", int.class, "Value"));
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof GCNthTimePlane)) return false; 
+		GCNthTimePlane otherCasted = (GCNthTimePlane) other;
+		
+		return mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mValue == otherCasted.getValue();
+	}
 }

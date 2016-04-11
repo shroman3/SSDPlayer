@@ -52,4 +52,12 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		this.mBlockIndex = mBlockIndex;
 	}
 
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof ReusableBlockRecycled)) return false; 
+		ReusableBlockRecycled otherCasted = (ReusableBlockRecycled) other;
+		
+		return mBlockIndex == otherCasted.getBlockIndex();
+	}
+
 }

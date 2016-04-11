@@ -22,4 +22,6 @@ public interface IBreakpoint {
 	public void addComponents();
 
 	public List<BreakpointComponent> getComponents();
+	
+	public boolean isEquals(IBreakpoint other);
 }

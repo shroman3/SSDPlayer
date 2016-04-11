@@ -33,7 +33,6 @@ public class WriteAmplification extends BreakpointBase {
 	public void setValue(double value) {
 		mValue = value;
 	}
-
 	
 	@Override
 	public String getDescription() {
@@ -48,5 +47,13 @@ public class WriteAmplification extends BreakpointBase {
 	@Override
 	public void addComponents() {
 		mComponents.add(new BreakpointComponent("value", double.class, "Value"));
+	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof WriteAmplification)) return false; 
+		WriteAmplification otherCasted = (WriteAmplification) other;
+		
+		return Double.compare(mValue,otherCasted.getValue()) == 0;
 	}
 }

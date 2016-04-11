@@ -52,4 +52,13 @@ public class CleanBlocksPlane extends BreakpointBase {
 	public void setCount(int mCount) {
 		this.mCount = mCount;
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof CleanBlocksPlane)) return false; 
+		CleanBlocksPlane otherCasted = (CleanBlocksPlane) other;
+		
+		return mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mCount == otherCasted.getCount();
+	}
 }

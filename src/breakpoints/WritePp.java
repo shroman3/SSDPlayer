@@ -43,4 +43,12 @@ public class WritePp extends BreakpointBase {
 	public void addComponents() {
 		mComponents.add(new BreakpointComponent("physicalPage", int.class, "Physical page"));
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof WritePp)) return false; 
+		WritePp otherCasted = (WritePp) other;
+		
+		return mPhysicalPage == otherCasted.getPhysicalPage();
+	}
 }

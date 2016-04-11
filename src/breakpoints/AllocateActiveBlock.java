@@ -56,4 +56,12 @@ public class AllocateActiveBlock extends BreakpointBase {
 	public void addComponents() {
 		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block"));
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof AllocateActiveBlock)) return false; 
+		AllocateActiveBlock otherCasted = (AllocateActiveBlock) other;
+		
+		return mBlockIndex == otherCasted.getBlockIndex();
+	}
 }

@@ -53,4 +53,13 @@ public class GCNthTimeChip extends BreakpointBase {
 		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
 		mComponents.add(new BreakpointComponent("value", int.class, "Value"));
 	}
+
+	@Override
+	public boolean isEquals(IBreakpoint other) {
+		if (!(other instanceof GCNthTimeChip)) return false; 
+		GCNthTimeChip otherCasted = (GCNthTimeChip) other;
+		
+		return mChipIndex == otherCasted.getChipIndex()
+				&& mValue == otherCasted.getValue();
+	}
 }
