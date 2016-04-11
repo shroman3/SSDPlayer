@@ -22,19 +22,16 @@
 package ui;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
-import javax.swing.BorderFactory;
-
-import utils.Utils;
 import entities.Device;
 import entities.StatisticsGetter;
 import general.Consts;
+import utils.Utils;
 
 public abstract class GeneralStatisticsGraph extends Component {
 	private static final long serialVersionUID = 1L;

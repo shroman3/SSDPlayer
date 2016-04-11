@@ -22,7 +22,6 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -70,7 +69,7 @@ public class MainSimulationView extends JFrame {
 	private DeviceView deviceView;
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
-	private JPanel triggeredBreakpointsView;
+	private TriggeredBreakpointsView triggeredBreakpointsView;
 	private JPanel southInnerPanel;
 
 	public static void main(String[] args) {
@@ -145,16 +144,22 @@ public class MainSimulationView extends JFrame {
 		
 		southInnerPanel = new JPanel();
 		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
+		
+		JPanel triggeredBreakpointsPanel = new JPanel(new FlowLayout());
 		triggeredBreakpointsView = new TriggeredBreakpointsView();
+		tracePlayer.setTriggeredBreakpointsView(triggeredBreakpointsView);
+		
+		triggeredBreakpointsPanel.add(triggeredBreakpointsView);
+		JScrollPane scrollableBreakpointsPane = new JScrollPane(triggeredBreakpointsPanel);
+		scrollableBreakpointsPane.setBorder(BorderFactory.createEmptyBorder());
 
-		statisticsPanel = new JPanel(new FlowLayout());
+		statisticsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
 		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
 		
-		southInnerPanel.setBorder(BorderFactory.createLineBorder(Color.red));
-		statisticsPanel.setBorder(BorderFactory.createLineBorder(Color.pink));
+		statisticsPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Consts.Colors.BORDER));
 		southInnerPanel.add(scrollableStatisticsPane);
-		southInnerPanel.add(triggeredBreakpointsView);
+		southInnerPanel.add(scrollableBreakpointsPane);
 		southPanel.add(southInnerPanel);
 		
 		setMinimumSize(new Dimension(550, 550));
@@ -170,6 +175,7 @@ public class MainSimulationView extends JFrame {
 				
 				statisticsPanel.removeAll();
 				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
+				statisticsView.setAlignmentY(Component.CENTER_ALIGNMENT);
 				statisticsPanel.add(statisticsView);
 				statisticsPanel.updateUI();
 			}

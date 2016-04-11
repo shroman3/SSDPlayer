@@ -99,9 +99,9 @@
 <!-- 			<lp>0</lp> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		Write physical page P	-->
+<!--  		Write physical page P	 -->
 <!-- 		<breakpoint type="WritePp"> -->
-<!-- 			<physicalPage>0</physicalPage> -->
+<!-- 			<physicalPage>2</physicalPage> -->
 <!-- 		</breakpoint> -->
 	
 <!--  		Writes per erase reach W	-->
