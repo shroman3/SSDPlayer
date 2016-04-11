@@ -4,6 +4,8 @@ import entities.Device;
 
 public class EraseCountBlock extends BreakpointBase {
 
+	private int mChipIndex;
+	private int mPlaneIndex;
 	private int mBlockIndex;
 	private int mCount;
 	
@@ -18,22 +20,33 @@ public class EraseCountBlock extends BreakpointBase {
 			return false;
 		}
 		
-		return previousDevice.getBlockByIndex(getBlockIndex()).getEraseCounter() != getCount() 
-				&& currentDevice.getBlockByIndex(getBlockIndex()).getEraseCounter() == getCount();			 
+		return previousDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex).getEraseCounter() != getCount() 
+			&& currentDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex).getEraseCounter() == getCount();			 
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "Block reaches erase count";
+		return "Block B reaches erase count";
 	}
 
 	@Override
 	public String getDescription() {
-		return getBlockIndex() + " block reaches erase count of " + getCount();
+		return "Block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> reaches erase count of " + getCount();
 	}
 
 	@Override
 	public void addComponents() {
+		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
+		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane"));
 		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block index"));
 		mComponents.add(new BreakpointComponent("count", int.class, "Erase count"));
 	}
@@ -44,6 +57,22 @@ public class EraseCountBlock extends BreakpointBase {
 
 	public void setBlockIndex(int mBlockIndex) {
 		this.mBlockIndex = mBlockIndex;
+	}
+	
+	public int getPlaneIndex() {
+		return mPlaneIndex;
+	}
+
+	public void setPlaneIndex(int planeIndex) {
+		mPlaneIndex = planeIndex;
+	}
+	
+	public int getChipIndex() {
+		return mChipIndex;
+	}
+
+	public void setChipIndex(int chipIndex) {
+		mChipIndex = chipIndex;
 	}
 
 	public int getCount() {
@@ -60,6 +89,8 @@ public class EraseCountBlock extends BreakpointBase {
 		EraseCountBlock otherCasted = (EraseCountBlock) other;
 		
 		return mCount == otherCasted.getCount()
-				&& mBlockIndex == otherCasted.getBlockIndex();
+				&& mBlockIndex == otherCasted.getBlockIndex()
+				&& mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mChipIndex == otherCasted.getChipIndex();
 	}
 }

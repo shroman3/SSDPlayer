@@ -3,6 +3,7 @@ package breakpoints;
 import entities.Device;
 
 public class GCNthTimePlane extends BreakpointBase {
+	private int mChipIndex;
 	private int mPlaneIndex;
 	private int mValue;
 	
@@ -16,8 +17,10 @@ public class GCNthTimePlane extends BreakpointBase {
 			return false;
 		}
 		
-		int prevGCCount = previousDevice.getPlaneByIndex(mPlaneIndex).getTotalGCInvocations();
-		int currGCCount = currentDevice.getPlaneByIndex(mPlaneIndex).getTotalGCInvocations();
+		int prevGCCount = previousDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex).getTotalGCInvocations();
+		int currGCCount = currentDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex).getTotalGCInvocations();
 		
 		return prevGCCount != mValue && currGCCount == mValue;
 	}
@@ -37,6 +40,14 @@ public class GCNthTimePlane extends BreakpointBase {
 	public void setPlaneIndex(int planeIndex) {
 		mPlaneIndex = planeIndex;
 	}
+	
+	public int getChipIndex() {
+		return mChipIndex;
+	}
+
+	public void setChipIndex(int chipIndex) {
+		mChipIndex = chipIndex;
+	}
 
 	@Override
 	public String getDisplayName() {
@@ -45,11 +56,16 @@ public class GCNthTimePlane extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Number of garbage collection invocations is " + getValue() + " in plane " + getPlaneIndex();
+		return "Number of garbage collection invocations is " + getValue() + " in plane (<chip,plane>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex
+				+ ">";
 	}
 
 	@Override
 	public void addComponents() {
+		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
 		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane"));
 		mComponents.add(new BreakpointComponent("value", int.class, "Value"));
 	}
@@ -60,6 +76,7 @@ public class GCNthTimePlane extends BreakpointBase {
 		GCNthTimePlane otherCasted = (GCNthTimePlane) other;
 		
 		return mPlaneIndex == otherCasted.getPlaneIndex()
-				&& mValue == otherCasted.getValue();
+				&& mValue == otherCasted.getValue()
+				&& mChipIndex == otherCasted.getChipIndex();
 	}
 }

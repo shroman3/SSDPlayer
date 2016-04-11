@@ -7,6 +7,7 @@ public class PagesWrittenPlane extends BreakpointBase {
 
 	private int mCount;
 	private int mPlaneIndex;
+	private int mChipIndex;
 
 	public PagesWrittenPlane(){
 		super();
@@ -16,10 +17,13 @@ public class PagesWrittenPlane extends BreakpointBase {
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
 		if(previousDevice == null){
-			return ((Plane<?, ?>)currentDevice.getPlaneByIndex(mPlaneIndex)).getTotalWritten() == mCount; 
+			return ((Plane<?, ?>)currentDevice.getChip(mChipIndex)
+					.getPlane(mPlaneIndex)).getTotalWritten() == mCount; 
 		}
-		return ((Plane<?, ?>)currentDevice.getPlaneByIndex(mPlaneIndex)).getTotalWritten() == mCount 
-				&& ((Plane<?, ?>)previousDevice.getPlaneByIndex(mPlaneIndex)).getTotalWritten() != mCount;
+		return ((Plane<?, ?>)currentDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)).getTotalWritten() == mCount 
+				&& ((Plane<?, ?>)previousDevice.getChip(mChipIndex)
+						.getPlane(mPlaneIndex)).getTotalWritten() != mCount;
 	}
 
 	@Override
@@ -29,13 +33,18 @@ public class PagesWrittenPlane extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return getCount() + " pages are written in plane " + mPlaneIndex;
+		return getCount() + " pages are written in plane (<chip,plane>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex
+				+ ">";
 	}
 
 	@Override
 	public void addComponents() {
 		mComponents.add(new BreakpointComponent("count", int.class, "Number of pages written"));
 		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane index"));
+		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
 	}
 
 	public int getCount() {
@@ -53,6 +62,14 @@ public class PagesWrittenPlane extends BreakpointBase {
 	public void setPlaneIndex(int planeIndex) {
 		mPlaneIndex = planeIndex;
 	}
+	
+	public int getChipIndex() {
+		return mChipIndex;
+	}
+
+	public void setChipIndex(int chipIndex) {
+		mChipIndex = chipIndex;
+	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
@@ -60,7 +77,8 @@ public class PagesWrittenPlane extends BreakpointBase {
 		PagesWrittenPlane otherCasted = (PagesWrittenPlane) other;
 		
 		return mCount == otherCasted.getCount()
-				&& mPlaneIndex == otherCasted.getPlaneIndex();
+				&& mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mChipIndex == otherCasted.getChipIndex();
 	}
 
 }

@@ -3,7 +3,10 @@ package breakpoints;
 import entities.Device;
 
 public class WritePp extends BreakpointBase {
-	private int mPhysicalPage;
+	private int mPageIndex;
+	private int mBlockIndex;
+	private int mPlaneIndex;
+	private int mChipIndex;
 	
 	public WritePp() {
 		super();
@@ -12,26 +15,64 @@ public class WritePp extends BreakpointBase {
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
-		boolean currentPageIsClean = currentDevice.getPageByIndex(mPhysicalPage).isClean();
+		boolean currentPageIsClean = currentDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex)
+				.getPage(mPageIndex)
+				.isClean();
 		if(previousDevice == null){
 			return !currentPageIsClean;
 		}
 		
-		boolean previousPageIsclean = previousDevice.getPageByIndex(mPhysicalPage).isClean();
+		boolean previousPageIsclean = previousDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex)
+				.getPage(mPageIndex)
+				.isClean();
 		return previousPageIsclean && !currentPageIsClean;
 	}
 
-	public int getPhysicalPage() {
-		return mPhysicalPage;
+	public int getPageIndex() {
+		return mPageIndex;
 	}
 
-	public void setPhysicalPage(int physicalPage) {
-		this.mPhysicalPage = physicalPage;
+	public void setPageIndex(int pageIndex) {
+		mPageIndex = pageIndex;
+	}
+	
+	public int getBlockIndex() {
+		return mBlockIndex;
+	}
+	
+	public void setBlockIndex(int blockIndex) {
+		mBlockIndex = blockIndex;
+	}
+	
+	public int getPlaneIndex() {
+		return mPlaneIndex;
+	}
+
+	public void setPlaneIndex(int planeIndex) {
+		mPlaneIndex = planeIndex;
+	}
+	
+	public int getChipIndex() {
+		return mChipIndex;
+	}
+
+	public void setChipIndex(int chipIndex) {
+		mChipIndex = chipIndex;
 	}
 
 	@Override
 	public String getDescription() {
-		return "Write physical page " + mPhysicalPage;
+		return "Write physical page (<chip,plane,block,page>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex + ","
+				+ mPageIndex 
+				+ ">";
 	}
 
 	@Override
@@ -41,7 +82,10 @@ public class WritePp extends BreakpointBase {
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("physicalPage", int.class, "Physical page"));
+		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
+		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane"));
+		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block"));
+		mComponents.add(new BreakpointComponent("pageIndex", int.class, "Page index"));
 	}
 
 	@Override
@@ -49,6 +93,9 @@ public class WritePp extends BreakpointBase {
 		if (!(other instanceof WritePp)) return false; 
 		WritePp otherCasted = (WritePp) other;
 		
-		return mPhysicalPage == otherCasted.getPhysicalPage();
+		return mPageIndex == otherCasted.getPageIndex()
+				&& mBlockIndex == otherCasted.getBlockIndex()
+				&& mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mChipIndex == otherCasted.getChipIndex();
 	}
 }

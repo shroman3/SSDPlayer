@@ -3,12 +3,15 @@
 <!-- 		Allocate block B as active -->
 <!-- 		<breakpoint type="AllocateActiveBlock"> -->
 <!-- 			<blockIndex>0</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Number of clean blocks in plane	-->
 <!-- 		<breakpoint type="CleanBlocks" level="Plane"> -->
 <!-- 			<count>2</count> -->
 <!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 
 <!--  		Number of clean blocks in chip	-->
@@ -25,6 +28,8 @@
 <!--  		Erase block B	-->
 <!-- 		<breakpoint type="EraseBlock"> -->
 <!-- 			<blockIndex>0</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Any block reaches erase count	-->
@@ -36,12 +41,15 @@
 <!-- 		<breakpoint type="EraseCountBlock"> -->
 <!-- 			<count>2</count> -->
 <!-- 			<blockIndex>0</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 
 <!--  		Invoke garbage collection in the i-th time in plane P	-->
 <!-- 		<breakpoint type="GCNthTime" level="Plane"> -->
 <!-- 			<value>2</value> -->
 <!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Invoke garbage collection in the i-th time in chip C	-->
@@ -65,6 +73,7 @@
 <!-- 		<breakpoint type="PagesWritten" level="Plane"> -->
 <!-- 			<count>2</count> -->
 <!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
 <!--  		X pages are written in chip	-->
@@ -81,6 +90,8 @@
 <!--  		Reusable block B is recycled	-->
 <!-- 		<breakpoint type="ReusableBlockRecycled"> -->
 <!-- 			<blockIndex>2</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Reusable percent of pages in write level	-->
@@ -101,7 +112,10 @@
 		
 <!--  		Write physical page P	 -->
 <!-- 		<breakpoint type="WritePp"> -->
-<!-- 			<physicalPage>2</physicalPage> -->
+<!-- 			<pageIndex>2</pageIndex> -->
+<!-- 			<blockIndex>0</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 	
 <!--  		Writes per erase reach W	-->

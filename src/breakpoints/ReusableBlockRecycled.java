@@ -8,6 +8,8 @@ import entities.reusable.ReusableDevice;
 public class ReusableBlockRecycled extends BreakpointBase {
 
 	private int mBlockIndex;
+	private int mPlaneIndex;
+	private int mChipIndex;
 
 	public ReusableBlockRecycled() {
 		super();
@@ -23,8 +25,12 @@ public class ReusableBlockRecycled extends BreakpointBase {
 			return false;
 		}
 		
-		ReusableBlock currentBlock = (ReusableBlock) currentDevice.getBlockByIndex(mBlockIndex);
-		ReusableBlock prevBlock = (ReusableBlock) previousDevice.getBlockByIndex(mBlockIndex);
+		ReusableBlock currentBlock = (ReusableBlock) currentDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex);
+		ReusableBlock prevBlock = (ReusableBlock) previousDevice.getChip(mChipIndex)
+				.getPlane(mPlaneIndex)
+				.getBlock(mBlockIndex);
 		return (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED 
 				&& prevBlock.getStatus() != ReusableBlockStatus.RECYCLED);
 	}
@@ -36,11 +42,18 @@ public class ReusableBlockRecycled extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Reusable block " + getBlockIndex() + " is recycled";
+		return "Reusable block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> is recycled";
 	}
 
 	@Override
 	public void addComponents() {
+		mComponents.add(new BreakpointComponent("chipIndex", int.class, "Chip"));
+		mComponents.add(new BreakpointComponent("planeIndex", int.class, "Plane"));
 		mComponents.add(new BreakpointComponent("blockIndex", int.class, "Block"));
 	}
 
@@ -51,13 +64,31 @@ public class ReusableBlockRecycled extends BreakpointBase {
 	public void setBlockIndex(int mBlockIndex) {
 		this.mBlockIndex = mBlockIndex;
 	}
+	
+	public int getPlaneIndex() {
+		return mPlaneIndex;
+	}
+
+	public void setPlaneIndex(int planeIndex) {
+		mPlaneIndex = planeIndex;
+	}
+	
+	public int getChipIndex() {
+		return mChipIndex;
+	}
+
+	public void setChipIndex(int chipIndex) {
+		mChipIndex = chipIndex;
+	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
 		if (!(other instanceof ReusableBlockRecycled)) return false; 
 		ReusableBlockRecycled otherCasted = (ReusableBlockRecycled) other;
 		
-		return mBlockIndex == otherCasted.getBlockIndex();
+		return mBlockIndex == otherCasted.getBlockIndex()
+				&& mPlaneIndex == otherCasted.getPlaneIndex()
+				&& mChipIndex == otherCasted.getChipIndex();
 	}
 
 }
