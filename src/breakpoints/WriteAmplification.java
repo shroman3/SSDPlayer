@@ -6,7 +6,7 @@ import manager.SSDManager;
 import manager.WriteAmplificationGetter;
 
 public class WriteAmplification extends BreakpointBase {
-	private double mValue;
+	private double mValue = 1.0;
 
 	public WriteAmplification() {
 		super();

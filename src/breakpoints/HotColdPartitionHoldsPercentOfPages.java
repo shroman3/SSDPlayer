@@ -7,7 +7,7 @@ import entities.hot_cold.HotColdPage;
 import general.ConfigProperties;
 
 public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
-	private int mPartition;
+	private int mPartition = 1;
 	private int mPercent;
 
 	public HotColdPartitionHoldsPercentOfPages() {
