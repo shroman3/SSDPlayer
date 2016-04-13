@@ -5,6 +5,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import entities.Device;
+import manager.SSDManager;
 
 public interface IBreakpoint {
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice);
@@ -24,4 +25,6 @@ public interface IBreakpoint {
 	public List<BreakpointComponent> getComponents();
 	
 	public boolean isEquals(IBreakpoint other);
+	
+	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager);
 }

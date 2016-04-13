@@ -30,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 import breakpoints.BreakpointBase;
 import breakpoints.IBreakpoint;
+import manager.SSDManager;
 
 public class ManageBreakpointsDialog extends JDialog {
 	public static final String DIALOG_HEADER = "Manage Breakpoints";
@@ -39,10 +40,12 @@ public class ManageBreakpointsDialog extends JDialog {
 	private JPanel mBreakpointsListPanel;
 	private JPanel mNoBreakpointsPanel;
 	private HashMap<BreakpointBase, JPanel> mBreakpoints;
+	private SSDManager<?, ?, ?, ?, ?> mManager;
 	
-	public ManageBreakpointsDialog(Window parentWindow) {
+	public ManageBreakpointsDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager) {
 		super(parentWindow, DIALOG_HEADER);
 		mParentWindow = parentWindow;
+		mManager = manager;
 		mBreakpoints = new HashMap<>(); 
 		
 		setDefaultLookAndFeelDecorated(true);
@@ -71,7 +74,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		newBreakpointButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DefineBreakpointDialog newBpDialog = new DefineBreakpointDialog(mParentWindow, null);
+				DefineBreakpointDialog newBpDialog = new DefineBreakpointDialog(mParentWindow, mManager, null);
 				newBpDialog.setVisible(true);
 				BreakpointBase breakpoint = newBpDialog.getBreakpoint();
 				if (breakpoint != null) {
@@ -176,7 +179,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		editButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DefineBreakpointDialog editBpDialog = new DefineBreakpointDialog(mParentWindow, breakpoint);
+				DefineBreakpointDialog editBpDialog = new DefineBreakpointDialog(mParentWindow, mManager, breakpoint);
 				editBpDialog.setVisible(true);
 				BreakpointBase newBreakpoint = editBpDialog.getBreakpoint();
 				if (newBreakpoint != null) {
@@ -248,5 +251,9 @@ public class ManageBreakpointsDialog extends JDialog {
 			
 			label.revalidate();
 		}
+	}
+
+	public void setManager(SSDManager<?, ?, ?, ?, ?> manager) {
+		mManager = manager;
 	}
 }

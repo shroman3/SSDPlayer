@@ -1,6 +1,9 @@
 package breakpoints;
 
 import manager.HotColdPartition;
+import manager.HotColdReusableSSDManager;
+import manager.HotColdSSDManager;
+import manager.SSDManager;
 import entities.Device;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
@@ -81,4 +84,13 @@ public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
 				&& mPartition == otherCasted.getPartition();
 	}
 
+	@Override
+	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
+		if (manager instanceof HotColdSSDManager 
+				|| manager instanceof HotColdReusableSSDManager) {
+			return true;
+		}
+		
+		return false;
+	}
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import manager.SSDManager;
+
 public abstract class BreakpointBase implements IBreakpoint {
 	protected List<BreakpointComponent> mComponents = new ArrayList<>();
 	protected boolean mIsHit;
@@ -45,5 +47,10 @@ public abstract class BreakpointBase implements IBreakpoint {
 	@Override
 	public void setIsHit(boolean value) {
 		mIsHit = value;
+	}
+	
+	@Override
+	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
+		return true;
 	}
 }

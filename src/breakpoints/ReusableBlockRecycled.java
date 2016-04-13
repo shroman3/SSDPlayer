@@ -4,6 +4,9 @@ import entities.Device;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableBlockStatus;
 import entities.reusable.ReusableDevice;
+import manager.ReusableSSDManager;
+import manager.ReusableVisualizationSSDManager;
+import manager.SSDManager;
 
 public class ReusableBlockRecycled extends BreakpointBase {
 
@@ -91,4 +94,13 @@ public class ReusableBlockRecycled extends BreakpointBase {
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
 
+	@Override
+	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
+		if (manager instanceof ReusableSSDManager 
+				|| manager instanceof ReusableVisualizationSSDManager) {
+			return true;
+		}
+		
+		return false;
+	}
 }

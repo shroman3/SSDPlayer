@@ -4,6 +4,9 @@ import entities.Device;
 import entities.reusable.ReusableDevice;
 import entities.reusable.ReusablePage;
 import general.ConfigProperties;
+import manager.ReusableSSDManager;
+import manager.ReusableVisualizationSSDManager;
+import manager.SSDManager;
 
 public class ReusableLevelPagesPercent extends BreakpointBase {
 	private int mLevel;
@@ -80,4 +83,13 @@ public class ReusableLevelPagesPercent extends BreakpointBase {
 				&& mPercent == otherCasted.getPercent();
 	}
 
+	@Override
+	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
+		if (manager instanceof ReusableSSDManager 
+				|| manager instanceof ReusableVisualizationSSDManager) {
+			return true;
+		}
+		
+		return false;
+	}
 }
