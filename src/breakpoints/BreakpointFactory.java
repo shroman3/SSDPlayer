@@ -34,6 +34,7 @@ public class BreakpointFactory {
 		register(GCNthTimePlane.class);
 		register(GCNthTimeChip.class);
 		register(GCNthTimeDevice.class);
+		register(HotColdWriteAmplification.class);
 	}
 	
 	public static BreakpointBase getBreakpoint(String type, Element breakpointElement) throws Exception {

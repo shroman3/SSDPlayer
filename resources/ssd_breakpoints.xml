@@ -123,5 +123,11 @@
 <!-- 			<value>1.1</value> -->
 <!-- 		</breakpoint> -->
 	
+<!-- 		Hot-Cold partition write amplification reaches W -->
+<!-- 		<breakpoint type="HotColdWriteAmplification"> -->
+<!-- 			<partitionIndex>0</partitionIndex> -->
+<!-- 			<value>1.1</value> -->
+<!-- 		</breakpoint> -->
+	
 	</breakpoints>
 </root>
