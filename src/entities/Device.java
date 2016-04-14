@@ -116,7 +116,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> invokeCleaning() {
+	public Device<P,B,T,C> invokeCleaning(ActionLog log) {
 		int moved = 0;
 		List<C> cleanChips = new ArrayList<C>(getChipsNum());
 		for (C chip : getChips()) {
@@ -145,11 +145,10 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> writeLP(int lp, int arg) {
+	public Device<P,B,T,C> writeLP(int lp, int arg, ActionLog log) {
 		int chipIndex = getChipIndex(lp);
 		List<C> updatedChips = getNewChipsList();
 		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
-		ActionLog log = new ActionLog();
 		log.addAction(new WriteLpAction(lp));
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);

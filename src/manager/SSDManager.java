@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import entities.ActionLog;
 import entities.Block;
 import entities.Chip;
 import entities.Device;
@@ -295,9 +296,10 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 */
 	@SuppressWarnings("unchecked")
 	public D writeLP(D device, int lp, int arg) {
-		D cleanDevice = (D) device.invokeCleaning();
+		ActionLog log = new ActionLog();
+		D cleanDevice = (D) device.invokeCleaning(log);
 		cleanDevice = (D) cleanDevice.invalidate(lp);
-		cleanDevice = (D) cleanDevice.writeLP(lp, arg);
+		cleanDevice = (D) cleanDevice.writeLP(lp, arg, log);
 		return cleanDevice;
 	}
 

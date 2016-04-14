@@ -192,7 +192,8 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	 * @return block index of block with smallest sum of valid counters
 	 */
 	protected Pair<Integer, B> pickBlockToClean() {
-		return new Pair<Integer, B>(getLowestValidBlockIndex(), getBlock(getLowestValidBlockIndex()));
+		int victimBlock = getLowestValidBlockIndex();
+		return new Pair<Integer, B>(victimBlock, getBlock(victimBlock));
 	}
 	
 	protected boolean invokeCleaning() {
