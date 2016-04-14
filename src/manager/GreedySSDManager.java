@@ -35,11 +35,18 @@ import entities.basic.BasicPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.BlocksAvgTempZoomLevel;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
+import zoom.SmallBlocksAvgTempZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
 
 	GreedySSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getWritenPageColor() {

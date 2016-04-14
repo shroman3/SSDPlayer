@@ -21,6 +21,7 @@
  *******************************************************************************/
 package entities;
 
+import general.ConfigProperties;
 import general.Consts;
 
 import java.awt.Color;
@@ -248,5 +249,15 @@ public abstract class Block<P extends Page> {
 			pages.add(page);
 		}	
 		return pages;
+	}
+	
+	public Color getBlockValidColor() {
+		int colorRangeIndex = (int)((double)this.validCounter/this.getPagesNum() * (Consts.ColorRange.size()-1));
+		return Consts.ColorRange.get(colorRangeIndex);
+	}
+	
+	public Color getBlockEraseColor() {
+		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.ColorRange.size()-1));
+		return Consts.ColorRange.get(colorRangeIndex);
 	}
 }

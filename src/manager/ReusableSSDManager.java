@@ -25,10 +25,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.SecondWriteStatistics.BlockStateDistributionGetter;
-import manager.SecondWriteStatistics.ValidDistributionGetter;
-import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
-import ui.WorkloadWidget;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.reusable.ReusableBlock;
@@ -38,12 +34,23 @@ import entities.reusable.ReusablePage;
 import entities.reusable.ReusablePlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import manager.SecondWriteStatistics.BlockStateDistributionGetter;
+import manager.SecondWriteStatistics.ValidDistributionGetter;
+import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
+import ui.WorkloadWidget;
+import zoom.BlocksAvgWriteZoomLevel;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
+import zoom.SmallBlocksAvgWriteZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice> {
 	private Color firstWriteColor;
 	private Color secondWriteColor;
 
 	ReusableSSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getWriteLevelColor(int writeLevel) {
@@ -91,6 +98,13 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 		secondWriteColor = getColorField(xmlGetter, "second_write");
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		supportedZoomLevels.add(new BlocksAvgWriteZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksAvgWriteZoomLevel());
+	}
+	
 	@Override
 	protected ReusableDevice getEmptyDevice(List<ReusableChip> chips) {
 		ReusableDevice.Builder builder = new ReusableDevice.Builder();

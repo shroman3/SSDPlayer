@@ -33,6 +33,9 @@ import manager.VisualConfig;
 import utils.UIUtils;
 import entities.Block;
 import entities.Page;
+import entities.hot_cold.HotColdBlock;
+import entities.hot_cold.HotColdPage;
+import entities.reusable.ReusableBlock;
 import general.Consts;
 
 public class BlockView extends Component {
@@ -94,6 +97,7 @@ public class BlockView extends Component {
     }
             
     public void paint(Graphics g) {
+    	initSizesAndSpacing(block, visualConfig);
 		doDrawing(g);
     }
     	
@@ -113,18 +117,53 @@ public class BlockView extends Component {
 		} else {
 			g2d.setFont(Consts.UI.INVISIBLE_FONT);
 		}
-		int pageIndex = 0;
-		for (Page page :  block.getPages()) {
-			drawPage(g2d, x, y, pageIndex++, page);
+		if(visualConfig.isShowPages()){
+			int pageIndex = 0;
+			for (Page page :  block.getPages()) {
+				drawPage(g2d, x, y, pageIndex++, page);
+			}			
+		}
+		else{
+			drawBlockWithoutPages(g2d);
 		}
 
 	}
 
 	private void drawBG(Graphics2D g2d) {
-		Color bgColor = block.getBGColor();
+		Color bgColor = block.getBGColor();;
+		
 		if(bgColor != null) {			
 			g2d.setColor(bgColor);
 			g2d.fillRect(0, 0, dimension.width, dimension.height);
+		}
+	}
+	
+	private void drawBlockWithoutPages(Graphics2D g2d) {
+		Color bgColor = null;
+		
+		switch (visualConfig.getBlocksColorMeaning()) {
+		case AVERAGE_TEMPERATURE:
+			if(block instanceof HotColdBlock){
+				bgColor = ((HotColdBlock)block).getBlockTemperatureColor();
+			}
+			break;
+		case AVERAGE_WRITE_LEVEL:
+			if(block instanceof ReusableBlock){
+				bgColor = ((ReusableBlock)block).getBlockWriteLevelColor();
+			}
+			break;
+		case VALID_COUNT:
+				bgColor = block.getBlockValidColor();
+				break;
+		case ERASE_COUNT:
+			bgColor = block.getBlockEraseColor();
+			break;
+		default:
+			break;
+		}
+		if(bgColor != null) {			
+			g2d.setColor(bgColor);
+			g2d.fillRect(spacing, spacing, blockWidth, blockHeight);
 		}
 	}
 
@@ -156,14 +195,22 @@ public class BlockView extends Component {
 		y += (pageIndex/pagesInRow) * pageHeight;
 		
 		Color color = page.getBGColor();
+		
 		String title = page.getTitle();
-		TexturePaint tp = page.getPageTexture(color);
 		g2d.setColor(color);
-		g2d.setPaint(tp);
+
+		TexturePaint tp = page.getPageTexture(color);
+		if (visualConfig.isMovedPattern()) {
+			g2d.setPaint(tp);
+		} else if (tp != null) {
+			color = UIUtils.brighten(color, 0.25);
+			g2d.setColor(color);
+		}
+		
 		g2d.fillRect(x, y, pageWidth, pageHeight);
 		
 		if (!page.isValid() && !page.isClean()) {
-			UIUtils.drawInvalidPage(g2d, x, y, pageWidth, pageHeight);
+			UIUtils.drawInvalidPage(g2d, x, y, pageWidth, pageHeight, visualConfig);
 		}
 		
 		g2d.setColor(Consts.Colors.PAGE_TEXT);

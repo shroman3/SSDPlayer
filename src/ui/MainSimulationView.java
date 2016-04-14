@@ -85,14 +85,13 @@ public class MainSimulationView extends JFrame {
 						window.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
-					} 
+					}
 				}
 			});
 		} catch (ParserConfigurationException | SAXException | IOException | XMLParsingException e) {
-			throw new RuntimeException("Unable to load config XML file(" + CONFIG_XML + ")\n"+ e.getMessage());
+			throw new RuntimeException("Unable to load config XML file(" + CONFIG_XML + ")\n" + e.getMessage());
 		}
 	}
-
 
 	public MainSimulationView(VisualConfig visualConfig, List<BreakpointBase> initialBreakpoints) {
 		super("SSDPlayer " + VERSION);
@@ -112,28 +111,35 @@ public class MainSimulationView extends JFrame {
 	 */
 	private void initialize() {
 		setExtendedState(MAXIMIZED_BOTH);
-		getContentPane().setLayout(new BorderLayout(3,3));
-		
+		getContentPane().setLayout(new BorderLayout(3, 3));
+
 		devicePanel = new JPanel(new FlowLayout());
 		JScrollPane scrollableDevicePane = new JScrollPane(devicePanel);
 		scrollableDevicePane.setBorder(BorderFactory.createEmptyBorder());
 		getContentPane().add(scrollableDevicePane, BorderLayout.CENTER);
-		
+
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
-		
-		tracePlayer = new TracePlayer(visualConfig, new TwoObjectsCallback<Device<?,?,?,?>, Iterable<StatisticsGetter>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
-				resetDevice(device, statisticsGetters);
-			}
-		}, new OneObjectCallback<Device<?,?,?,?>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device) {
-				updateDevice(device);				
-			}
-		});
+
+		tracePlayer = new TracePlayer(visualConfig,
+				new TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>>() {
+					@Override
+					public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
+						resetDevice(device, statisticsGetters);
+					}
+				}, new OneObjectCallback<Device<?, ?, ?, ?>>() {
+					@Override
+					public void message(Device<?, ?, ?, ?> device) {
+						updateDevice(device);
+					}
+				}, new OneObjectCallback<Boolean>() {
+					@Override
+					public void message(Boolean repaintDevice) {
+						deviceView.repaintDevice();
+						devicePanel.updateUI();
+					}
+				});
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		
 		southPanel.add(tracePlayer);
@@ -141,7 +147,7 @@ public class MainSimulationView extends JFrame {
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
 		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
 		southPanel.add(scrollableStatisticsPane);
-		
+
 		setMinimumSize(new Dimension(550, 550));
 	}
 
@@ -152,7 +158,7 @@ public class MainSimulationView extends JFrame {
 				deviceView = new DeviceView(visualConfig, device);
 				devicePanel.add(deviceView);
 				devicePanel.updateUI();
-				
+
 				statisticsPanel.removeAll();
 				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
 				statisticsPanel.add(statisticsView);
@@ -187,18 +193,17 @@ public class MainSimulationView extends JFrame {
 		UIManager.put("controlLHighlight", Consts.Colors.HIGHLIGHT);
 		UIManager.put("ComboBox.background", Consts.Colors.CONTROL);
 		UIManager.put("Button.background", Consts.Colors.CONTROL);
-		
-		
+
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		    if ("Nimbus".equals(info.getName())) {
-		        try {
+			if ("Nimbus".equals(info.getName())) {
+				try {
 					UIManager.setLookAndFeel(info.getClassName());
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
 					e.printStackTrace();
 				}
-		        break;
-		    }
+				break;
+			}
 		}
 	}
 }
-

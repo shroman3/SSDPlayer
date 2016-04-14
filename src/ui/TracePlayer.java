@@ -63,6 +63,7 @@ import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.ManageBreakpointsDialog;
+import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
 
 public class TracePlayer extends JPanel {
@@ -76,7 +77,8 @@ public class TracePlayer extends JPanel {
 	private JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
 	private JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
 	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
-	private JButton breakpointsButton = new JButton("Breakpoints");
+	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
+	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
 	
 	private JProgressBar progressBar;
 	private TraceParser<?,?> parser;
@@ -109,11 +111,18 @@ public class TracePlayer extends JPanel {
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
 	
-    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice) {
+	private ZoomLevelDialog zoomDialog;
+	private VisualConfig visualConfig;
+
+	private OneObjectCallback<Boolean> resetDeviceView;
+	
+    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice, OneObjectCallback<Boolean> resetDeviceView) {
     	Utils.validateNotNull(updateDevice, "Update device callback");
     	Utils.validateNotNull(resetDevice, "Reset device callback");
 		this.resetDevice = resetDevice;
 		this.updateDevice = updateDevice;
+		this.resetDeviceView = resetDeviceView;
+		this.visualConfig = visualConfig;
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBorder(new RoundedBorder(Consts.Colors.BORDER));
 		initTraceParsing(visualConfig);
@@ -194,6 +203,11 @@ public class TracePlayer extends JPanel {
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
+		setZoomLevelOptions(manager);
+	}
+
+	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
+		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager, visualConfig, resetDeviceView);
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {
@@ -259,6 +273,15 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
 		breakpointsButton.setEnabled(true);
+		
+		zoomButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showZoomDialog();
+			}
+		});
+		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		zoomButton.setEnabled(true);
 		
 		add(Box.createRigidArea(new Dimension(5,0)));
 	}
@@ -456,5 +479,9 @@ public class TracePlayer extends JPanel {
 		
 		breakpoints.clear();
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
+	}
+	
+	private void showZoomDialog() {
+		zoomDialog.setVisible(true);
 	}
 }

@@ -24,11 +24,9 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.SSDManager;
-
 import org.javatuples.Pair;
 
-import entities.Chip.Builder;
+import manager.SSDManager;
 import utils.Utils;
 
 /**

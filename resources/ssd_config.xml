@@ -6,10 +6,11 @@
 		<overprovisioning>7</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
 		<gc_threshold>30</gc_threshold>
-		<chips>2</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
+		<chips>1</chips><!-- Can only work with one chip (TBD raid0 for simulation manager) -->
 		<planes>4</planes>
-		<blocks>32</blocks>
+		<blocks>12</blocks>
 		<pages>32</pages>
+		<max_erasures>30</max_erasures>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>
