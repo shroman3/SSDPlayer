@@ -127,17 +127,25 @@ public class MainSimulationView extends JFrame {
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
 		
-		tracePlayer = new TracePlayer(visualConfig, new TwoObjectsCallback<Device<?,?,?,?>, Iterable<StatisticsGetter>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
-				resetDevice(device, statisticsGetters);
-			}
-		}, new OneObjectCallback<Device<?,?,?,?>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device) {
-				updateDevice(device);				
-			}
-		});
+		tracePlayer = new TracePlayer(visualConfig,
+                new TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>>() {
+                        @Override
+                        public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
+                                resetDevice(device, statisticsGetters);
+                        }
+                }, new OneObjectCallback<Device<?, ?, ?, ?>>() {
+                        @Override
+                        public void message(Device<?, ?, ?, ?> device) {
+                                updateDevice(device);
+                        }
+                }, new OneObjectCallback<Boolean>() {
+                        @Override
+                        public void message(Boolean repaintDevice) {
+                                deviceView.repaintDevice();
+                                devicePanel.updateUI();
+                        }
+                });
+
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		
 		southPanel.add(tracePlayer);
@@ -146,16 +154,16 @@ public class MainSimulationView extends JFrame {
 		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
 		
 		JPanel triggeredBreakpointsPanel = new JPanel(new FlowLayout());
-		triggeredBreakpointsPanel.setPreferredSize(new Dimension(450, 150));
-		triggeredBreakpointsPanel.setMaximumSize(new Dimension(450, 150));
+		triggeredBreakpointsPanel.setPreferredSize(new Dimension(320, 150));
+		triggeredBreakpointsPanel.setMaximumSize(new Dimension(320, 150));
 		
 		triggeredBreakpointsView = new TriggeredBreakpointsView();
 		tracePlayer.setTriggeredBreakpointsView(triggeredBreakpointsView);
 		
 		triggeredBreakpointsPanel.add(triggeredBreakpointsView);
 		JScrollPane scrollableBreakpointsPane = new JScrollPane(triggeredBreakpointsPanel);
-		scrollableBreakpointsPane.setPreferredSize(new Dimension(450, 150));
-		scrollableBreakpointsPane.setMaximumSize(new Dimension(450, 150));
+		scrollableBreakpointsPane.setPreferredSize(new Dimension(320, 150));
+		scrollableBreakpointsPane.setMaximumSize(new Dimension(320, 150));
 		
 		scrollableBreakpointsPane.setBorder(BorderFactory.createEmptyBorder());
 

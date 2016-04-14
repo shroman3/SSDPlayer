@@ -276,16 +276,6 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(stopButton , "Stop Trace");
 		
-		breakpointsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showBreakpointsDialog();
-			}
-		});
-		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
-		breakpointsButton.setEnabled(true);
-		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.Colors.ACTIVE));
-		
 		zoomButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -33,16 +33,16 @@ public class TriggeredBreakpointsView extends JPanel {
 		header.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		header.setVerticalAlignment(SwingConstants.TOP);
 		header.setFont(Consts.UI.SMALL_FONT);
-		header.setMinimumSize(new Dimension(450, 25));
-		header.setPreferredSize(new Dimension(450, 25));
-		header.setMaximumSize(new Dimension(450, 25));
+		header.setMinimumSize(new Dimension(320, 25));
+		header.setPreferredSize(new Dimension(320, 25));
+		header.setMaximumSize(new Dimension(320, 25));
 		
 		add(header);
 		add(scrollPanel);
 		
-		setMinimumSize(new Dimension(450, 140));
-		setPreferredSize(new Dimension(450, 140));
-		setMaximumSize(new Dimension(450, 140));
+		setMinimumSize(new Dimension(320, 140));
+		setPreferredSize(new Dimension(320, 140));
+		setMaximumSize(new Dimension(320, 140));
 	}
 	
 	public void updateTriggeredBreakpoints(List<BreakpointBase> breakpoints) {
