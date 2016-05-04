@@ -42,16 +42,24 @@ public class CleanBlocksChip extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int mChipIndex) {
-		this.mChipIndex = mChipIndex;
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw new Exception(BreakpointsConstraints.getChipIndexError());
+		}
+		
+		mChipIndex = chipIndex;
 	}
 
 	public int getCount() {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw new Exception(BreakpointsConstraints.getCountError());
+		}
+		
+		mCount = count;
 	}
 
 	@Override

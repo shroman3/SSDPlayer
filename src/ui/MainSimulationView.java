@@ -44,6 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import breakpoints.BreakpointBase;
+import breakpoints.BreakpointsConstraints;
 import breakpoints.BreakpointsDeserializer;
 import entities.Device;
 import entities.StatisticsGetter;
@@ -79,6 +80,8 @@ public class MainSimulationView extends JFrame {
 			
 			SSDManager.initializeManager(xmlGetter);
 			ConfigProperties.initialize(xmlGetter);
+			BreakpointsConstraints.initialize(xmlGetter);
+			
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 
 			initLookAndFeel();

@@ -40,7 +40,11 @@ public class AllocateActiveBlock extends BreakpointBase {
 		return mBlockIndex;
 	}
 	
-	public void setBlockIndex(int blockIndex) {
+	public void setBlockIndex(int blockIndex) throws Exception {
+		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
+			throw new Exception(BreakpointsConstraints.getBlockIndexError());
+		}
+		
 		mBlockIndex = blockIndex;
 	}
 	
@@ -48,7 +52,11 @@ public class AllocateActiveBlock extends BreakpointBase {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int planeIndex) {
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw new Exception(BreakpointsConstraints.getPlaneIndexError());
+		}
+		
 		mPlaneIndex = planeIndex;
 	}
 	
@@ -56,7 +64,11 @@ public class AllocateActiveBlock extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw new Exception(BreakpointsConstraints.getChipIndexError());
+		}
+		
 		mChipIndex = chipIndex;
 	}
 	

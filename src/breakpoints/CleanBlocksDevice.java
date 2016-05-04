@@ -39,8 +39,10 @@ public class CleanBlocksDevice extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) {
+		
+		
+		mCount = count;
 	}
 
 	@Override
