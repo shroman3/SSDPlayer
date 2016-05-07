@@ -30,12 +30,10 @@ public class BasicDevice extends Device<BasicPage, BasicBlock, BasicPlane, Basic
 
 		public Builder() {
 			setDevice(new BasicDevice());
-			resetLog();
 		}
 		
 		public Builder(BasicDevice device) {
 			setDevice(new BasicDevice(device));
-			resetLog();
 		}
 		
 		@Override

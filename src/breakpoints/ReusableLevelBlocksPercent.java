@@ -1,6 +1,7 @@
 package breakpoints;
 
 import entities.Device;
+import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableDevice;
 import entities.reusable.ReusablePage;
 import general.ConfigProperties;
@@ -8,11 +9,11 @@ import manager.ReusableSSDManager;
 import manager.ReusableVisualizationSSDManager;
 import manager.SSDManager;
 
-public class ReusableLevelPagesPercent extends BreakpointBase {
+public class ReusableLevelBlocksPercent extends BreakpointBase {
 	private int mLevel;
 	private int mPercent;
 
-	public ReusableLevelPagesPercent() {
+	public ReusableLevelBlocksPercent() {
 		super();
 	}
 	
@@ -23,38 +24,36 @@ public class ReusableLevelPagesPercent extends BreakpointBase {
 			return false;
 		}
 		
-		int totalNumberOfPages = 0, numberOfPagesInLevel = 0;
+		int totalNumberOfBlocks = 0, numberOfBlocksInLevel = 0;
 		
-		for (int i=0; i<ConfigProperties.getPagesInDevice(); i++){
-			ReusablePage currentPage = (ReusablePage)currentDevice.getPageByIndex(i);
-			if(!currentPage.isValid()){
-				continue;
+		for (int i=0; i<ConfigProperties.getBlocksInDevice(); i++){
+			ReusableBlock currentBlock = (ReusableBlock)currentDevice.getBlockByIndex(i);
+			if(currentBlock.getWriteLevel() == mLevel){
+				numberOfBlocksInLevel++;
 			}
-			totalNumberOfPages++;
-			if(currentPage.getWriteLevel() == mLevel){
-				numberOfPagesInLevel++;
-			}
+			totalNumberOfBlocks++;
+		
 		}
-		if(totalNumberOfPages == 0){
+		if(totalNumberOfBlocks == 0){
 			return false;
 		}
-		double percent = (numberOfPagesInLevel / (double)totalNumberOfPages) * 100;
+		double percent = (numberOfBlocksInLevel / (double)totalNumberOfBlocks) * 100;
 		return Math.abs(percent  - mPercent) < 1 ;
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "Reusable percent of pages in write level";
+		return "Reusable percent of blocks in write level";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Reusable " + mPercent + " percent of pages in write level " + mLevel;
+		return "Reusable " + mPercent + " percent of blocks in write level " + mLevel;
 	}
 
 	@Override
 	public void addComponents() {
-		mComponents.add(new BreakpointComponent("percent", int.class, "Percent of pages"));
+		mComponents.add(new BreakpointComponent("percent", int.class, "Percent of blocks"));
 		mComponents.add(new BreakpointComponent("level", int.class, "Level"));
 	}
 
@@ -76,8 +75,8 @@ public class ReusableLevelPagesPercent extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof ReusableLevelPagesPercent)) return false; 
-		ReusableLevelPagesPercent otherCasted = (ReusableLevelPagesPercent) other;
+		if (!(other instanceof ReusableLevelBlocksPercent)) return false; 
+		ReusableLevelBlocksPercent otherCasted = (ReusableLevelBlocksPercent) other;
 		
 		return mLevel == otherCasted.getLevel()
 				&& mPercent == otherCasted.getPercent();

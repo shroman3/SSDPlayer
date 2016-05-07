@@ -183,7 +183,7 @@ public class ReusableBlock extends Block<ReusablePage> {
 		return Consts.ColorRange.get(colorRangeIndex);
 	}
 
-	private float getAveragePageWriteLevel() {
+	public float getAveragePageWriteLevel() {
 		float writeLevelSum = 0;
 		int count = 0;
 		for(ReusablePage page : this.getPages()){
@@ -197,5 +197,15 @@ public class ReusableBlock extends Block<ReusablePage> {
 		}
 		
 		return writeLevelSum/count;
+	}
+
+	public int getWriteLevel() {
+		int maxLevel = 0;
+		for(ReusablePage page : this.getPages()){
+			if(page.getWriteLevel() > maxLevel){
+				maxLevel = page.getWriteLevel();
+			}
+		}
+		return maxLevel;
 	}
 }

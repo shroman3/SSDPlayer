@@ -30,12 +30,10 @@ public class ReusableDevice extends Device<ReusablePage, ReusableBlock, Reusable
 
 		public Builder() {
 			setDevice(new ReusableDevice());
-			resetLog();
 		}
 		
 		public Builder(ReusableDevice device) {
 			setDevice(new ReusableDevice(device));
-			resetLog();
 		}
 		
 		@Override

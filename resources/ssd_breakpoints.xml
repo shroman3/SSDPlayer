@@ -63,8 +63,8 @@
 <!-- 			<value>2</value> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		HotCold partition holds percent of pages	-->
-<!-- 		<breakpoint type="HotColdPartitionHoldsPercentOfPages"> -->
+<!--  		HotCold partition holds percent of blocks	-->
+<!-- 		<breakpoint type="HotColdPartitionHoldsPercentOfBlocks"> -->
 <!-- 			<percent>20</percent> -->
 <!-- 			<partition>0</partition> -->
 <!-- 		</breakpoint> -->
@@ -94,8 +94,8 @@
 <!-- 			<chipIndex>0</chipIndex> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		Reusable percent of pages in write level	-->
-<!-- 		<breakpoint type="ReusableLevelPagesPercent"> -->
+<!--  		Reusable percent of blocks in write level	-->
+<!-- 		<breakpoint type="ReusableLevelBlocksPercent"> -->
 <!-- 			<percent>10</percent> -->
 <!-- 			<level>0</level> -->
 <!-- 		</breakpoint> -->
@@ -128,6 +128,22 @@
 <!-- 			<partitionIndex>0</partitionIndex> -->
 <!-- 			<value>1.1</value> -->
 <!-- 		</breakpoint> -->
-	
+<!-- victim block has X valid pages	 --><!-- 
+		<breakpoint type="VictimBlockHasValidPages" level="Device">
+			<count>18</count> -->
+		<!-- </breakpoint> -->
+
+ 		<!-- victim in chip block has X valid pages	 -->
+		<!-- <breakpoint type="VictimBlockHasValidPages" level="Chip"> -->
+			<!-- <count>17</count> -->
+			<!-- <chipIndex>0</chipIndex> -->
+		<!-- </breakpoint> -->
+
+<!--  		victim in plane block has X valid pages	-->
+<!-- 		<breakpoint type="VictimBlockHasValidPages" level="Plane"> -->
+<!-- 			<count>17</count> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 		</breakpoint> -->	
 	</breakpoints>
 </root>

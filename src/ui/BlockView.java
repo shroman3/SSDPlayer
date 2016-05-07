@@ -34,7 +34,6 @@ import utils.UIUtils;
 import entities.Block;
 import entities.Page;
 import entities.hot_cold.HotColdBlock;
-import entities.hot_cold.HotColdPage;
 import entities.reusable.ReusableBlock;
 import general.Consts;
 

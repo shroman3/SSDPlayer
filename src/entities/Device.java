@@ -32,10 +32,6 @@ import utils.Utils;
 public abstract class Device<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>> {	
 	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>, D extends Chip<P,B,T>> {
 		private Device<P,B,T,D> device;
-		
-		protected void resetLog() {
-			device.setLog(new ActionLog());
-		}
 
 		abstract public Device<P,B,T,D> build();
 		
@@ -51,11 +47,6 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		
 		public Builder<P,B,T,D> setTotalGCInvocations(int number) {
 			device.totalGCInvocations = number;
-			return this;
-		}
-		
-		public Builder<P,B,T,D> setLog(ActionLog log) {
-			device.log = log;
 			return this;
 		}
 		
@@ -77,7 +68,6 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	private int totalMoved = 0;
 	private int totalWritten = 0;
 	private int totalGCInvocations = 0;
-	private ActionLog log = new ActionLog();;
 	
 	protected Device() {}	
 	
@@ -86,7 +76,6 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		this.totalMoved = other.totalMoved; 
 		this.totalWritten = other.totalWritten;
 		this.totalGCInvocations = other.totalGCInvocations;
-		this.setLog(other.getLog());
 	}
 
 	abstract public Builder<P,B,T,C> getSelfBuilder();
@@ -116,13 +105,15 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> invokeCleaning(ActionLog log) {
+	public Device<P,B,T,C> invokeCleaning() {
 		int moved = 0;
 		List<C> cleanChips = new ArrayList<C>(getChipsNum());
+		int i = 0; 
 		for (C chip : getChips()) {
-			Pair<Chip<P,B,T>,Integer> clean = chip.clean();
+			Pair<Chip<P,B,T>,Integer> clean = chip.clean(i);
 			moved += clean.getValue1();
 			cleanChips.add((C) clean.getValue0());
+			i++;
 		}
 		
 		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
@@ -145,14 +136,13 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> writeLP(int lp, int arg, ActionLog log) {
+	public Device<P,B,T,C> writeLP(int lp, int arg) {
 		int chipIndex = getChipIndex(lp);
 		List<C> updatedChips = getNewChipsList();
 		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
-		log.addAction(new WriteLpAction(lp));
+		ActionLog.addAction(new WriteLpAction(lp));
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
-		builder.setLog(log);
 		return builder.build();
 	}
 	
@@ -162,14 +152,6 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	
 	protected int getChipIndex(int lp) {
 		return lp%getChipsNum();
-	}
-
-	public ActionLog getLog() {
-		return log;
-	}
-
-	private void setLog(ActionLog log) {
-		this.log = log;
 	}
 	
 	public C getChipByIndex(int chipIndex){

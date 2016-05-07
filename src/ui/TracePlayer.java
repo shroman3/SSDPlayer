@@ -52,6 +52,7 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
 
 import breakpoints.BreakpointBase;
 import breakpoints.IBreakpoint;
+import entities.ActionLog;
 import entities.Device;
 import entities.StatisticsGetter;
 import general.Consts;
@@ -124,6 +125,7 @@ public class TracePlayer extends JPanel {
 		this.updateDevice = updateDevice;
 		this.resetDeviceView = resetDeviceView;
 		this.visualConfig = visualConfig;
+		ActionLog.resetLog();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBorder(new RoundedBorder(Consts.Colors.BORDER));
 		initTraceParsing(visualConfig);
@@ -205,6 +207,7 @@ public class TracePlayer extends JPanel {
 		setWorkloadGenerators(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		setZoomLevelOptions(manager);
+		ActionLog.resetLog();
 	}
 
 	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
@@ -428,6 +431,7 @@ public class TracePlayer extends JPanel {
 			e.printStackTrace();
 			return false;
 		}
+    	ActionLog.nextCommand();
     	return true;
 	}
 

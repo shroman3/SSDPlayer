@@ -23,8 +23,6 @@ package entities.hot_cold;
 
 import java.awt.Color;
 
-import org.apache.commons.math3.analysis.function.Constant;
-
 import manager.HotColdPartition;
 import manager.HotColdSSDManager;
 import utils.Utils;

@@ -297,9 +297,9 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	@SuppressWarnings("unchecked")
 	public D writeLP(D device, int lp, int arg) {
 		ActionLog log = new ActionLog();
-		D cleanDevice = (D) device.invokeCleaning(log);
+		D cleanDevice = (D) device.invokeCleaning();
 		cleanDevice = (D) cleanDevice.invalidate(lp);
-		cleanDevice = (D) cleanDevice.writeLP(lp, arg, log);
+		cleanDevice = (D) cleanDevice.writeLP(lp, arg);
 		return cleanDevice;
 	}
 

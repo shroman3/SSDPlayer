@@ -17,8 +17,7 @@ public class WriteLp extends BreakpointBase {
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
-		ActionLog log = currentDevice.getLog();
-		List<IDeviceAction> writeActions = log.getActionsByType(WriteLpAction.class);
+		List<IDeviceAction> writeActions = ActionLog.getActionsByType(WriteLpAction.class);
 		for(IDeviceAction action : writeActions){
 			if(((WriteLpAction)action).get_lp() == lp){
 				return true;

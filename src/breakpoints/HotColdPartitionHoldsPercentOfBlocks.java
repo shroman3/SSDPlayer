@@ -5,15 +5,16 @@ import manager.HotColdReusableSSDManager;
 import manager.HotColdSSDManager;
 import manager.SSDManager;
 import entities.Device;
+import entities.hot_cold.HotColdBlock;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
 import general.ConfigProperties;
 
-public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
+public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 	private int mPartition = 1;
 	private int mPercent;
 
-	public HotColdPartitionHoldsPercentOfPages() {
+	public HotColdPartitionHoldsPercentOfBlocks() {
 		super();
 	}
 	
@@ -24,33 +25,34 @@ public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
 			return false;
 		}
 		
-		int totalNumberOfPages = 0, numberOfPagesInPartition = 0;
+		int totalNumberOfBlocks = 0, numberOfBlocksInPartition = 0;
 		HotColdPartition partition = ((HotColdDevice)currentDevice).getPartitions().get(mPartition);
-		for (int i=0; i<ConfigProperties.getPagesInDevice(); i++){
-			HotColdPage currentPage = (HotColdPage)currentDevice.getPageByIndex(i);
-			if(!currentPage.isValid()){
+		
+		for (int i=0; i<ConfigProperties.getBlocksInDevice(); i++){
+			HotColdBlock currentBlock = (HotColdBlock)currentDevice.getBlockByIndex(i);
+			if(currentBlock.getPartition() == null){
 				continue;
 			}
-			totalNumberOfPages++;
-			if(partition.isIn(currentPage.getTemperature())){
-				numberOfPagesInPartition++;
+			totalNumberOfBlocks++;
+			if(currentBlock.getPartition().getDsiplayName().equals(partition.getDsiplayName())){
+				numberOfBlocksInPartition++;
 			}
 		}
-		if(totalNumberOfPages == 0){
+		if(totalNumberOfBlocks == 0){
 			return false;
 		}
-		double percent = (numberOfPagesInPartition / (double)totalNumberOfPages) * 100;
+		double percent = (numberOfBlocksInPartition / (double)totalNumberOfBlocks) * 100;
 		return Math.abs(percent  - mPercent) < 1 ;
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "HotCold partition holds percent of pages";
+		return "HotCold partition holds percent of blocks";
 	}
 
 	@Override
 	public String getDescription() {
-		return "HotCold partition " + getPartition() + " holds " + getPercent() + " percent of pages";
+		return "HotCold partition " + getPartition() + " holds " + getPercent() + " percent of blocks";
 	}
 
 	@Override
@@ -77,8 +79,8 @@ public class HotColdPartitionHoldsPercentOfPages extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof HotColdPartitionHoldsPercentOfPages)) return false; 
-		HotColdPartitionHoldsPercentOfPages otherCasted = (HotColdPartitionHoldsPercentOfPages) other;
+		if (!(other instanceof HotColdPartitionHoldsPercentOfBlocks)) return false; 
+		HotColdPartitionHoldsPercentOfBlocks otherCasted = (HotColdPartitionHoldsPercentOfBlocks) other;
 		
 		return mPercent == otherCasted.getPercent()
 				&& mPartition == otherCasted.getPartition();

@@ -28,14 +28,17 @@ public class BreakpointFactory {
 		register(PagesWrittenDevice.class);
 		register(PagesWrittenChip.class);
 		register(PagesWrittenPlane.class);
-		register(HotColdPartitionHoldsPercentOfPages.class);
-		register(ReusableLevelPagesPercent.class);
+		register(HotColdPartitionHoldsPercentOfBlocks.class);
+		register(ReusableLevelBlocksPercent.class);
 		register(ReusableBlockRecycled.class);
 		register(GCNthTimePlane.class);
 		register(GCNthTimeChip.class);
 		register(GCNthTimeDevice.class);
 		register(HotColdWriteAmplification.class);
 		register(ReusableAnyBlockRecycled.class);
+		register(VictimBlockHasValidPagesPlane.class);
+		register(VictimBlockHasValidPagesChip.class);
+		register(VictimBlockHasValidPagesDevice.class);
 	}
 	
 	public static BreakpointBase getBreakpoint(String type, Element breakpointElement) throws Exception {

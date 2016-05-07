@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import ui.WorkloadWidget;
 import entities.BlockStatusGeneral;
 import entities.StatisticsGetter;
 import entities.basic.BasicBlock;
@@ -34,13 +35,6 @@ import entities.basic.BasicPage;
 import entities.basic.BasicPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
-import ui.WorkloadWidget;
-import zoom.BlocksAvgTempZoomLevel;
-import zoom.BlocksEraseCountZoomLevel;
-import zoom.BlocksValidCountZoomLevel;
-import zoom.SmallBlocksAvgTempZoomLevel;
-import zoom.SmallBlocksEraseCountZoomLevel;
-import zoom.SmallBlocksValidCountZoomLevel;
 
 public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice> {
 	private Color writtenPageColor;
