@@ -26,12 +26,12 @@ public class VictimBlockHasValidPagesDevice extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "victim block in device has number of valid pages";
+		return "Victim block in device has number of valid pages";
 	}
 
 	@Override
 	public String getDescription() {
-		return "victim block has " + mCount + " valid pages";
+		return "Victim block has " + mCount + " valid pages";
 	}
 
 	@Override
@@ -52,8 +52,12 @@ public class VictimBlockHasValidPagesDevice extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw new Exception(BreakpointsConstraints.getCountError());
+		}
+		
+		mCount = count;
 	}
 
 }

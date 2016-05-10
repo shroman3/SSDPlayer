@@ -28,12 +28,12 @@ public class VictimBlockHasValidPagesChip extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "victim block in chip has number of valid pages";
+		return "Victim block in chip has number of valid pages";
 	}
 
 	@Override
 	public String getDescription() {
-		return "chip " + mChipIndex + " victim block has " + mCount + " valid pages";
+		return "Chip " + mChipIndex + " victim block has " + mCount + " valid pages";
 	}
 
 	@Override
@@ -56,15 +56,23 @@ public class VictimBlockHasValidPagesChip extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw new Exception(BreakpointsConstraints.getCountError());
+		}
+		
+		mCount = count;
 	}
 
 	public int getChipIndex() {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int mChipIndex) {
-		this.mChipIndex = mChipIndex;
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw new Exception(BreakpointsConstraints.getChipIndexError());
+		}
+		
+		mChipIndex = chipIndex;
 	}
 }
