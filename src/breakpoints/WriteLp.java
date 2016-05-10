@@ -31,7 +31,11 @@ public class WriteLp extends BreakpointBase {
 		return lp;
 	}
 	
-	public void setLp(int logicalPage) {
+	public void setLp(int logicalPage) throws Exception {
+		if (!BreakpointsConstraints.isLPLegal(logicalPage)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_LP);
+		}
+		
 		lp = logicalPage;
 	}
 	
@@ -56,5 +60,10 @@ public class WriteLp extends BreakpointBase {
 		WriteLp otherCasted = (WriteLp) other;
 		
 		return lp == otherCasted.getLp();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Logical page " + lp + " was written";
 	}
 }

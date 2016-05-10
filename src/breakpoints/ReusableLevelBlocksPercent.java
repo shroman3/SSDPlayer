@@ -3,7 +3,6 @@ package breakpoints;
 import entities.Device;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableDevice;
-import entities.reusable.ReusablePage;
 import general.ConfigProperties;
 import manager.ReusableSSDManager;
 import manager.ReusableVisualizationSSDManager;
@@ -43,12 +42,12 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 
 	@Override
 	public String getDisplayName() {
-		return "Reusable percent of blocks in write level";
+		return "Percent of reusable blocks in write level";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Reusable " + mPercent + " percent of blocks in write level " + mLevel;
+		return mPercent + " percent of reusable blocks in write level " + mLevel;
 	}
 
 	@Override
@@ -61,16 +60,24 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 		return mLevel;
 	}
 
-	public void setLevel(int mLevel) {
-		this.mLevel = mLevel;
+	public void setLevel(int level) throws Exception {
+		if (!BreakpointsConstraints.isWriteLevelLegal(level)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_LEVEL);
+		}
+		
+		mLevel = level;
 	}
 
 	public int getPercent() {
 		return mPercent;
 	}
 
-	public void setPercent(int mPercent) {
-		this.mPercent = mPercent;
+	public void setPercent(int percent) throws Exception {
+		if (!BreakpointsConstraints.isPercentValueLegal(percent)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PERCENT);
+		}
+		
+		mPercent = percent;
 	}
 
 	@Override
@@ -90,5 +97,10 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return mPercent + " percent of reusable blocks in write level " + mLevel;
 	}
 }

@@ -25,7 +25,11 @@ public class GCNthTimeDevice extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(int value) {
+	public void setValue(int value) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
 		mValue = value;
 	}
 
@@ -52,4 +56,8 @@ public class GCNthTimeDevice extends BreakpointBase {
 		return mValue == otherCasted.getValue();
 	}
 
+	@Override
+	public String getHitDescription() {
+		return "Number of garbage collection invocations in the device reached " + getValue();
+	}
 }

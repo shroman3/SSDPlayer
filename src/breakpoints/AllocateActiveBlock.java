@@ -42,7 +42,7 @@ public class AllocateActiveBlock extends BreakpointBase {
 	
 	public void setBlockIndex(int blockIndex) throws Exception {
 		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
-			throw new Exception(BreakpointsConstraints.getBlockIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
 		}
 		
 		mBlockIndex = blockIndex;
@@ -54,7 +54,7 @@ public class AllocateActiveBlock extends BreakpointBase {
 
 	public void setPlaneIndex(int planeIndex) throws Exception {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
-			throw new Exception(BreakpointsConstraints.getPlaneIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
 		
 		mPlaneIndex = planeIndex;
@@ -66,7 +66,7 @@ public class AllocateActiveBlock extends BreakpointBase {
 
 	public void setChipIndex(int chipIndex) throws Exception {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
-			throw new Exception(BreakpointsConstraints.getChipIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
 		
 		mChipIndex = chipIndex;
@@ -106,5 +106,15 @@ public class AllocateActiveBlock extends BreakpointBase {
 		return mBlockIndex == otherCasted.getBlockIndex()
 				&& mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
+	}
+
+	@Override
+	public String getHitDescription() {
+		return "Block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> was allocated as active";
 	}
 }

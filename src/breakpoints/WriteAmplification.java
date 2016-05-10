@@ -30,7 +30,11 @@ public class WriteAmplification extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(double value) {
+	public void setValue(double value) throws Exception {
+		if (!BreakpointsConstraints.isWriteAmplificationValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_AMP);
+		}
+		
 		mValue = value;
 	}
 	
@@ -55,5 +59,10 @@ public class WriteAmplification extends BreakpointBase {
 		WriteAmplification otherCasted = (WriteAmplification) other;
 		
 		return Double.compare(mValue,otherCasted.getValue()) == 0;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Write amplification reached " + mValue;
 	}
 }

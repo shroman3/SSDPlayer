@@ -1,13 +1,16 @@
 package ui.breakpoints;
 
+import java.awt.Dimension;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import breakpoints.BreakpointBase;
 import breakpoints.BreakpointFactory;
@@ -17,10 +20,16 @@ public class BreakpointViewBase extends JPanel {
 	private BreakpointBase mBreakpoint;
 	private List<BreakpointUIComponent> mUIComponents;
 	private JPanel mFieldsPanel;
+	private JDialog mErrorDialog;
 	
 	public BreakpointViewBase() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		
+		mErrorDialog = new JDialog(SwingUtilities.windowForComponent(this), "Invalid input");
+		mErrorDialog.setModal(true);
+		mErrorDialog.setSize(new Dimension(400, 100));
+		mErrorDialog.setLocationRelativeTo(SwingUtilities.windowForComponent(this));
 	}
 	
 	public void setBreakpoint(BreakpointBase breakpoint) {
@@ -76,11 +85,27 @@ public class BreakpointViewBase extends JPanel {
 					return null;
 				}
 			} catch (Exception e) {
-				System.err.println("Error instantiate breakpoint with given parameters.");
+				showError(e);
 				return null;
 			}
 		}
 		
 		return mBreakpoint;
+	}
+	
+	private void showError(Exception e) {
+		String error = "";
+		
+		if (e.getCause() == null) {
+			error = "Please provide a number";
+		} else {
+			error = e.getCause().getMessage();
+		}
+			
+		JLabel errorLabel = new JLabel(error);
+		errorLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		mErrorDialog.add(errorLabel);
+			
+		mErrorDialog.setVisible(true);
 	}
 }

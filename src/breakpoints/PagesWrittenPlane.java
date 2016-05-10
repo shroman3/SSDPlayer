@@ -51,15 +51,23 @@ public class PagesWrittenPlane extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
+		mCount = count;
 	}
 
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int planeIndex) {
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
+		}
+		
 		mPlaneIndex = planeIndex;
 	}
 	
@@ -67,7 +75,11 @@ public class PagesWrittenPlane extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 
@@ -80,5 +92,13 @@ public class PagesWrittenPlane extends BreakpointBase {
 				&& mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
-
+	
+	@Override
+	public String getHitDescription() {
+		return getCount() + " pages were written in plane (<chip,plane>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex
+				+ ">";
+	}
 }

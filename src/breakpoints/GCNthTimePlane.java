@@ -29,7 +29,11 @@ public class GCNthTimePlane extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(int value) {
+	public void setValue(int value) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
 		mValue = value;
 	}
 
@@ -37,7 +41,11 @@ public class GCNthTimePlane extends BreakpointBase {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int planeIndex) {
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
+		}
+		
 		mPlaneIndex = planeIndex;
 	}
 	
@@ -45,7 +53,11 @@ public class GCNthTimePlane extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 
@@ -78,5 +90,14 @@ public class GCNthTimePlane extends BreakpointBase {
 		return mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mValue == otherCasted.getValue()
 				&& mChipIndex == otherCasted.getChipIndex();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Number of garbage collection invocations in plane (<chip,plane>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex
+				+ "> reached " + getValue();
 	}
 }

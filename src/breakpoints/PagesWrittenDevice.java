@@ -39,8 +39,12 @@ public class PagesWrittenDevice extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
+		mCount = count;
 	}
 
 	@Override
@@ -51,4 +55,8 @@ public class PagesWrittenDevice extends BreakpointBase {
 		return mCount == otherCasted.getCount();
 	}
 
+	@Override
+	public String getHitDescription() {
+		return getCount() + " pages were written in device";
+	}
 }

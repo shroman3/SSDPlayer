@@ -128,16 +128,16 @@
 <!-- 			<partitionIndex>0</partitionIndex> -->
 <!-- 			<value>1.1</value> -->
 <!-- 		</breakpoint> -->
-<!-- victim block has X valid pages	 --><!-- 
-		<breakpoint type="VictimBlockHasValidPages" level="Device">
-			<count>18</count> -->
-		<!-- </breakpoint> -->
+<!-- 		Victim block has X valid pages -->
+<!-- 		<breakpoint type="VictimBlockHasValidPages" level="Device"> -->
+<!--			<count>18</count> -->
+<!--		</breakpoint> -->
 
- 		<!-- victim in chip block has X valid pages	 -->
-		<!-- <breakpoint type="VictimBlockHasValidPages" level="Chip"> -->
-			<!-- <count>17</count> -->
-			<!-- <chipIndex>0</chipIndex> -->
-		<!-- </breakpoint> -->
+<!-- 		Victim in chip block has X valid pages	 -->
+<!-- 		<breakpoint type="VictimBlockHasValidPages" level="Chip"> -->
+<!-- 			<count>17</count> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 		</breakpoint> -->
 
 <!--  		victim in plane block has X valid pages	-->
 <!-- 		<breakpoint type="VictimBlockHasValidPages" level="Plane"> -->

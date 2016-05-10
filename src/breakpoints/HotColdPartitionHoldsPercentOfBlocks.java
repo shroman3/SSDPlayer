@@ -1,14 +1,13 @@
 package breakpoints;
 
+import entities.Device;
+import entities.hot_cold.HotColdBlock;
+import entities.hot_cold.HotColdDevice;
+import general.ConfigProperties;
 import manager.HotColdPartition;
 import manager.HotColdReusableSSDManager;
 import manager.HotColdSSDManager;
 import manager.SSDManager;
-import entities.Device;
-import entities.hot_cold.HotColdBlock;
-import entities.hot_cold.HotColdDevice;
-import entities.hot_cold.HotColdPage;
-import general.ConfigProperties;
 
 public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 	private int mPartition = 1;
@@ -65,16 +64,24 @@ public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 		return mPartition;
 	}
 
-	public void setPartition(int mPartition) {
-		this.mPartition = mPartition;
+	public void setPartition(int partition) throws Exception {
+		if (!BreakpointsConstraints.isPartitionIndexLegal(partition)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PARTITION);
+		}
+		
+		mPartition = partition;
 	}
 
 	public int getPercent() {
 		return mPercent;
 	}
 
-	public void setPercent(int mPercent) {
-		this.mPercent = mPercent;
+	public void setPercent(int percent) throws Exception {
+		if (!BreakpointsConstraints.isPercentValueLegal(percent)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PERCENT);
+		}
+		
+		mPercent = percent;
 	}
 
 	@Override
@@ -94,5 +101,10 @@ public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "HotCold partition " + getPartition() + " now holds " + getPercent() + " percent of blocks";
 	}
 }

@@ -56,6 +56,7 @@ import entities.ActionLog;
 import entities.Device;
 import entities.StatisticsGetter;
 import general.Consts;
+import general.MessageLog;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import manager.SSDManager;
@@ -64,7 +65,6 @@ import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.ManageBreakpointsDialog;
-import ui.breakpoints.TriggeredBreakpointsView;
 import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
 
@@ -112,7 +112,6 @@ public class TracePlayer extends JPanel {
 	
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
-	private TriggeredBreakpointsView triggeredBpView;
 	private ZoomLevelDialog zoomDialog;
 	private VisualConfig visualConfig;
 
@@ -441,13 +440,12 @@ public class TracePlayer extends JPanel {
 		for (IBreakpoint breakpoint : breakpoints) {
 			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
 				breakpoint.setIsHit(true);
+				MessageLog.log("HIT: " + breakpoint.getHitDescription());
 				anyHits = true;
 			} else {
 				breakpoint.setIsHit(false);
 			}
 		}
-		
-		triggeredBpView.updateTriggeredBreakpoints(breakpoints);
 		
 		if (anyHits) {
 			pauseTrace();
@@ -496,10 +494,6 @@ public class TracePlayer extends JPanel {
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
 	}
 	
-	public void setTriggeredBreakpointsView(TriggeredBreakpointsView bpView) {
-		triggeredBpView = bpView;
-	}
-
 	private void showZoomDialog() {
 		zoomDialog.setVisible(true);
 	}

@@ -26,7 +26,11 @@ public class GCNthTimeChip extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(int value) {
+	public void setValue(int value) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
 		mValue = value;
 	}
 
@@ -34,7 +38,11 @@ public class GCNthTimeChip extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 
@@ -61,5 +69,10 @@ public class GCNthTimeChip extends BreakpointBase {
 		
 		return mChipIndex == otherCasted.getChipIndex()
 				&& mValue == otherCasted.getValue();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Number of garbage collection invocations in chip " + getChipIndex() + " reached " + getValue();
 	}
 }

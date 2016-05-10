@@ -224,8 +224,9 @@ public class DefineBreakpointDialog extends JDialog implements ActionListener {
 	}
 
 	private void displayBreakpoint() {
-		if (mBreakpoint == null)
+		if (mBreakpoint == null) {
 			return;
+		}
 
 		mBreakpointView.setBreakpoint(mBreakpoint);
 		mBpPropertiesPanel.removeAll();

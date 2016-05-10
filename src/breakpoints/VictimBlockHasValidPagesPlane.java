@@ -62,7 +62,7 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 
 	public void setCount(int count) throws Exception {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
-			throw new Exception(BreakpointsConstraints.getCountError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
 		
 		mCount = count;
@@ -74,7 +74,7 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 
 	public void setChipIndex(int chipIndex) throws Exception {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
-			throw new Exception(BreakpointsConstraints.getChipIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
 		
 		mChipIndex = chipIndex;
@@ -86,10 +86,16 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 
 	public void setPlaneIndex(int planeIndex) throws Exception {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
-			throw new Exception(BreakpointsConstraints.getPlaneIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
 		
 		mPlaneIndex = planeIndex;
 	}
 
+	@Override
+	public String getHitDescription() {
+		return "Victim block in plane (<Chip,Plane>): "
+				+ "<" + mChipIndex + "," + mPlaneIndex + "> "
+				+ "reached " + mCount + " valid pages";
+	}
 }

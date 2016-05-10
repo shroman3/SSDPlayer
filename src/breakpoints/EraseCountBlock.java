@@ -55,15 +55,23 @@ public class EraseCountBlock extends BreakpointBase {
 		return mBlockIndex;
 	}
 
-	public void setBlockIndex(int mBlockIndex) {
-		this.mBlockIndex = mBlockIndex;
+	public void setBlockIndex(int blockIndex) throws Exception {
+		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
+		}
+		
+		mBlockIndex = blockIndex;
 	}
 	
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int planeIndex) {
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
+		}
+		
 		mPlaneIndex = planeIndex;
 	}
 	
@@ -71,7 +79,11 @@ public class EraseCountBlock extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 
@@ -79,8 +91,12 @@ public class EraseCountBlock extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
+		mCount = count;
 	}
 
 	@Override
@@ -92,5 +108,15 @@ public class EraseCountBlock extends BreakpointBase {
 				&& mBlockIndex == otherCasted.getBlockIndex()
 				&& mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> reached erase count of " + getCount();
 	}
 }

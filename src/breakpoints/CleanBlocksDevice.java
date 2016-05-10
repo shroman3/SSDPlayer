@@ -39,8 +39,10 @@ public class CleanBlocksDevice extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int count) {
-		
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
 		
 		mCount = count;
 	}
@@ -51,5 +53,10 @@ public class CleanBlocksDevice extends BreakpointBase {
 		CleanBlocksDevice otherCasted = (CleanBlocksDevice) other;
 		
 		return mCount == otherCasted.getCount();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Number of clean blocks in device reached " + getCount();
 	}
 }

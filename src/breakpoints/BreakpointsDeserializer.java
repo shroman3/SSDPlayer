@@ -23,14 +23,16 @@ public class BreakpointsDeserializer {
 			Element root = document.getDocumentElement();
 			NodeList breakpointNodes = root.getElementsByTagName("breakpoint");
 			
-			for (int i = 0; i < breakpointNodes.getLength(); i++) {
-				Element breakpointElement = (Element) breakpointNodes.item(i);
-				String type = breakpointElement.getAttribute("type");
-				String level = breakpointElement.getAttribute("level");
-				result.add(BreakpointFactory.getBreakpoint(type + level, breakpointElement));
-			}
+				for (int i = 0; i < breakpointNodes.getLength(); i++) {
+					try {
+						Element breakpointElement = (Element) breakpointNodes.item(i);
+						String type = breakpointElement.getAttribute("type");
+						String level = breakpointElement.getAttribute("level");
+						result.add(BreakpointFactory.getBreakpoint(type + level, breakpointElement));
+					} catch (Exception e) {}
+				}
 		} catch(Exception e) {
-			System.err.println(("Unable to load breakpoints from file (" + bpFilePath + ")\n" + e.getMessage()));
+			System.err.println(("Some breakpoints were unable to load from file (" + bpFilePath + ")\n" + e.getMessage()));
 			return new ArrayList<BreakpointBase>(); 
 		}
 		

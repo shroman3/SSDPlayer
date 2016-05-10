@@ -10,15 +10,17 @@ import entities.IDeviceAction;
 public class VictimBlockHasValidPagesChip extends BreakpointBase {
 	private int mCount;
 	private int mChipIndex;
+	private int mPlaneIndex;
 	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
 			Device<?, ?, ?, ?> currentDevice) {
 		List<IDeviceAction> cleanActions = ActionLog.getActionsByType(CleanAction.class);
 		for(IDeviceAction action : cleanActions){
-			CleanAction cleanAction = (CleanAction)action;
+			CleanAction cleanAction = (CleanAction) action;
 			if(cleanAction.getChipIndex() == mChipIndex  
 					&& cleanAction.getValidPAges() == mCount){
+				mPlaneIndex = cleanAction.getPlaneIndex();
 				return true;
 			}
 		}
@@ -58,7 +60,7 @@ public class VictimBlockHasValidPagesChip extends BreakpointBase {
 
 	public void setCount(int count) throws Exception {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
-			throw new Exception(BreakpointsConstraints.getCountError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
 		
 		mCount = count;
@@ -70,9 +72,16 @@ public class VictimBlockHasValidPagesChip extends BreakpointBase {
 
 	public void setChipIndex(int chipIndex) throws Exception {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
-			throw new Exception(BreakpointsConstraints.getChipIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
 		
 		mChipIndex = chipIndex;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Victim block in plane (<Chip,Plane>): "
+					+ "<" + mChipIndex + "," + mPlaneIndex + "> "
+					+ "reached " + mCount + " valid pages";
 	}
 }

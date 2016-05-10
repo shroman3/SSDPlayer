@@ -20,6 +20,8 @@ public interface IBreakpoint {
 	
 	public String getDescription();
 	
+	public String getHitDescription();
+
 	public void addComponents();
 
 	public List<BreakpointComponent> getComponents();

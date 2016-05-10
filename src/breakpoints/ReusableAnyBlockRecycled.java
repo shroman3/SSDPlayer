@@ -11,6 +11,10 @@ import manager.SSDManager;
 
 public class ReusableAnyBlockRecycled extends BreakpointBase {
 
+	private int mChipIndex;
+	private int mPlaneIndex;
+	private int mBlockIndex;
+
 	public ReusableAnyBlockRecycled() {
 		super();
 	}
@@ -31,6 +35,15 @@ public class ReusableAnyBlockRecycled extends BreakpointBase {
 			ReusableBlock prevBlock = (ReusableBlock) previousDevice.getBlockByIndex(i);
 			if (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED 
 					&& prevBlock.getStatus() != ReusableBlockStatus.RECYCLED) {
+				int blocksInChip = ConfigProperties.getBlocksInPlane() * ConfigProperties.getPlanesInChip();
+				int leftoverBlocks = i;
+				mChipIndex = leftoverBlocks / blocksInChip;
+				leftoverBlocks -= mChipIndex * blocksInChip;
+				
+				mPlaneIndex = leftoverBlocks / ConfigProperties.getBlocksInPlane();
+				leftoverBlocks -= mPlaneIndex * ConfigProperties.getBlocksInPlane();
+				mBlockIndex = leftoverBlocks;
+				
 				return true;
 			}
 		}
@@ -67,5 +80,15 @@ public class ReusableAnyBlockRecycled extends BreakpointBase {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Reusable block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> was recycled";
 	}
 }

@@ -64,15 +64,23 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		return mBlockIndex;
 	}
 
-	public void setBlockIndex(int mBlockIndex) {
-		this.mBlockIndex = mBlockIndex;
+	public void setBlockIndex(int blockIndex) throws Exception {
+		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
+		}
+		
+		mBlockIndex = blockIndex;
 	}
 	
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int planeIndex) {
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
+		}
+		
 		mPlaneIndex = planeIndex;
 	}
 	
@@ -80,7 +88,11 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 
@@ -102,5 +114,15 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Reusable block (<chip,plane,block>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> was recycled";
 	}
 }

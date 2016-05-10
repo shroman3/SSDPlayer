@@ -6,6 +6,9 @@ import general.ConfigProperties;
 public class EraseCountAnyBlock extends BreakpointBase {
 
 	private int mCount;
+	private int mChipIndex;
+	private int mPlaneIndex;
+	private int mBlockIndex;
 	
 	public EraseCountAnyBlock() {
 	}
@@ -18,10 +21,19 @@ public class EraseCountAnyBlock extends BreakpointBase {
 		}
 		
 		int numberOfBlocks = ConfigProperties.getBlocksInDevice();
-		for (int i=0; i < numberOfBlocks; i++){
+		for (int i = 0; i < numberOfBlocks; i++){
 			boolean blockReachedCount = previousDevice.getBlockByIndex(i).getEraseCounter() != getCount() 
 					&& currentDevice.getBlockByIndex(i).getEraseCounter() == getCount();
-			if(blockReachedCount){
+			if (blockReachedCount){
+				int blocksInChip = ConfigProperties.getBlocksInPlane() * ConfigProperties.getPlanesInChip();
+				int leftoverBlocks = i;
+				mChipIndex = leftoverBlocks / blocksInChip;
+				leftoverBlocks -= mChipIndex * blocksInChip;
+				
+				mPlaneIndex = leftoverBlocks / ConfigProperties.getBlocksInPlane();
+				leftoverBlocks -= mPlaneIndex * ConfigProperties.getBlocksInPlane();
+				mBlockIndex = leftoverBlocks;
+				
 				return true;
 			}
 		}
@@ -47,8 +59,12 @@ public class EraseCountAnyBlock extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+			
+		mCount = count;
 	}
 
 	@Override
@@ -57,5 +73,15 @@ public class EraseCountAnyBlock extends BreakpointBase {
 		EraseCountAnyBlock otherCasted = (EraseCountAnyBlock) other;
 		
 		return mCount == otherCasted.getCount();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Block <chip,plane,block>: "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex + ","
+				+ mBlockIndex
+				+ "> reached erase count " + getCount();
 	}
 }

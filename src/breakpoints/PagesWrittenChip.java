@@ -41,16 +41,24 @@ public class PagesWrittenChip extends BreakpointBase {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
+		mCount = count;
 	}
 
 	public int getChipIndex() {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int mChipIndex) {
-		this.mChipIndex = mChipIndex;
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
+		mChipIndex = chipIndex;
 	}
 
 	@Override
@@ -62,4 +70,8 @@ public class PagesWrittenChip extends BreakpointBase {
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
 
+	@Override
+	public String getHitDescription() {
+		return getCount() + " pages were written in chip " + mChipIndex;
+	}
 }

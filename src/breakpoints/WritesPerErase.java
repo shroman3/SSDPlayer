@@ -26,7 +26,11 @@ public class WritesPerErase extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(double value) {
+	public void setValue(double value) throws Exception {
+		if (!BreakpointsConstraints.isWritesPerEraseValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITES_PER_ERASE);
+		}
+		
 		mValue = value;
 	}
 	
@@ -53,4 +57,8 @@ public class WritesPerErase extends BreakpointBase {
 		return Double.compare(mValue,otherCasted.getValue()) == 0;
 	}
 
+	@Override
+	public String getHitDescription() {
+		return "Writes per erase reached " + mValue;
+	}
 }

@@ -49,7 +49,11 @@ public class CleanBlocksPlane extends BreakpointBase {
 		return mChipIndex;
 	}
 
-	public void setChipIndex(int chipIndex) {
+	public void setChipIndex(int chipIndex) throws Exception {
+		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
+		}
+		
 		mChipIndex = chipIndex;
 	}
 	
@@ -57,16 +61,24 @@ public class CleanBlocksPlane extends BreakpointBase {
 		return mPlaneIndex;
 	}
 
-	public void setPlaneIndex(int mPlaneIndex) {
-		this.mPlaneIndex = mPlaneIndex;
+	public void setPlaneIndex(int planeIndex) throws Exception {
+		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
+		}
+		
+		mPlaneIndex = planeIndex;
 	}
 
 	public int getCount() {
 		return mCount;
 	}
 
-	public void setCount(int mCount) {
-		this.mCount = mCount;
+	public void setCount(int count) throws Exception {
+		if (!BreakpointsConstraints.isCountValueLegal(count)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
+		}
+		
+		mCount = count;
 	}
 
 	@Override
@@ -77,5 +89,14 @@ public class CleanBlocksPlane extends BreakpointBase {
 		return mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mCount == otherCasted.getCount()
 				&& mChipIndex == otherCasted.getChipIndex();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Number of clean blocks in (<chip,plane>): "
+				+ "<" 
+				+ mChipIndex + ","
+				+ mPlaneIndex
+				+ "> reached " + getCount();
 	}
 }

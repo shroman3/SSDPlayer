@@ -50,13 +50,14 @@ import entities.Device;
 import entities.StatisticsGetter;
 import general.ConfigProperties;
 import general.Consts;
+import general.MessageLog;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import general.XMLGetter;
 import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
-import ui.breakpoints.TriggeredBreakpointsView;
+import ui.breakpoints.LogView;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
@@ -70,17 +71,15 @@ public class MainSimulationView extends JFrame {
 	private DeviceView deviceView;
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
-	private TriggeredBreakpointsView triggeredBreakpointsView;
 	private JPanel southInnerPanel;
 
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-			final List<BreakpointBase> initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 			
+			BreakpointsConstraints.initialize(xmlGetter);
 			SSDManager.initializeManager(xmlGetter);
 			ConfigProperties.initialize(xmlGetter);
-			BreakpointsConstraints.initialize(xmlGetter);
 			
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 
@@ -88,7 +87,7 @@ public class MainSimulationView extends JFrame {
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
-						MainSimulationView window = new MainSimulationView(visualConfig, initialBreakpoints);
+						MainSimulationView window = new MainSimulationView(visualConfig);
 						window.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -101,7 +100,7 @@ public class MainSimulationView extends JFrame {
 	}
 
 
-	public MainSimulationView(VisualConfig visualConfig, List<BreakpointBase> initialBreakpoints) {
+	public MainSimulationView(VisualConfig visualConfig) {
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -110,7 +109,6 @@ public class MainSimulationView extends JFrame {
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.visualConfig = visualConfig;
-		this.initialBreakpoints = initialBreakpoints;
 		initialize();
 	}
 
@@ -149,6 +147,9 @@ public class MainSimulationView extends JFrame {
                         }
                 });
 
+		LogView logView = new LogView();
+		MessageLog.initialize(logView);
+		this.initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		
 		southPanel.add(tracePlayer);
@@ -160,10 +161,7 @@ public class MainSimulationView extends JFrame {
 		triggeredBreakpointsPanel.setPreferredSize(new Dimension(320, 150));
 		triggeredBreakpointsPanel.setMaximumSize(new Dimension(320, 150));
 		
-		triggeredBreakpointsView = new TriggeredBreakpointsView();
-		tracePlayer.setTriggeredBreakpointsView(triggeredBreakpointsView);
-		
-		triggeredBreakpointsPanel.add(triggeredBreakpointsView);
+		triggeredBreakpointsPanel.add(logView);
 		JScrollPane scrollableBreakpointsPane = new JScrollPane(triggeredBreakpointsPanel);
 		scrollableBreakpointsPane.setPreferredSize(new Dimension(320, 150));
 		scrollableBreakpointsPane.setMaximumSize(new Dimension(320, 150));
@@ -225,7 +223,7 @@ public class MainSimulationView extends JFrame {
 		UIManager.put("controlLHighlight", Consts.Colors.HIGHLIGHT);
 		UIManager.put("ComboBox.background", Consts.Colors.CONTROL);
 		UIManager.put("Button.background", Consts.Colors.CONTROL);
-		
+		UIManager.put("ScrollBar.minimumThumbSize", new Dimension(32, 32));
 		
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {

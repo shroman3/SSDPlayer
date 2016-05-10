@@ -33,7 +33,11 @@ public class HotColdWriteAmplification extends BreakpointBase {
 		return mValue;
 	}
 
-	public void setValue(double value) {
+	public void setValue(double value) throws Exception {
+		if (!BreakpointsConstraints.isWriteAmplificationValueLegal(value)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_AMP);
+		}
+		
 		mValue = value;
 	}
 	
@@ -41,7 +45,11 @@ public class HotColdWriteAmplification extends BreakpointBase {
 		return mPartitionIndex;
 	}
 	
-	public void setPartitionIndex(int partitionIndex) {
+	public void setPartitionIndex(int partitionIndex) throws Exception {
+		if (!BreakpointsConstraints.isPartitionIndexLegal(partitionIndex)) {
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PARTITION);
+		}
+		
 		mPartitionIndex = partitionIndex;
 	}
 	
@@ -78,5 +86,10 @@ public class HotColdWriteAmplification extends BreakpointBase {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Hot-Cold partition write amplification reached " + mValue;
 	}
 }

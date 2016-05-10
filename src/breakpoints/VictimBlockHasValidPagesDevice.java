@@ -9,6 +9,8 @@ import entities.IDeviceAction;
 
 public class VictimBlockHasValidPagesDevice extends BreakpointBase {
 	private int mCount;
+	private int mChipIndex;
+	private int mPlaneIndex;
 	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
@@ -17,6 +19,9 @@ public class VictimBlockHasValidPagesDevice extends BreakpointBase {
 		for(IDeviceAction action : cleanActions){
 			CleanAction cleanAction = (CleanAction)action;
 			if(cleanAction.getValidPAges() == mCount){
+				mPlaneIndex = cleanAction.getPlaneIndex();
+				mChipIndex = cleanAction.getChipIndex();
+				
 				return true;
 			}
 		}
@@ -54,10 +59,16 @@ public class VictimBlockHasValidPagesDevice extends BreakpointBase {
 
 	public void setCount(int count) throws Exception {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
-			throw new Exception(BreakpointsConstraints.getCountError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
 		
 		mCount = count;
 	}
 
+	@Override
+	public String getHitDescription() {
+		return "Victim block in plane (<Chip,Plane>): "
+				+ "<" + mChipIndex + "," + mPlaneIndex + "> "
+				+ "reached " + mCount + " valid pages";
+	}
 }

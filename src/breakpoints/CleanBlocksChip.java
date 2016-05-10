@@ -44,7 +44,7 @@ public class CleanBlocksChip extends BreakpointBase {
 
 	public void setChipIndex(int chipIndex) throws Exception {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
-			throw new Exception(BreakpointsConstraints.getChipIndexError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
 		
 		mChipIndex = chipIndex;
@@ -56,7 +56,7 @@ public class CleanBlocksChip extends BreakpointBase {
 
 	public void setCount(int count) throws Exception {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
-			throw new Exception(BreakpointsConstraints.getCountError());
+			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
 		
 		mCount = count;
@@ -69,5 +69,10 @@ public class CleanBlocksChip extends BreakpointBase {
 		
 		return mChipIndex == otherCasted.getChipIndex()
 				&& mCount == otherCasted.getCount();
+	}
+	
+	@Override
+	public String getHitDescription() {
+		return "Number of clean blocks in chip " + getChipIndex() + " reached " + getCount();
 	}
 }
