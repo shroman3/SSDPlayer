@@ -25,10 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entities.Device;
 import manager.HotColdPartition;
 import manager.HotColdSSDManager;
-import entities.ActionLog;
-import entities.Device;
 
 
 public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip> {

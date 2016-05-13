@@ -25,9 +25,7 @@ import java.util.List;
 
 import org.javatuples.Pair;
 
-import entities.ActionLog;
 import entities.BlockStatusGeneral;
-import entities.CleanAction;
 import entities.Plane;
 
 public class BasicPlane extends Plane<BasicPage, BasicBlock> {

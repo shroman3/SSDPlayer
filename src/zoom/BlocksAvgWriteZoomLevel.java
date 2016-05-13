@@ -1,10 +1,13 @@
 package zoom;
 
+import java.awt.Color;
+import java.util.List;
+
 import manager.SSDManager;
 import manager.VisualConfig;
 
 public class BlocksAvgWriteZoomLevel implements IZoomLevel  {
-	public static final String NAME = "Average write level";
+	public static final String NAME = "Average Write Level";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig) {
@@ -21,5 +24,10 @@ public class BlocksAvgWriteZoomLevel implements IZoomLevel  {
 	@Override
 	public String getGroup() {
 		return "Blocks";
+	}
+
+	@Override
+	public List<Color> getPalette() {
+		return null;
 	}
 }

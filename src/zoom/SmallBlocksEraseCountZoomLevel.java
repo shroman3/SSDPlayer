@@ -1,10 +1,13 @@
 package zoom;
 
+import java.awt.Color;
+import java.util.List;
+
 import manager.SSDManager;
 import manager.VisualConfig;
 
 public class SmallBlocksEraseCountZoomLevel implements IZoomLevel  {
-	public static final String NAME = "Erase count";
+	public static final String NAME = "Erase Count";
 	
 	@Override
 	public void applyZoom(SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig) {
@@ -22,6 +25,11 @@ public class SmallBlocksEraseCountZoomLevel implements IZoomLevel  {
 	@Override
 	public String getGroup() {
 		return "Small Blocks";
+	}
+
+	@Override
+	public List<Color> getPalette() {
+		return null;
 	}
 
 }

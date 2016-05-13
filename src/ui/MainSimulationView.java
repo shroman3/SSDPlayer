@@ -58,6 +58,7 @@ import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
 import ui.breakpoints.LogView;
+import ui.zoom.ZoomLevelPanel;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
@@ -72,6 +73,7 @@ public class MainSimulationView extends JFrame {
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
 	private JPanel southInnerPanel;
+	private ZoomLevelPanel zoomLevelPanel;
 
 	public static void main(String[] args) {
 		try {
@@ -133,6 +135,9 @@ public class MainSimulationView extends JFrame {
                         @Override
                         public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
                                 resetDevice(device, statisticsGetters);
+                                if (zoomLevelPanel != null) {
+                                	zoomLevelPanel.setZoomLevel(tracePlayer.getZoomLevel());
+                                }
                         }
                 }, new OneObjectCallback<Device<?, ?, ?, ?>>() {
                         @Override
@@ -144,40 +149,53 @@ public class MainSimulationView extends JFrame {
                         public void message(Boolean repaintDevice) {
                                 deviceView.repaintDevice();
                                 devicePanel.updateUI();
+                    			zoomLevelPanel.setZoomLevel(tracePlayer.getZoomLevel());
                         }
                 });
 
-		LogView logView = new LogView();
-		MessageLog.initialize(logView);
-		this.initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
-		tracePlayer.setInitialBreakpoints(initialBreakpoints);
-		
 		southPanel.add(tracePlayer);
-		
 		southInnerPanel = new JPanel();
 		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
+
+		LogView logView = new LogView();
+		MessageLog.initialize(logView);
 		
-		JPanel triggeredBreakpointsPanel = new JPanel(new FlowLayout());
-		triggeredBreakpointsPanel.setPreferredSize(new Dimension(320, 150));
-		triggeredBreakpointsPanel.setMaximumSize(new Dimension(320, 150));
+		initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
+		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		
-		triggeredBreakpointsPanel.add(logView);
-		JScrollPane scrollableBreakpointsPane = new JScrollPane(triggeredBreakpointsPanel);
-		scrollableBreakpointsPane.setPreferredSize(new Dimension(320, 150));
-		scrollableBreakpointsPane.setMaximumSize(new Dimension(320, 150));
+		JPanel logPanel = new JPanel(new FlowLayout());
+		logPanel.setMinimumSize(new Dimension(320, 150));
+		logPanel.setPreferredSize(new Dimension(320, 150));
+		logPanel.setMaximumSize(new Dimension(320, 150));
+		logPanel.add(logView);
 		
-		scrollableBreakpointsPane.setBorder(BorderFactory.createEmptyBorder());
+		JScrollPane scrollableMessagesPane = new JScrollPane(logPanel);
+		setEdgesPaneSize(scrollableMessagesPane);
 
 		statisticsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		zoomLevelPanel = new ZoomLevelPanel(tracePlayer.getZoomLevel());
+		
+		JScrollPane scrollableZoomPane = new JScrollPane(zoomLevelPanel);
+		setEdgesPaneSize(scrollableZoomPane);
+		
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
 		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
 		
-		statisticsPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Consts.Colors.BORDER));
+		statisticsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Consts.Colors.BORDER));
+		southInnerPanel.add(scrollableZoomPane);
 		southInnerPanel.add(scrollableStatisticsPane);
-		southInnerPanel.add(scrollableBreakpointsPane);
+		southInnerPanel.add(scrollableMessagesPane);
 		southPanel.add(southInnerPanel);
 		
 		setMinimumSize(new Dimension(550, 550));
+	}
+
+
+	private void setEdgesPaneSize(JScrollPane scrollableMessagesPane) {
+		scrollableMessagesPane.setMinimumSize(new Dimension(320, 150));
+		scrollableMessagesPane.setPreferredSize(new Dimension(320, 150));
+		scrollableMessagesPane.setMaximumSize(new Dimension(320, 150));
+		scrollableMessagesPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 
 	private void resetDevice(final Device<?, ?, ?, ?> device, final Iterable<StatisticsGetter> statisticsGetters) {

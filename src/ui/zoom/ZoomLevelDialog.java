@@ -61,6 +61,10 @@ public class ZoomLevelDialog extends JDialog {
 		visualConfig.restoreXmlValues();
 	}
 
+	public IZoomLevel getZoomLevel() {
+		return mZoomLevels.get(mSelectedZoomLevel);
+	}
+	
 	private void initComponents() {
 		mMainPanel = new JPanel();
 		mMainPanel.setBorder(new EmptyBorder(5, 5, 5 , 5));
@@ -85,10 +89,10 @@ public class ZoomLevelDialog extends JDialog {
 		
 		int zoomLevelNumber = 1;
 		for (IZoomLevel zoomLevel : mManager.getSupportedZoomLevels()) {
-			String zoomGroupName = zoomLevel.getGroup();
+			String zoomGroupName = (zoomLevel.getGroup() != null)? zoomLevel.getGroup() : "";
 
 			JRadioButton zoomLevelButton = new JRadioButton(zoomLevel.getName());
-			if (zoomGroupName == null) {
+			if (zoomGroupName.isEmpty()) {
 				zoomLevelButton.setText(zoomLevelNumber + ". " + zoomLevel.getName());
 				zoomLevelNumber++;
 			}
@@ -102,7 +106,7 @@ public class ZoomLevelDialog extends JDialog {
 				anySelected = true;
 			}
 			
-			if (zoomGroupName != null && !mZoomGroupPanels.containsKey(zoomGroupName)) {
+			if (!zoomGroupName.isEmpty() && !mZoomGroupPanels.containsKey(zoomGroupName)) {
 				JPanel groupPanel = new JPanel();
 				groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
 				groupPanel.setBorder(BorderFactory.createEmptyBorder(0, 22, 0, 0));
@@ -127,8 +131,9 @@ public class ZoomLevelDialog extends JDialog {
 			}
 			
 			mRadioGroup.add(zoomLevelButton);
-			mZoomLevels.put(zoomGroupName + " " + zoomLevel.getName(), zoomLevel);
-			zoomLevelButton.setActionCommand(zoomGroupName + " " + zoomLevel.getName());
+			String actionCommand = (zoomGroupName.isEmpty())? zoomLevel.getName() : zoomGroupName + " " + zoomLevel.getName();
+			mZoomLevels.put(actionCommand, zoomLevel);
+			zoomLevelButton.setActionCommand(actionCommand);
 		}
 		
 		if (!anySelected) {
@@ -176,6 +181,7 @@ public class ZoomLevelDialog extends JDialog {
 				mZoomLevels.get(mSelectedZoomLevel).applyZoom(mManager, visualConfig);
 			}
 		}
+		
 		resetDevice.message(true);
 	}
 	

@@ -23,7 +23,6 @@ package manager;
 
 import java.io.IOException;
 
-import entities.ActionLog;
 import entities.Device;
 
 public class BasicTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParserGeneral<D,S> {

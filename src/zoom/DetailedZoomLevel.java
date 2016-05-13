@@ -1,5 +1,8 @@
 package zoom;
 
+import java.awt.Color;
+import java.util.List;
+
 import manager.SSDManager;
 import manager.VisualConfig;
 
@@ -18,6 +21,11 @@ public class DetailedZoomLevel implements IZoomLevel {
 
 	@Override
 	public String getGroup() {
+		return null;
+	}
+
+	@Override
+	public List<Color> getPalette() {
 		return null;
 	}
 }

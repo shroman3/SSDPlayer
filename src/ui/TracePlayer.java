@@ -67,6 +67,7 @@ import manager.WorkloadGenerator;
 import ui.breakpoints.ManageBreakpointsDialog;
 import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
+import zoom.IZoomLevel;
 
 public class TracePlayer extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -165,6 +166,10 @@ public class TracePlayer extends JPanel {
 		return manager;
 	}
 	
+	public IZoomLevel getZoomLevel() {
+		return zoomDialog.getZoomLevel();
+	}
+	
 	private void initManagerSelection() {
 		Vector<Object> items = new Vector<>();
 		for (String manager : SSDManager.getAllSimulationManagerNames()) {			
@@ -204,8 +209,8 @@ public class TracePlayer extends JPanel {
 		traceChooser.setFileFilter(new FileNameExtensionFilter(manager.getManagerName() + " Trace Files", 
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
-		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		setZoomLevelOptions(manager);
+		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		ActionLog.resetLog();
 	}
 
@@ -495,6 +500,7 @@ public class TracePlayer extends JPanel {
 	}
 	
 	private void showZoomDialog() {
+		pauseTrace();
 		zoomDialog.setVisible(true);
 	}
 }

@@ -39,11 +39,7 @@ import manager.SecondWriteStatistics.ValidDistributionGetter;
 import manager.SecondWriteStatistics.WriteLevelDistributionGetter;
 import ui.WorkloadWidget;
 import zoom.BlocksAvgWriteZoomLevel;
-import zoom.BlocksEraseCountZoomLevel;
-import zoom.BlocksValidCountZoomLevel;
 import zoom.SmallBlocksAvgWriteZoomLevel;
-import zoom.SmallBlocksEraseCountZoomLevel;
-import zoom.SmallBlocksValidCountZoomLevel;
 
 public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice> {
 	private Color firstWriteColor;

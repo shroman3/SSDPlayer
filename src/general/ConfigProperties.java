@@ -13,7 +13,6 @@ public class ConfigProperties {
 		mBlocksInPlane = xmlGetter.getIntField("physical", "blocks");
 		mPagesInBlock = xmlGetter.getIntField("physical", "pages");
 		mMaxErasures = xmlGetter.getIntField("physical", "max_erasures");
-		 
 	}
 	
 	public static int getChipsInDevice() {

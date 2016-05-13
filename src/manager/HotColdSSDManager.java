@@ -40,11 +40,7 @@ import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
 import manager.HotColdStatistics.PartitionDistributionGetter;
 import ui.WorkloadWidget;
 import zoom.BlocksAvgTempZoomLevel;
-import zoom.BlocksEraseCountZoomLevel;
-import zoom.BlocksValidCountZoomLevel;
 import zoom.SmallBlocksAvgTempZoomLevel;
-import zoom.SmallBlocksEraseCountZoomLevel;
-import zoom.SmallBlocksValidCountZoomLevel;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
 	private int minTemperature;

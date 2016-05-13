@@ -31,7 +31,7 @@ public class LogView extends JPanel {
 		mScrollPanel = new JScrollPane(mMainPanel);
 		mScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		JLabel header = new JLabel("Message Log", SwingConstants.CENTER);
+		JLabel header = new JLabel("Messages Log", SwingConstants.CENTER);
 		header.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		header.setVerticalAlignment(SwingConstants.TOP);
 		header.setFont(Consts.UI.SMALL_FONT);
