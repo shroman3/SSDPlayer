@@ -1,7 +1,5 @@
 package zoom;
 
-import java.awt.Color;
-import java.util.List;
 import general.ConfigProperties;
 import general.Consts;
 import manager.SSDManager;
@@ -30,11 +28,6 @@ public class SmallBlocksValidCountZoomLevel implements IZoomLevel  {
 	@Override
 	public String getGroup() {
 		return "Small Blocks";
-	}
-
-	@Override
-	public List<Color> getPalette() {
-		return null;
 	}
 
 }

@@ -21,13 +21,13 @@
  *******************************************************************************/
 package entities;
 
-import general.ConfigProperties;
-import general.Consts;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import general.ConfigProperties;
+import general.Consts;
+import general.MessageLog;
 import manager.SSDManager;
 import utils.Utils;
 
@@ -257,7 +257,10 @@ public abstract class Block<P extends Page> {
 	}
 	
 	public Color getBlockEraseColor() {
-		//TODO: add error msg
+		if (this.eraseCounter > ConfigProperties.getMaxErasures()) {
+			MessageLog.logAndPause("Erase count is bigger than max erasures, please change zoom level.");
+		}
+		
 		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.defaultColorRange.size()-1));
 		return Consts.defaultColorRange.get(colorRangeIndex%Consts.defaultColorRange.size());
 	}

@@ -62,8 +62,8 @@ public class VisualConfig {
 	private BlockColorMeaning blocksColorMeaning = BlockColorMeaning.NONE;
 
 	private ArrayList<Color> mBlocksColorRange;
-	private int mRangeHighValue;
-	private int mRangeLowValue;
+	private Integer mRangeHighValue;
+	private Integer mRangeLowValue;
 
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
@@ -210,19 +210,19 @@ public class VisualConfig {
 		return mBlocksColorRange;
 	}
 
-	public int getRangeHighValue() {
+	public Integer getRangeHighValue() {
 		return mRangeHighValue;
 	}
 
-	public void setRangeHighValue(int mRangeHighValue) {
+	public void setRangeHighValue(Integer mRangeHighValue) {
 		this.mRangeHighValue = mRangeHighValue;
 	}
 
-	public int getRangeLowValue() {
+	public Integer getRangeLowValue() {
 		return mRangeLowValue;
 	}
 
-	public void setRangeLowValue(int mRangeLowValue) {
+	public void setRangeLowValue(Integer mRangeLowValue) {
 		this.mRangeLowValue = mRangeLowValue;
 	}
 	

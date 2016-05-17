@@ -16,8 +16,10 @@ public class MessageLog {
 		mView.log(message);
 	}
 	
-	public static void logAndStop(String message) {
-		log(message);
-		mTracePlayer.stopTrace();   
+	public static void logAndPause(String message) {
+		if (!mTracePlayer.isPaused()) {
+			log(message);
+			mTracePlayer.pauseTrace();   
+		}
 	}
 }

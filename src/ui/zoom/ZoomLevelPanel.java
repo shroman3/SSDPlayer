@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import general.Consts;
+import manager.VisualConfig;
 import zoom.IZoomLevel;
 
 public class ZoomLevelPanel extends JPanel {
@@ -20,11 +21,13 @@ public class ZoomLevelPanel extends JPanel {
 	private IZoomLevel mInitialZoomLevel;
 	private JPanel mPalettePanel;
 	private JPanel mZoomPalettePanel;
+	private VisualConfig mVisualConfig;
 
-	public ZoomLevelPanel(IZoomLevel initialZoomLevel) {
+	public ZoomLevelPanel(IZoomLevel initialZoomLevel, VisualConfig visualConfig) {
 		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		mInitialZoomLevel = initialZoomLevel;
+		mVisualConfig = visualConfig;
 		
 		initSelectedZoom();
 		initZoomPalette();
@@ -58,17 +61,25 @@ public class ZoomLevelPanel extends JPanel {
 		mZoomPalettePanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 		mZoomPalettePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		List<Color> zoomPalette = mInitialZoomLevel.getPalette();
-		setPalette(zoomPalette);
-		
+		setPalette();
 		add(mZoomPalettePanel);
 	}
 
-	private void setPalette(List<Color> zoomPalette) {
+	private void setPalette() {
 		mZoomPalettePanel.removeAll();
-		if (zoomPalette == null) return;
+		if (mVisualConfig.getBlocksColorRange() == null) {
+			return;
+		}
+		
+		List<Color> colorRange = null;
+		if (mVisualConfig.getBlocksColorRange() == null) {
+			colorRange = Consts.defaultColorRange;
+		} else {
+			colorRange = mVisualConfig.getBlocksColorRange();
+		}
 		
 		JLabel paletteLabel = new JLabel("Zoom Palette:");
+		paletteLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		paletteLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		mZoomPalettePanel.add(paletteLabel);
 		
@@ -76,32 +87,38 @@ public class ZoomLevelPanel extends JPanel {
 		mPalettePanel.setLayout(new BoxLayout(mPalettePanel, BoxLayout.X_AXIS));
 		mZoomPalettePanel.add(mPalettePanel);
 		
-		for (int i = 0; i < zoomPalette.size(); i++) {
+		for (int i = 0; i < colorRange.size(); i++) {
 			JPanel paletteSquarePanel = new JPanel();
 			paletteSquarePanel.setLayout(new BoxLayout(paletteSquarePanel, BoxLayout.Y_AXIS));
 			
-			Color color = zoomPalette.get(i);
-			
+			Color color = colorRange.get(i);
 			JPanel colorPanel = new JPanel();
 			colorPanel.setBackground(color);
-			
 			
 			colorPanel.setMinimumSize(new Dimension(20, 20));
 			colorPanel.setPreferredSize(new Dimension(20, 20));
 			colorPanel.setMaximumSize(new Dimension(20, 20));
 
 			paletteSquarePanel.add(colorPanel);
-			JLabel valueLabel = new JLabel("10");
-			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+			String value = " ";
+			if (i == 0 && mVisualConfig.getRangeLowValue() != null) {
+				value = Integer.toString(mVisualConfig.getRangeLowValue());
+			} else if (i == colorRange.size() - 1 && mVisualConfig.getRangeHighValue() != null) {
+				value = Integer.toString(mVisualConfig.getRangeHighValue());
+			}
 			
+			JLabel valueLabel = new JLabel(value);
+			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			paletteSquarePanel.add(valueLabel);
+			
 			mPalettePanel.add(paletteSquarePanel);
 		}
 	}
 
 	public void setZoomLevel(IZoomLevel zoomLevel) {
 		mCurrentZoomLevelLabel.setText(getDisplayedZoomName(zoomLevel));
-		setPalette(zoomLevel.getPalette());
+		setPalette();
 		
 		revalidate();
 		repaint();

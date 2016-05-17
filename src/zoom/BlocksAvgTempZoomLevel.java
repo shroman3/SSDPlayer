@@ -1,9 +1,8 @@
 package zoom;
 
 import java.awt.Color;
-import java.util.List;
+
 import manager.HotColdSSDManager;
-import general.Consts;
 import manager.SSDManager;
 import manager.VisualConfig;
 
@@ -35,10 +34,5 @@ public class BlocksAvgTempZoomLevel implements IZoomLevel  {
 	@Override
 	public String getGroup() {
 		return "Blocks";
-	}
-
-	@Override
-	public List<Color> getPalette() {
-		return Consts.defaultColorRange;
 	}
 }

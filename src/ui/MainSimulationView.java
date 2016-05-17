@@ -173,7 +173,7 @@ public class MainSimulationView extends JFrame {
 		setEdgesPaneSize(scrollableMessagesPane);
 
 		statisticsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		zoomLevelPanel = new ZoomLevelPanel(tracePlayer.getZoomLevel());
+		zoomLevelPanel = new ZoomLevelPanel(tracePlayer.getZoomLevel(), visualConfig);
 		
 		JScrollPane scrollableZoomPane = new JScrollPane(zoomLevelPanel);
 		setEdgesPaneSize(scrollableZoomPane);

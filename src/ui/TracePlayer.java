@@ -133,6 +133,10 @@ public class TracePlayer extends JPanel {
 		initButtons();
 		initProgressBar();
     }
+    
+    public boolean isPaused() {
+    	return isPaused;
+    }
 
 	public void stopTrace() {
 		isPaused = true;
@@ -470,7 +474,7 @@ public class TracePlayer extends JPanel {
 		}
 	}
 
-	private void pauseTrace() {
+	public void pauseTrace() {
 		isPaused = true;
 		playPauseButton.setIcon(iconPlay);
 		playPauseButton.setToolTipText("Play");

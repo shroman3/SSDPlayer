@@ -1,8 +1,5 @@
 package zoom;
 
-import java.awt.Color;
-import java.util.List;
-import general.Consts;
 import manager.ReusableSSDManager;
 import manager.SSDManager;
 import manager.VisualConfig;
@@ -34,10 +31,5 @@ public class BlocksAvgWriteZoomLevel implements IZoomLevel  {
 	@Override
 	public String getGroup() {
 		return "Blocks";
-	}
-
-	@Override
-	public List<Color> getPalette() {
-		return null;
 	}
 }
