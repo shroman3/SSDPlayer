@@ -1,15 +1,23 @@
 package general;
 
+import ui.TracePlayer;
 import ui.breakpoints.LogView;
 
 public class MessageLog {
-	public static LogView view;
+	public static LogView mView;
+	public static TracePlayer mTracePlayer;
 	
-	public static void initialize(LogView logView) {
-		view = logView;
+	public static void initialize(LogView logView, TracePlayer tracePlayer) {
+		mView = logView;
+		mTracePlayer = tracePlayer;
 	}
 	
 	public static void log(String message) {
-		view.log(message);
+		mView.log(message);
+	}
+	
+	public static void logAndStop(String message) {
+		log(message);
+		mTracePlayer.stopTrace();   
 	}
 }

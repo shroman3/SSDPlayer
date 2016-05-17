@@ -158,7 +158,7 @@ public class MainSimulationView extends JFrame {
 		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
 
 		LogView logView = new LogView();
-		MessageLog.initialize(logView);
+		MessageLog.initialize(logView, tracePlayer);
 		
 		initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);

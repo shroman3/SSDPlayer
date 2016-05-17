@@ -77,16 +77,25 @@ public class ZoomLevelPanel extends JPanel {
 		mZoomPalettePanel.add(mPalettePanel);
 		
 		for (int i = 0; i < zoomPalette.size(); i++) {
+			JPanel paletteSquarePanel = new JPanel();
+			paletteSquarePanel.setLayout(new BoxLayout(paletteSquarePanel, BoxLayout.Y_AXIS));
+			
 			Color color = zoomPalette.get(i);
 			
 			JPanel colorPanel = new JPanel();
 			colorPanel.setBackground(color);
 			
+			
 			colorPanel.setMinimumSize(new Dimension(20, 20));
 			colorPanel.setPreferredSize(new Dimension(20, 20));
 			colorPanel.setMaximumSize(new Dimension(20, 20));
+
+			paletteSquarePanel.add(colorPanel);
+			JLabel valueLabel = new JLabel("10");
+			valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			
-			mPalettePanel.add(colorPanel);
+			paletteSquarePanel.add(valueLabel);
+			mPalettePanel.add(paletteSquarePanel);
 		}
 	}
 
