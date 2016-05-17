@@ -50,15 +50,15 @@ public class Consts {
 	}
 	
 	@SuppressWarnings("serial")
-	public static ArrayList<Color> ColorRange = new ArrayList<Color>() {{
+	public static ArrayList<Color> defaultColorRange = new ArrayList<Color>() {{
 		 add(Color.white);
 		 add(new Color(242, 242, 242));
 		 add(new Color(217, 217, 217));
-		 add(new Color(102, 102, 255));
-		 add(new Color(51, 51, 255));
-		 add(new Color(0, 0, 255));
-		 add(new Color(0, 0, 153));
-		 add(new Color(0, 0, 102));
-		 add(new Color(0, 0, 51));
+		 add(new Color(191, 191, 191));
+		 add(new Color(166, 166, 166));
+		 add(new Color(140, 140, 140));
+		 add(new Color(115, 115, 115));
+		 add(new Color(89, 89, 89));
+		 add(new Color(64, 64, 64));
 	}};
 }

@@ -30,6 +30,8 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import manager.VisualConfig;
 
@@ -99,6 +101,26 @@ public class UIUtils {
         return new Color(red, green, blue, alpha);
 
     }
+    
+    public static ArrayList<Color> createRange(Color c1, Color c2){
+    	int rangeSize = 10;
+    	ArrayList<Color> result = new ArrayList<Color>();
+    	result.add(c1);
+    	float redDiff = c2.getRed() - c1.getRed();
+    	float blueDiff = c2.getBlue() - c1.getBlue();
+    	float greenDiff = c2.getGreen() - c1.getGreen();
+
+    	for(int i=1; i< rangeSize - 1; i++){
+    		int curColorRed = c1.getRed() + Math.round((redDiff/rangeSize)*i);
+    		int curColorBlue = c1.getBlue() + Math.round((blueDiff/rangeSize)*i);
+    		int curColorGreen = c1.getGreen() + Math.round((greenDiff/rangeSize)*i);
+    		result.add(new Color(curColorRed, curColorGreen, curColorBlue));
+    	}
+    	result.add(c2); 
+    	
+    	return result;
+    }
+    
 
 	
 }

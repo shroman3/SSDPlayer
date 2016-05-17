@@ -21,6 +21,9 @@
  *******************************************************************************/
 package manager;
 
+import java.awt.Color;
+import java.util.ArrayList;
+
 import general.XMLGetter;
 import general.XMLParsingException;
 
@@ -57,6 +60,10 @@ public class VisualConfig {
 	private boolean movedPattern = true;
 	private boolean showPages = true;
 	private BlockColorMeaning blocksColorMeaning = BlockColorMeaning.NONE;
+
+	private ArrayList<Color> mBlocksColorRange;
+	private int mRangeHighValue;
+	private int mRangeLowValue;
 
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
@@ -187,6 +194,36 @@ public class VisualConfig {
 		setPageHeight((int)Math.floor(getPageHeight()/ Math.sqrt(2)));
 		setPageWidth((int)Math.floor(getPageWidth()/ Math.sqrt(2)));
 		setBlockSpace(getBlockSpace()/2);
+	}
+	
+	public void extraSmallerPages(){
+		setPageHeight((int)Math.floor(getPageHeight()/ 2));
+		setPageWidth((int)Math.floor(getPageWidth()/ 2));
+		setBlockSpace(getBlockSpace()/2);
+	}
+
+	public void setBlocksColorRange(ArrayList<Color> colorRange) {
+		mBlocksColorRange  = colorRange;
+	}
+	
+	public ArrayList<Color> getBlocksColorRange(){
+		return mBlocksColorRange;
+	}
+
+	public int getRangeHighValue() {
+		return mRangeHighValue;
+	}
+
+	public void setRangeHighValue(int mRangeHighValue) {
+		this.mRangeHighValue = mRangeHighValue;
+	}
+
+	public int getRangeLowValue() {
+		return mRangeLowValue;
+	}
+
+	public void setRangeLowValue(int mRangeLowValue) {
+		this.mRangeLowValue = mRangeLowValue;
 	}
 	
 }

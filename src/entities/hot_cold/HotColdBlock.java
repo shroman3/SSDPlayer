@@ -155,9 +155,8 @@ public class HotColdBlock extends Block<HotColdPage> {
 		return null;
 	}
 
-	public Color getBlockTemperatureColor() {
+	public float getBlockTemperatureToMaxTempRatio() {
 		int maxTemperature = manager.getMaxTemperature();
-		int colorRangeIndex = (int)(getAveragePageTemperature()/maxTemperature * (Consts.ColorRange.size()-1));
-		return Consts.ColorRange.get(colorRangeIndex);
+		return getAveragePageTemperature()/maxTemperature;
 	}
 }

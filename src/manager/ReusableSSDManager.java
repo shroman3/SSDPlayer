@@ -44,7 +44,7 @@ import zoom.SmallBlocksAvgWriteZoomLevel;
 public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice> {
 	private Color firstWriteColor;
 	private Color secondWriteColor;
-
+	
 	ReusableSSDManager() {
 		setSupportedZoomLevels();
 	}
@@ -134,4 +134,5 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	public boolean isSecondWrite(boolean hasSecondWriteBlock, int temperature) {
 		return hasSecondWriteBlock;
 	}
+	
 }

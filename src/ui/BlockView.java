@@ -143,12 +143,15 @@ public class BlockView extends Component {
 		switch (visualConfig.getBlocksColorMeaning()) {
 		case AVERAGE_TEMPERATURE:
 			if(block instanceof HotColdBlock){
-				bgColor = ((HotColdBlock)block).getBlockTemperatureColor();
+				int colorRangeIndex = (int)(((HotColdBlock)block).getBlockTemperatureToMaxTempRatio() * (Consts.defaultColorRange.size()-1));
+				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
 			}
 			break;
 		case AVERAGE_WRITE_LEVEL:
 			if(block instanceof ReusableBlock){
-				bgColor = ((ReusableBlock)block).getBlockWriteLevelColor();
+				ReusableBlock rBlock = ((ReusableBlock)block); 
+				int colorRangeIndex = Math.max(0, (int)((rBlock.getAveragePageWriteLevel() - 1) * (visualConfig.getBlocksColorRange().size()-1)));
+				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
 			}
 			break;
 		case VALID_COUNT:

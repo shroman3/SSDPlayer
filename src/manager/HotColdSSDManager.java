@@ -63,6 +63,10 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return maxTemperature;
 	}
 	
+	public int getMinTemperature(){
+		return minTemperature;
+	}
+	
 	@Override
 	public HotColdTraceParser<HotColdDevice, HotColdSSDManager> getTraseParser() {
 		return new HotColdTraceParser<HotColdDevice, HotColdSSDManager>(this);

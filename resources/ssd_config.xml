@@ -10,7 +10,7 @@
 		<planes>4</planes>
 		<blocks>12</blocks>
 		<pages>32</pages>
-		<max_erasures>30</max_erasures>
+		<max_erasures>10</max_erasures>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>
@@ -24,9 +24,9 @@
 	</visual>
 	<ReusableVisualizationSSDManager>
 		<name>Reusable Simulation</name>
-		<clean_color r="255" g="255" b="255"/>
-		<first_write r="50" g="255" b="150"/>
-		<second_write r="50" g="150" b="255"/>
+		<clean_color r="255" g="255" b="255"/>//white
+		<first_write r="50" g="255" b="150"/> //green
+		<second_write r="50" g="150" b="255"/> //blue
 	</ReusableVisualizationSSDManager>
 	<ReusableSSDManager>
 		<name>Reusable</name>
@@ -44,9 +44,9 @@
 	<HotColdSSDManager>
 		<name>HotCold</name>
 		<clean_color r="255" g="255" b="255"/>
-		<intermediate r="200" g="200" b="200"/>
-		<cold r="255" g="60" b="60"/>
-		<hot r="60" g="120" b="255"/>
+		<intermediate r="200" g="200" b="200"/>// gray
+		<cold r="255" g="60" b="60"/>//red
+		<hot r="60" g="120" b="255"/> //blue
 		<min_temperature>1</min_temperature>
 		<max_temperature>10</max_temperature>
 		<partition>1</partition>
@@ -56,6 +56,6 @@
 	<GreedySSDManager>
 		<name>Greedy</name>
 		<clean_color r="255" g="255" b="255"/>
-		<written_color r="255" g="220" b="100"/>
+		<written_color r="255" g="220" b="100"/>//yellow
 	</GreedySSDManager>
 </root>

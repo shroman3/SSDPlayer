@@ -252,12 +252,13 @@ public abstract class Block<P extends Page> {
 	}
 	
 	public Color getBlockValidColor() {
-		int colorRangeIndex = (int)((double)this.validCounter/this.getPagesNum() * (Consts.ColorRange.size()-1));
-		return Consts.ColorRange.get(colorRangeIndex);
+		int colorRangeIndex = (int)((double)this.validCounter/this.getPagesNum() * (Consts.defaultColorRange.size()-1));
+		return Consts.defaultColorRange.get(colorRangeIndex);
 	}
 	
 	public Color getBlockEraseColor() {
-		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.ColorRange.size()-1));
-		return Consts.ColorRange.get(colorRangeIndex);
+		//TODO: add error msg
+		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.defaultColorRange.size()-1));
+		return Consts.defaultColorRange.get(colorRangeIndex%Consts.defaultColorRange.size());
 	}
 }
