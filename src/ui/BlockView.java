@@ -34,7 +34,9 @@ import utils.UIUtils;
 import entities.Block;
 import entities.Page;
 import entities.hot_cold.HotColdBlock;
+import entities.hot_cold.HotColdPage;
 import entities.reusable.ReusableBlock;
+import entities.reusable.ReusablePage;
 import general.Consts;
 
 public class BlockView extends Component {
@@ -143,6 +145,17 @@ public class BlockView extends Component {
 		switch (visualConfig.getBlocksColorMeaning()) {
 		case AVERAGE_TEMPERATURE:
 			if(block instanceof HotColdBlock){
+				boolean blockClean = true;
+				for(Page page : block.getPages()){
+					if(!page.isClean()){
+						blockClean = false;
+						break;
+					}
+				}
+				if (blockClean) {
+					bgColor = block.getPage(0).getBGColor();
+					break;
+				}
 				int colorRangeIndex = (int)(((HotColdBlock)block).getBlockTemperatureToMaxTempRatio() * (Consts.defaultColorRange.size()-1));
 				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
 			}
@@ -150,6 +163,17 @@ public class BlockView extends Component {
 		case AVERAGE_WRITE_LEVEL:
 			if(block instanceof ReusableBlock){
 				ReusableBlock rBlock = ((ReusableBlock)block); 
+				boolean blockClean = true;
+				for(ReusablePage page : rBlock.getPages()){
+					if(!(page.getWriteLevel() < 1)){
+						blockClean = false;
+						break;
+					}
+				}
+				if (blockClean) {
+					bgColor = block.getPage(0).getBGColor();
+					break;
+				}
 				int colorRangeIndex = Math.max(0, (int)((rBlock.getAveragePageWriteLevel() - 1) * (visualConfig.getBlocksColorRange().size()-1)));
 				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
 			}
@@ -171,7 +195,7 @@ public class BlockView extends Component {
 
 	private void drawFrame(Graphics2D g2d, Block<?> block) {
 		Color frameColor = block.getFrameColor();
-		if (frameColor != null) {
+		if (frameColor != null && visualConfig.isDrawFrame()) {
 			BasicStroke bs3 = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			g2d.setStroke(bs3);
 			g2d.setColor(frameColor);

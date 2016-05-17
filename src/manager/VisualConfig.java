@@ -47,6 +47,7 @@ public class VisualConfig {
 	private boolean xmlMovedPattern = true;
 	private boolean xmlShowPages = true;
 	private BlockColorMeaning xmlBlocksColorMeaning = BlockColorMeaning.NONE;
+	private boolean xmlDrawFrame = true;
 
 	private int speed = -1;
 	private boolean showCounters = true;
@@ -62,8 +63,9 @@ public class VisualConfig {
 	private BlockColorMeaning blocksColorMeaning = BlockColorMeaning.NONE;
 
 	private ArrayList<Color> mBlocksColorRange;
-	private Integer mRangeHighValue;
-	private Integer mRangeLowValue;
+	private int mRangeHighValue;
+	private int mRangeLowValue;
+	private boolean mDrawFrame = true;
 
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
@@ -92,6 +94,8 @@ public class VisualConfig {
 		setMovedPattern(xmlMovedPattern);
 		setShowPages(xmlShowPages);
 		setBlocksColorMeaning(xmlBlocksColorMeaning);
+		setDrawFrame(xmlDrawFrame);
+		
 	}
 
 	public int getSpeed() {
@@ -194,12 +198,14 @@ public class VisualConfig {
 		setPageHeight((int)Math.floor(getPageHeight()/ Math.sqrt(2)));
 		setPageWidth((int)Math.floor(getPageWidth()/ Math.sqrt(2)));
 		setBlockSpace(getBlockSpace()/2);
+		mDrawFrame = false;
 	}
 	
 	public void extraSmallerPages(){
 		setPageHeight((int)Math.floor(getPageHeight()/ 2));
 		setPageWidth((int)Math.floor(getPageWidth()/ 2));
 		setBlockSpace(getBlockSpace()/2);
+		mDrawFrame = false;
 	}
 
 	public void setBlocksColorRange(ArrayList<Color> colorRange) {
@@ -224,6 +230,14 @@ public class VisualConfig {
 
 	public void setRangeLowValue(Integer mRangeLowValue) {
 		this.mRangeLowValue = mRangeLowValue;
+	}
+
+	public boolean isDrawFrame() {
+		return mDrawFrame;
+	}
+
+	public void setDrawFrame(boolean mDrawFrame) {
+		this.mDrawFrame = mDrawFrame;
 	}
 	
 }
