@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -29,21 +29,26 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.TexturePaint;
 
-import manager.VisualConfig;
-import utils.UIUtils;
 import entities.Block;
 import entities.Page;
 import entities.hot_cold.HotColdBlock;
-import entities.hot_cold.HotColdPage;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusablePage;
 import general.Consts;
+import manager.VisualConfig;
+import utils.UIUtils;
 
+/**
+ * 
+ *  November 2015: revised by Or Mauda for additional RAID functionality.
+ *
+ */
 public class BlockView extends Component {
 	private static final int VER_SPACING_WITH_COUNTERS = 18;
 	
 	private static final long serialVersionUID = 1L;
 	private Block<?> block;
+	private int chipIndex;
 	private int planeIndex;
 	private int blockIndex;
 	
@@ -59,10 +64,11 @@ public class BlockView extends Component {
 	private VisualConfig visualConfig;
 
     
-    public BlockView(Block<?> block, int planeIndex, int blockIndex, VisualConfig visualConfig) {
+    public BlockView(Block<?> block, int chipIndex, int planeIndex, int blockIndex, VisualConfig visualConfig) {
 		this.block = block;
 		this.blockIndex = blockIndex;
 		this.planeIndex = planeIndex;
+		this.chipIndex = chipIndex;
 		this.visualConfig = visualConfig;
 		
 		initSizesAndSpacing(block, visualConfig);
@@ -208,7 +214,7 @@ public class BlockView extends Component {
 	private void drawCounters(Graphics2D g2d) {
 		if (visualConfig.isShowCounters()) {						
 			g2d.setFont(Consts.UI.SMALL_FONT);			
-			String index = "(" + planeIndex + "," + blockIndex + ")";
+			String index = "(" + chipIndex + "," + planeIndex + "," + blockIndex + ")";
 			String blockCounters = "v=" + block.getValidCounter() + ",e=" + block.getEraseCounter();
 			String counters = index + " " + blockCounters + " " + block.getStatusName();
 			g2d.setColor(block.getStatusColor());
@@ -240,7 +246,15 @@ public class BlockView extends Component {
 		}
 		
 		g2d.setColor(Consts.Colors.PAGE_TEXT);
+		if (page.isHighlighted()) {
+			g2d.setColor(page.getStripeFrameColor());
+			BasicStroke bs3 = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+			g2d.setStroke(bs3);
+		}
 		g2d.drawRect(x, y, pageWidth, pageHeight);
+		BasicStroke bs3 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+		g2d.setStroke(bs3);
+		g2d.setColor(Consts.Colors.PAGE_TEXT);
 		
 		g2d.drawString(title, x+1, y+10);
 	}

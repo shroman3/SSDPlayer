@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -90,6 +90,27 @@ public class XMLGetter {
 				result.add(Integer.parseInt(node.getTextContent()));
 			} catch (NumberFormatException e) {
 				throw new WrongTypeXMLElement(field, node.getTextContent(), "int");
+			}
+		}
+		return result;
+	}
+	
+	public List<Color> getColorsListField(String manager, String field) throws XMLParsingException {
+		Element element = getElement(manager, dom.getDocumentElement());
+		NodeList nodeList = element.getElementsByTagName(field);
+		if (nodeList.getLength() <= 0) {
+			throw new NoSuchXMLElement(field);
+		}
+		List<Color> result = new ArrayList<Color>(nodeList.getLength());
+		for (int i = 0; i < nodeList.getLength(); ++i) {
+			Node node = nodeList.item(i);
+			try {
+				int r = getIntAttribute((Element) node, "r");
+				int g = getIntAttribute((Element) node, "g");
+				int b = getIntAttribute((Element) node, "b");
+				result.add(new Color(r,g,b));
+			} catch (NumberFormatException e) {
+				throw new WrongTypeXMLElement(field, node.getTextContent(), "Color");
 			}
 		}
 		return result;

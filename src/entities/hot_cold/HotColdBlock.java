@@ -23,13 +23,12 @@ package entities.hot_cold;
 
 import java.awt.Color;
 
-import manager.HotColdPartition;
-import manager.HotColdSSDManager;
-import utils.Utils;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
-import general.Consts;
+import manager.HotColdPartition;
+import manager.HotColdSSDManager;
+import utils.Utils;
 
 public class HotColdBlock extends Block<HotColdPage> {
 	public static class Builder extends Block.Builder<HotColdPage> {

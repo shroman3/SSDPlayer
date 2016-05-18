@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -28,12 +28,11 @@ import general.XMLGetter;
 import general.XMLParsingException;
 
 public class VisualConfig {	
+	public static final String VISUAL_CONFIG = "visual";
+
 	public enum BlockColorMeaning {
 		VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
 	}
-	
-	
-	private static final String VISUAL_CONFIG = "visual";
 	
 	private int xmlSpeed = -1;
 	private boolean xmlShowCounters = true;
@@ -63,8 +62,8 @@ public class VisualConfig {
 	private BlockColorMeaning blocksColorMeaning = BlockColorMeaning.NONE;
 
 	private ArrayList<Color> mBlocksColorRange;
-	private int mRangeHighValue;
-	private int mRangeLowValue;
+	private Integer mRangeHighValue;
+	private Integer mRangeLowValue;
 	private boolean mDrawFrame = true;
 
 	

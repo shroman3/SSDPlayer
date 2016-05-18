@@ -21,8 +21,6 @@
  *******************************************************************************/
 package utils;
 
-import general.Consts;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -30,9 +28,9 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import general.Consts;
 import manager.VisualConfig;
 
 public class UIUtils {

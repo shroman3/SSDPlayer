@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -29,11 +29,11 @@ import entities.Device;
 public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	private String name;
 	private int traceLength;
-	private S manager;
-	private D device;
+	protected S manager; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
+	protected D device; // Revised by Or: changed from private to protected, to enable setDevice in ResizableWorkloadGenerator.
 	protected int lpRange;
-	private int lp;
-	private int temp;
+	protected int lp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
+	protected int temp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
 	
 	protected abstract int getLP();
 
@@ -63,15 +63,15 @@ public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSD
 
 	@Override
 	public String getLastCommand() {
-		return "write " + lp + ", temp="+temp;
+		return "write " + lp + ", temp=" + temp;
 	}
 
 	@Override
 	public D parseNextCommand() {
-		if(device != null) {			
+		if (device != null) {
 			lp = getLP();
-			temp = getLPTemprature(lp);
-			device =  manager.writeLP(device, lp, temp);
+			temp = getLPArg(lp);
+			device = manager.writeLP(device, lp, temp);
 		}
 		return device;
 	}
@@ -81,7 +81,7 @@ public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSD
 		return device;
 	}
 
-	protected int getLPTemprature(int lp) {
+	protected int getLPArg(int lp) {
 		return 1/*dummy*/;
 	}
 }

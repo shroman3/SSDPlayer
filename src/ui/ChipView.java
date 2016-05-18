@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -38,11 +38,13 @@ public class ChipView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private List<PlaneView> planeList;
 	private Chip<?,?,?> chip;
+	private int chipIndex;
 	private VisualConfig visualConfig;
     
     public ChipView(Chip<?,?,?> chip, int chipIndex, VisualConfig visualConfig) {
 		this.chip = chip;
 		this.visualConfig = visualConfig;
+		this.chipIndex = chipIndex;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JLabel titleLabel = new JLabel("Chip " + chipIndex);
 		add(titleLabel);
@@ -68,7 +70,7 @@ public class ChipView extends JPanel {
 		List<PlaneView> planesList = new ArrayList<PlaneView>();
 		int planeIndex = 0;
 		for (Plane<?,?> plane : chip.getPlanes()) {
-			PlaneView planeView = new PlaneView(plane, planeIndex++, visualConfig);
+			PlaneView planeView = new PlaneView(plane, chipIndex, planeIndex++, visualConfig);
 			planesList.add(planeView);
 			planesPanel.add(planeView);
 		}

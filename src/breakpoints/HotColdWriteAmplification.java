@@ -9,7 +9,7 @@ import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
 
 public class HotColdWriteAmplification extends BreakpointBase {
 	private double mValue = 1.0;
-	private int mPartitionIndex = 0;
+	private int mPartitionIndex = 1;
 
 	public HotColdWriteAmplification() {
 		super();

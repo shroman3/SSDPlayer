@@ -25,17 +25,14 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
-import manager.ReusableSSDManager;
-import manager.VisualConfig;
-
 import org.javatuples.Pair;
 
-import utils.Utils;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
-import entities.hot_cold.HotColdPage;
 import general.Consts;
+import manager.ReusableSSDManager;
+import utils.Utils;
 
 public class ReusableBlock extends Block<ReusablePage> {
 	public static class Builder extends Block.Builder<ReusablePage> {

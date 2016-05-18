@@ -29,6 +29,9 @@ import org.javatuples.Pair;
 import general.ConfigProperties;
 import utils.Utils;
 
+/**
+ * November 2015: revised by Or Mauda for additional RAID functionality.
+ */
 public abstract class Device<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>> {	
 	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>, D extends Chip<P,B,T>> {
 		private Device<P,B,T,D> device;

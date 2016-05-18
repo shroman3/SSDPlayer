@@ -1,6 +1,6 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
- * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
+ * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
  * Copyright (c) 2015, Technion – Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
@@ -39,14 +39,16 @@ public class PlaneView extends JPanel {
 	private List<BlockView> blocksList;
 	private Plane<?,?> plane;
 	private VisualConfig visualConfig;
+	private int chipIndex;
 	private int planeIndex;
     
-    public PlaneView(Plane<?,?> plane, int planeIndex, VisualConfig visualConfig) {
+    public PlaneView(Plane<?,?> plane, int chipIndex, int planeIndex, VisualConfig visualConfig) {
 		this.plane = plane;
 		this.planeIndex = planeIndex;
+		this.chipIndex = chipIndex;
 		this.visualConfig = visualConfig;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		JLabel titleLabel = new JLabel("Plane " + planeIndex);
+		JLabel titleLabel = new JLabel("Plane (" + chipIndex + "," + planeIndex + ")");
 		add(titleLabel);
 		blocksList = initBlocks();
 		setBorder(new RoundedBorder(Consts.Colors.BORDER));
@@ -69,7 +71,7 @@ public class PlaneView extends JPanel {
 		List<BlockView> blocksList = new ArrayList<BlockView>();
 		int blockIndex = 0;
 		for (Block<?> block : plane.getBlocks()) {
-			BlockView blockView = new BlockView(block, planeIndex, blockIndex++, visualConfig);
+			BlockView blockView = new BlockView(block, chipIndex, planeIndex, blockIndex++, visualConfig);
 			blocksList.add(blockView);
 			blocksPanel.add(blockView);
 		}
