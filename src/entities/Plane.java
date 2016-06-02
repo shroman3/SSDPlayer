@@ -166,10 +166,12 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 
 	protected int getLowestValidBlockIndex() {
+		Utils.validateNotNegative(lowestValidBlockIndex, "Looks like device you've configured is too small for the trace. \nlowestValidBlockIndex");
 		return lowestValidBlockIndex;
 	}
 	
 	protected int getLowestEraseCleanBlockIndex() {
+		Utils.validateNotNegative(lowestEraseCleanBlockIndex, "Looks like device you've configured is too small for the trace. \nlowestEraseCleanBlockIndex");
 		return lowestEraseCleanBlockIndex;
 	}
 	

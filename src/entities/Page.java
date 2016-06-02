@@ -62,7 +62,7 @@ public abstract class Page {
 		}
 		
 		public Builder setLp(int lp) {
-			Utils.validateNotNegative(lp, "logical page");
+//			Utils.validateNotNegative(lp, "logical page");
 			page.lp = lp;
 			return this;
 		}
