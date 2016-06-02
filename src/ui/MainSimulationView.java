@@ -33,12 +33,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -74,6 +76,7 @@ public class MainSimulationView extends JFrame {
 				public void run() {
 					try {
 						MainSimulationView window = new MainSimulationView(visualConfig);
+						window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));;
 						window.setVisible(true);
 					} catch (Exception e) {
 						e.printStackTrace();
