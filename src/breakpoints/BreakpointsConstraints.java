@@ -20,7 +20,9 @@ public class BreakpointsConstraints {
 	private static String ILLEGAL_PARTITION = "Count value should be a posivite integer";
 	private static String ILLEGAL_WRITE_LEVEL = "Write level should be 1 or 2";
 	private static String ILLEGAL_WRITES_PER_ERASE = "Writes per erase should be greater than 1.0";
+	private static String ILLEGAL_PARITY_OVERHEAD = "Parity overhead should be greater than 1.0";
 	private static String ILLEGAL_LP;
+	private static String ILLEGAL_STRIPE = "Stripe number should be non-negative";
 	
 	private static XMLGetter mXmlGetter;
 	private static int mNumberOfPages;
@@ -60,7 +62,9 @@ public class BreakpointsConstraints {
 		mErrorMap.put(SetterError.ILLEGAL_PARTITION, ILLEGAL_PARTITION);
 		mErrorMap.put(SetterError.ILLEGAL_WRITE_LEVEL, ILLEGAL_WRITE_LEVEL);
 		mErrorMap.put(SetterError.ILLEGAL_WRITES_PER_ERASE, ILLEGAL_WRITES_PER_ERASE);
+		mErrorMap.put(SetterError.ILLEGAL_PARITY_OVERHEAD, ILLEGAL_PARITY_OVERHEAD);
 		mErrorMap.put(SetterError.ILLEGAL_LP, ILLEGAL_LP);
+		mErrorMap.put(SetterError.ILLEGAL_STRIPE, ILLEGAL_STRIPE);
 	}
 	
 	public static boolean isPageIndexLegal(int index) {
@@ -99,6 +103,10 @@ public class BreakpointsConstraints {
 		return value >= 1.0;
 	}
 	
+	public static boolean isParityOverheadValueLegal(double value) {
+		return value >= 1.0;
+	}
+	
 	public static boolean isWriteLevelLegal(int writeLevel) {
 		return writeLevel == 1 || writeLevel == 2;
 	}
@@ -114,5 +122,9 @@ public class BreakpointsConstraints {
 	public static Exception reportSetterException(SetterError setterError) {
 		MessageLog.log(mErrorMap.get(setterError));
 		return new Exception(mErrorMap.get(setterError));
+	}
+
+	public static boolean isStripeLegal(int stripe) {
+		return true;
 	}
 }

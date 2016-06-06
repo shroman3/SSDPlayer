@@ -53,6 +53,7 @@ public class RAIDVisualizationSSDManager extends RAIDBasicSSDManager<RAIDVisuali
 	private Boolean showOldData; // indicates whether the invalid data pages should be highlighted
 
 	RAIDVisualizationSSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getDataPageColor() {

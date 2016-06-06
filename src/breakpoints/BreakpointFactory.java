@@ -39,6 +39,8 @@ public class BreakpointFactory {
 		register(VictimBlockHasValidPagesPlane.class);
 		register(VictimBlockHasValidPagesChip.class);
 		register(VictimBlockHasValidPagesDevice.class);
+		register(ParityOverhead.class);
+		register(WriteInStripe.class);
 	}
 	
 	public static BreakpointBase getBreakpoint(String type, Element breakpointElement) throws Exception {

@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.awt.TexturePaint;
 
 import utils.UIUtils;
-import utils.Utils;
 
 
 /**

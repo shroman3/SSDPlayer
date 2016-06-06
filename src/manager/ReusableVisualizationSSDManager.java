@@ -43,7 +43,9 @@ public class ReusableVisualizationSSDManager extends SSDManager<VisualizationPag
 	private Color firstWriteColor;
 	private Color secondWriteColor;
 
-	ReusableVisualizationSSDManager() {}
+	ReusableVisualizationSSDManager() {
+		setSupportedZoomLevels();
+	}
 
 	public Color getWriteLevelColor(int writeLevel) {
 		if (writeLevel == 1) {

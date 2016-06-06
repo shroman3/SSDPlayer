@@ -6,7 +6,7 @@ import manager.LogicalWritesPerEraseGetter;
 import manager.SSDManager;
 
 public class WritesPerErase extends BreakpointBase {
-	private double mValue;
+	private double mValue = 1.0;
 	
 	@Override
 	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,

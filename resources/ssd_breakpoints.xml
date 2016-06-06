@@ -145,5 +145,15 @@
 <!-- 			<chipIndex>0</chipIndex> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 		</breakpoint> -->	
+
+<!-- 		Parity overhead reaches W -->
+<!-- 		<breakpoint type="ParityOverhead"> -->
+<!-- 			<value>1.1</value> -->
+<!-- 		</breakpoint> -->
+
+<!-- 		Logical write in stripe P -->
+<!-- 		<breakpoint type="WriteInStripe"> -->
+<!-- 			<stripe>0</stripe> -->
+<!-- 		</breakpoint> -->
 	</breakpoints>
 </root>
