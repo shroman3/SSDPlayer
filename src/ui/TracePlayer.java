@@ -233,6 +233,7 @@ public class TracePlayer extends JPanel {
 
 	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
 		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager, visualConfig, resetDeviceView);
+		zoomDialog.resetZoomLevel();
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {

@@ -210,4 +210,8 @@ public class ZoomLevelDialog extends JDialog {
 		public void componentHidden(ComponentEvent e) {
 		}
 	}
+	
+	public void resetZoomLevel() {
+		mZoomLevels.get(mSelectedZoomLevel).applyZoom(mManager, visualConfig);
+	}
 }
