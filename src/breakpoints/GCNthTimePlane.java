@@ -30,7 +30,7 @@ public class GCNthTimePlane extends BreakpointBase {
 	}
 
 	public void setValue(int value) throws Exception {
-		if (!BreakpointsConstraints.isCountValueLegal(value)) {
+		if (!BreakpointsConstraints.isGCCountLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
 		

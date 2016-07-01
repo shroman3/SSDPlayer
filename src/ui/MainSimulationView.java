@@ -34,7 +34,6 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -81,9 +80,9 @@ public class MainSimulationView extends JFrame {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
 			
+			ConfigProperties.initialize(xmlGetter);
 			BreakpointsConstraints.initialize(xmlGetter);
 			SSDManager.initializeManager(xmlGetter);
-			ConfigProperties.initialize(xmlGetter);
 			
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 

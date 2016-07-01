@@ -91,6 +91,10 @@ public class BreakpointsConstraints {
 		return count >= 0;
 	}
 	
+	public static boolean isGCCountLegal(int count) {
+		return count >= 1;
+	}
+	
 	public static boolean isPercentValueLegal(int percent) {
 		return percent >= 0 && percent <= 100;
 	}
