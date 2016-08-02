@@ -1,8 +1,6 @@
 package breakpoints;
 
 import entities.Device;
-import entities.StatisticsGetter;
-import manager.SSDManager;
 import manager.WriteAmplificationGetter;
 
 public class WriteAmplification extends BreakpointBase {
@@ -13,17 +11,11 @@ public class WriteAmplification extends BreakpointBase {
 	}
 	
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		for(StatisticsGetter getter : SSDManager.getCurrentManager().getStatisticsGetters()){
-			if(WriteAmplificationGetter.class.isInstance(getter)){
-				double oldValue = previousDevice == null ? Double.MIN_VALUE : getter.getStatistics(previousDevice).get(0).getValue();
-				double currentValue = getter.getStatistics(currentDevice).get(0).getValue();
-				return oldValue < mValue && currentValue >= mValue;
-			}
-		}
+	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		double oldValue = previousDevice == null ? Double.MIN_VALUE : WriteAmplificationGetter.computeWA(previousDevice);
+		double currentValue = WriteAmplificationGetter.computeWA(currentDevice);
 		
-		return false;
+		return oldValue < mValue && currentValue >= mValue;
 	}
 
 	public double getValue() {

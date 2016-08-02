@@ -52,7 +52,6 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	
 
 	HotColdSSDManager() {
-		setSupportedZoomLevels();
 	}
 
 	public Color getTemperatureColor(int temperature) {

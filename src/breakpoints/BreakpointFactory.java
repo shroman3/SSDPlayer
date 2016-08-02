@@ -1,9 +1,12 @@
 package breakpoints;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
+import org.reflections.Reflections;
 import org.w3c.dom.Element;
 
 import ui.breakpoints.BreakpointUIComponent;
@@ -12,35 +15,17 @@ public class BreakpointFactory {
 	private static HashMap<String, BreakpointDescriptor> mTypeMap;
 	
 	public static void initBreakpointFactory() {
-		mTypeMap = new HashMap<>();
+		mTypeMap = new HashMap<String, BreakpointDescriptor>();
 		
-		register(WriteLp.class);
-		register(WritePp.class);
-		register(AllocateActiveBlock.class);
-		register(EraseBlock.class);
-		register(WriteAmplification.class);
-		register(WritesPerErase.class);
-		register(EraseCountBlock.class);
-		register(EraseCountAnyBlock.class);
-		register(CleanBlocksPlane.class);
-		register(CleanBlocksChip.class);
-		register(CleanBlocksDevice.class);
-		register(PagesWrittenDevice.class);
-		register(PagesWrittenChip.class);
-		register(PagesWrittenPlane.class);
-		register(HotColdPartitionHoldsPercentOfBlocks.class);
-		register(ReusableLevelBlocksPercent.class);
-		register(ReusableBlockRecycled.class);
-		register(GCNthTimePlane.class);
-		register(GCNthTimeChip.class);
-		register(GCNthTimeDevice.class);
-		register(HotColdWriteAmplification.class);
-		register(ReusableAnyBlockRecycled.class);
-		register(VictimBlockHasValidPagesPlane.class);
-		register(VictimBlockHasValidPagesChip.class);
-		register(VictimBlockHasValidPagesDevice.class);
-		register(ParityOverhead.class);
-		register(WriteInStripe.class);
+		Reflections reflections = new Reflections(BreakpointBase.class.getPackage().getName());
+		// We use here raw type and do the casting in order for the code to compile.
+		Set<Class<? extends BreakpointBase>> subTypes = reflections.getSubTypesOf(BreakpointBase.class);
+		
+		for (Class<? extends BreakpointBase> clazz : subTypes) {			
+			if (!Modifier.isAbstract(clazz.getModifiers())) {
+				register(clazz);
+			}
+		}
 	}
 	
 	public static BreakpointBase getBreakpoint(String type, Element breakpointElement) throws Exception {

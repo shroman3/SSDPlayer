@@ -24,14 +24,14 @@ package manager.HotColdStatistics;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.HotColdPartition;
-import manager.HotColdSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.RegularHistoryGraph;
 import entities.StatisticsColumn;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPlane;
+import manager.HotColdPartition;
+import manager.HotColdSSDManager;
+import ui.GeneralStatisticsGraph;
+import ui.RegularHistoryGraph;
 
 public class HotColdWriteAmplificationGetter extends HotColdStatisticsGetter {
 	public HotColdWriteAmplificationGetter(HotColdSSDManager manager) {
@@ -45,28 +45,34 @@ public class HotColdWriteAmplificationGetter extends HotColdStatisticsGetter {
 
 	@Override
 	List<StatisticsColumn> getHotColdStatistics(HotColdDevice device) {
-		int[] logical = new int[getNumberOfColumns()];
-		int[] gc = new int[getNumberOfColumns()];
-		for (HotColdChip chip : device.getChips()) {
-			for (HotColdPlane plane : chip.getPlanes()) {
-				for (HotColdPartition partition : manager.getPartitions()) {
-					gc[manager.indexOfPartition(partition)] += plane.getTotalMoved(partition);
-				}
-			}
-		}
-		for (HotColdPartition partition : manager.getPartitions()) {
-			logical[manager.indexOfPartition(partition)] += device.getTotalWritten(partition);
-		}
+		double[] hotcoldWA = getHotColdWA(device);
 		
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>(getNumberOfColumns());
 		for (int i = 0; i < getNumberOfColumns(); i++) {
-			int total = logical[i] + gc[i];
 			HotColdPartition partition = manager.getPartitionbyIndex(i);
 			list.add(new StatisticsColumn(partition.getDsiplayName(), 
-					logical[i]==0 ? 1 : ((double)total)/logical[i],
-					true, partition.getColor()));
+					hotcoldWA[i], true, partition.getColor()));
 		}
 		return list;
+	}
+
+	public static double[] getHotColdWA(HotColdDevice device) {
+		int[] gc = new int[device.getPartitionsNum()];
+		double[] hotcoldWA = new double[device.getPartitionsNum()];
+		for (HotColdChip chip : device.getChips()) {
+			for (HotColdPlane plane : chip.getPlanes()) {
+				for (HotColdPartition partition : device.getPartitions()) {
+					gc[device.indexOfPartition(partition)] += plane.getTotalMoved(partition);
+				}
+			}
+		}
+		for (HotColdPartition partition : device.getPartitions()) {
+			int partitionIndex = device.indexOfPartition(partition);
+			int logicalWritten = device.getTotalWritten(partition);
+			int total =  logicalWritten + gc[partitionIndex];
+			hotcoldWA[partitionIndex] = logicalWritten==0 ? 1 : ((double)total)/logicalWritten;
+		}
+		return hotcoldWA;
 	}
 
 	@Override

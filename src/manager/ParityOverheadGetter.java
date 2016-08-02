@@ -42,14 +42,20 @@ public class ParityOverheadGetter implements StatisticsGetter {
 		return 1;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
-		int total = ((RAIDBasicDevice) device).getTotalParityWritten() + ((RAIDBasicDevice) device).getTotalDataWritten();
+		double parityOverhead = getParityOverhead(device);
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn("data + parity writes to data writes", 
-										total==0 ? 1 : ((double)total)/((RAIDBasicDevice) device).getTotalDataWritten(), false));
+										parityOverhead, false));
 		return list;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static double getParityOverhead(Device<?, ?, ?, ?> device) {
+		int total = ((RAIDBasicDevice) device).getTotalParityWritten() + ((RAIDBasicDevice) device).getTotalDataWritten();
+		double parityOverhead = total==0 ? 1 : ((double)total)/((RAIDBasicDevice) device).getTotalDataWritten();
+		return parityOverhead;
 	}
 
 	@Override

@@ -40,7 +40,6 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	private Color writtenPageColor;
 
 	GreedySSDManager() {
-		setSupportedZoomLevels();
 	}
 
 	public Color getWritenPageColor() {

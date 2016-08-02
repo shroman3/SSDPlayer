@@ -35,11 +35,12 @@ import entities.StatisticsGetter;
 
 public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 	
-	private int maxPagesPerErase;
-	private int writesTillFirstErase = 0;
+	private static int maxPagesPerErase;
+	private static int writesTillFirstErase;
 
 	public LogicalWritesPerEraseGetter(SSDManager<?,?,?,?,?> manager) {
 		maxPagesPerErase = (int) (manager.getPagesNum()*1.5);
+		writesTillFirstErase = 0;
 	}
 	
 	@Override
@@ -49,6 +50,13 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 
 	@Override
 	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
+		double pagesToErase = getLogicalWritesPerErase(device);
+		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
+		list.add(new StatisticsColumn("total writes to logical writes", pagesToErase, false));
+		return list;
+	}
+
+	public static double getLogicalWritesPerErase(Device<?, ?, ?, ?> device) {
 		int erases = 0;
 		for (Chip<?,?,?> chip : device.getChips()) {
 			for (Plane<?,?> plane : chip.getPlanes()) {
@@ -57,7 +65,6 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 				}
 			}
 		}
-		
 		double pagesToErase = 0;
 		if(erases==0) {
 			writesTillFirstErase = device.getTotalWritten();
@@ -65,9 +72,7 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 			pagesToErase = ((double)(device.getTotalWritten() - writesTillFirstErase))/erases;
 			pagesToErase = (pagesToErase > maxPagesPerErase) ? maxPagesPerErase : pagesToErase;
 		}
-		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
-		list.add(new StatisticsColumn("total writes to logical writes", pagesToErase, false));
-		return list;
+		return pagesToErase;
 	}
 
 	@Override

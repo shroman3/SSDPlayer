@@ -84,9 +84,7 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 	public HotColdDevice writeLP(int lp, int temperature) {
 		HotColdDevice device = (HotColdDevice) super.writeLP(lp, temperature);
 		HotColdPartition partition = manager.getPartition(temperature);
-		return (HotColdDevice) device.getSelfBuilder()
-				.setTotalWritten(partition, totalWrittenMap.get(partition) + 1)
-				.build();
+		return device.getSelfBuilder().setTotalWritten(partition, totalWrittenMap.get(partition) + 1).build();
 	}
 
 	public int getTotalWritten(HotColdPartition partition) {
@@ -95,5 +93,13 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 	
 	public List<HotColdPartition> getPartitions(){
 		return manager.getPartitions();
+	}
+
+	public int getPartitionsNum() {
+		return manager.getPartitionsNum();
+	}
+	
+	public int indexOfPartition(HotColdPartition partition) {
+		return manager.indexOfPartition(partition);
 	}
 }

@@ -46,7 +46,6 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	private Color secondWriteColor;
 	
 	ReusableSSDManager() {
-		setSupportedZoomLevels();
 	}
 
 	public Color getWriteLevelColor(int writeLevel) {

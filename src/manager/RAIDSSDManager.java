@@ -54,7 +54,6 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	protected int paritiesNumber;
 
 	RAIDSSDManager() {
-		setSupportedZoomLevels();
 	}
 
 	public Color getDataPageColor() {

@@ -25,25 +25,25 @@
 <!-- 			<count>2</count> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		Erase block B	-->
-<!-- 		<breakpoint type="EraseBlock"> -->
-<!-- 			<blockIndex>0</blockIndex> -->
-<!-- 			<planeIndex>0</planeIndex> -->
-<!-- 			<chipIndex>0</chipIndex> -->
-<!-- 		</breakpoint> -->
+		<!--  		Erase block B	-->
+		<breakpoint type="EraseBlock">
+			<blockIndex>0</blockIndex> 	
+			<planeIndex>0</planeIndex> 	
+			<chipIndex>0</chipIndex>	
+		</breakpoint> 					
 		
 <!--  		Any block reaches erase count	-->
 <!-- 		<breakpoint type="EraseCountAnyBlock"> -->
 <!-- 			<count>2</count> -->
 <!-- 		</breakpoint> -->
 		
-<!--  		Block reaches erase count	-->
-<!-- 		<breakpoint type="EraseCountBlock"> -->
-<!-- 			<count>2</count> -->
-<!-- 			<blockIndex>0</blockIndex> -->
-<!-- 			<planeIndex>0</planeIndex> -->
-<!-- 			<chipIndex>0</chipIndex> -->
-<!-- 		</breakpoint> -->
+		<!--  		Block reaches erase count	-->
+		<breakpoint type="EraseCountBlock">
+			<count>2</count>
+			<blockIndex>0</blockIndex>
+			<planeIndex>0</planeIndex>
+			<chipIndex>0</chipIndex>
+		</breakpoint>
 
 <!--  		Invoke garbage collection in the i-th time in plane P	-->
 <!-- 		<breakpoint type="GCNthTime" level="Plane"> -->

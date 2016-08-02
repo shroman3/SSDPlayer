@@ -40,6 +40,7 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
  *  If you attempt to select the separator with the mouse, the selection
  *  will be ignored and the drop down will remain open.
  */
+@SuppressWarnings({ "serial", "rawtypes" })
 public class SeparatorComboBox extends JComboBox implements KeyListener
 {
 	//  Track key presses and releases
@@ -61,6 +62,7 @@ public class SeparatorComboBox extends JComboBox implements KeyListener
 	/**
 	 *  Standard constructor. See JComboBox API for details
 	 */
+	@SuppressWarnings("unchecked")
 	public SeparatorComboBox(ComboBoxModel model)
 	{
 		super(model);
@@ -70,6 +72,7 @@ public class SeparatorComboBox extends JComboBox implements KeyListener
 	/**
 	 *  Standard constructor. See JComboBox API for details
 	 */
+	@SuppressWarnings("unchecked")
 	public SeparatorComboBox(Object[] items)
 	{
 		super(items);
@@ -79,12 +82,14 @@ public class SeparatorComboBox extends JComboBox implements KeyListener
 	/**
 	 *  Standard constructor. See JComboBox API for details
 	 */
+	@SuppressWarnings("unchecked")
 	public SeparatorComboBox(Vector<?> items)
 	{
 		super(items);
 		init();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void init()
 	{
 		setRenderer( new SeparatorRenderer() );

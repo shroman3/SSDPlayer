@@ -1,7 +1,7 @@
 package breakpoints;
 
 import entities.Device;
-import entities.StatisticsGetter;
+import entities.hot_cold.HotColdDevice;
 import manager.HotColdReusableSSDManager;
 import manager.HotColdSSDManager;
 import manager.SSDManager;
@@ -16,17 +16,14 @@ public class HotColdWriteAmplification extends BreakpointBase {
 	}
 	
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		for(StatisticsGetter getter : SSDManager.getCurrentManager().getStatisticsGetters()){
-			if(HotColdWriteAmplificationGetter.class.isInstance(getter)){
-				double oldValue = previousDevice == null ? Double.MIN_VALUE : getter.getStatistics(previousDevice).get(mPartitionIndex).getValue();
-				double currentValue = getter.getStatistics(currentDevice).get(mPartitionIndex).getValue();
-				return oldValue < mValue && currentValue >= mValue;
-			}
+	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		if ((!(currentDevice instanceof HotColdDevice)) || (!(currentDevice instanceof HotColdDevice))) {
+			return false;
 		}
-		
-		return false;
+		double oldValue = previousDevice == null ? Double.MIN_VALUE : 
+			HotColdWriteAmplificationGetter.getHotColdWA((HotColdDevice) previousDevice)[mPartitionIndex];
+		double currentValue = HotColdWriteAmplificationGetter.getHotColdWA((HotColdDevice) currentDevice)[mPartitionIndex];
+		return oldValue < mValue && currentValue >= mValue;
 	}
 
 	public double getValue() {

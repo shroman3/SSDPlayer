@@ -11,10 +11,20 @@ public final class ActionLog {
 		nextCommand();
 	}
 	
+	/**
+	 * Adding new action to the current step
+	 * 
+	 * @param action
+	 */
 	public static void addAction(IDeviceAction action){
 		actionsByCommandIndex.get(actionsByCommandIndex.size() - 1).add(action);
 	}
 	
+	/**
+	 * Called after each line in a trace, moves to the next step of action log
+	 * 
+	 * NOTE: May be important to add sliding window so the list will have limited size 
+	 */
 	public static void nextCommand(){
 		actionsByCommandIndex.add(new ArrayList<IDeviceAction>());
 	}
