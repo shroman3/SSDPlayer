@@ -23,12 +23,12 @@ package entities.hot_cold;
 
 import java.awt.Color;
 
-import manager.HotColdPartition;
-import manager.HotColdSSDManager;
-import utils.Utils;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
+import manager.HotColdPartition;
+import manager.HotColdSSDManager;
+import utils.Utils;
 
 public class HotColdBlock extends Block<HotColdPage> {
 	public static class Builder extends Block.Builder<HotColdPage> {
@@ -125,6 +125,22 @@ public class HotColdBlock extends Block<HotColdPage> {
 		return builder.build();
 	}
 	
+	public float getAveragePageTemperature(){
+		float temperatureSum = 0;
+		int count = 0;
+		for(HotColdPage page : this.getPages()){
+			if(page.getTemperature() >= 0){
+				count++;
+				temperatureSum += page.getTemperature();
+			}
+		}
+		if(count == 0){
+			return 0;
+		}
+		
+		return temperatureSum/count;
+	}
+	
 	public HotColdBlock writeLP(int lp, int temperature) {
 		int index = 0;
 		for (HotColdPage page : getPages()) {
@@ -136,5 +152,10 @@ public class HotColdBlock extends Block<HotColdPage> {
 			++index;
 		}
 		return null;
+	}
+
+	public float getBlockTemperatureToMaxTempRatio() {
+		int maxTemperature = manager.getMaxTemperature();
+		return getAveragePageTemperature()/maxTemperature;
 	}
 }

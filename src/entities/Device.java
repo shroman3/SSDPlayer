@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.javatuples.Pair;
 
+import general.ConfigProperties;
 import utils.Utils;
 
 /**
@@ -47,6 +48,11 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 			return this;
 		}
 		
+		public Builder<P,B,T,D> setTotalGCInvocations(int number) {
+			device.totalGCInvocations = number;
+			return this;
+		}
+		
 		public Builder<P,B,T,D> setChips(List<D> chipsList) {
 			device.chipsList = new ArrayList<D>(chipsList);
 			return this;
@@ -64,18 +70,20 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	private List<C> chipsList = null;
 	private int totalMoved = 0;
 	private int totalWritten = 0;
+	private int totalGCInvocations = 0;
 	
 	protected Device() {}	
 	
 	protected Device(Device<P,B,T,C> other) {
 		this.chipsList = new ArrayList<C>(other.chipsList);
 		this.totalMoved = other.totalMoved; 
-		this.totalWritten = other.totalWritten; 
+		this.totalWritten = other.totalWritten;
+		this.totalGCInvocations = other.totalGCInvocations;
 	}
 
 	abstract public Builder<P,B,T,C> getSelfBuilder();
 
-	public Iterable<C> getChips() {
+	public List<C> getChips() {
 		return chipsList;
 	}
 	
@@ -94,18 +102,28 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	public int getTotalWritten() {
 		return totalWritten;
 	}
-
+	
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Device<P,B,T,C> invokeCleaning() {
 		int moved = 0;
 		List<C> cleanChips = new ArrayList<C>(getChipsNum());
+		int i = 0; 
 		for (C chip : getChips()) {
-			Pair<Chip<P,B,T>,Integer> clean = chip.clean();
+			Pair<Chip<P,B,T>,Integer> clean = chip.clean(i);
 			moved += clean.getValue1();
 			cleanChips.add((C) clean.getValue0());
+			i++;
 		}
+		
+		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T,C> builder = getSelfBuilder();
-		builder.setChips(cleanChips).setTotalMoved(totalMoved + moved);
+		builder.setChips(cleanChips)
+			   .setTotalMoved(totalMoved + moved)
+			   .setTotalGCInvocations(gcInvocations);
 		return builder.build();
 	}
 
@@ -125,6 +143,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		int chipIndex = getChipIndex(lp);
 		List<C> updatedChips = getNewChipsList();
 		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
+		ActionLog.addAction(new WriteLpAction(lp));
 		Builder<P, B, T, C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
 		return builder.build();
@@ -136,5 +155,38 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	
 	protected int getChipIndex(int lp) {
 		return lp%getChipsNum();
+	}
+	
+	public C getChipByIndex(int chipIndex){
+		return chipsList.get(chipIndex);
+	}
+	
+	public T getPlaneByIndex(int planeIndex){
+		int planesInChip = ConfigProperties.getPlanesInChip();
+		int chipIndex = planeIndex / planesInChip;
+		int planeRelativeToChipIndex = planeIndex - chipIndex * planesInChip;
+		return getChipByIndex(chipIndex).getPlane(planeRelativeToChipIndex);
+	}
+	
+	public B getBlockByIndex(int blockIndex){
+		int blocksInPlain = ConfigProperties.getBlocksInPlane();
+		int planeIndex = blockIndex / blocksInPlain;
+		int blockRelativeToPlainIndex = blockIndex - planeIndex * blocksInPlain;
+		return getPlaneByIndex(planeIndex).getBlock(blockRelativeToPlainIndex);
+	}
+	
+	public P getPageByIndex(int pageIndex){
+		int pagesInBlock = ConfigProperties.getPagesInBlock();
+		int blockIndex = pageIndex / pagesInBlock;
+		int pageRelativeToBlockIndex = pageIndex - blockIndex * pagesInBlock;
+		return getBlockByIndex(blockIndex).getPage(pageRelativeToBlockIndex);
+	}
+
+	public int getNumOfClean() {
+		int cleanBlocks = 0;
+		for (Chip<?, ?, ?> chip : chipsList){
+			cleanBlocks += chip.getNumOfClean();
+		}
+		return cleanBlocks;
 	}
 }

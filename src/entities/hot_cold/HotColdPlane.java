@@ -111,7 +111,7 @@ public class HotColdPlane extends Plane<HotColdPage, HotColdBlock> {
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setBlocks(updatedBlocks).setTotalWritten(getTotalWritten() + 1);
 		return builder.build();
 	}
 	
@@ -140,9 +140,12 @@ public class HotColdPlane extends Plane<HotColdPage, HotColdBlock> {
 			}
 		}
 		cleanBlocks.set(pickedToClean.getValue0(), (HotColdBlock) pickedToClean.getValue1().eraseBlock());
+		
+		int gcInvocations = (toMove > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder builder = getSelfBuilder();
-		builder.setTotalMoved(partition, totalMovedMap.get(partition) + toMove);
-		builder.setBlocks(cleanBlocks);
+		builder.setTotalMoved(partition, totalMovedMap.get(partition) + toMove)
+			   .setBlocks(cleanBlocks)
+			   .setTotalGCInvocations(gcInvocations);
 		return new Pair<>(builder.build(), toMove);
 	}
 	

@@ -29,11 +29,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.TexturePaint;
 
-import manager.VisualConfig;
-import utils.UIUtils;
 import entities.Block;
 import entities.Page;
+import entities.hot_cold.HotColdBlock;
+import entities.reusable.ReusableBlock;
+import entities.reusable.ReusablePage;
 import general.Consts;
+import manager.VisualConfig;
+import utils.UIUtils;
 
 /**
  * 
@@ -72,7 +75,11 @@ public class BlockView extends Component {
 	}
 
     public void setBlock(Block<?> block) {
+    	if(this.block == block){
+    		return;
+    	}
     	this.block = block;
+    	this.repaint();
     }
     
 	private void initSizesAndSpacing(Block<?> block, VisualConfig visualConfig) {
@@ -97,6 +104,7 @@ public class BlockView extends Component {
     }
             
     public void paint(Graphics g) {
+    	initSizesAndSpacing(block, visualConfig);
 		doDrawing(g);
     }
     	
@@ -116,24 +124,84 @@ public class BlockView extends Component {
 		} else {
 			g2d.setFont(Consts.UI.INVISIBLE_FONT);
 		}
-		int pageIndex = 0;
-		for (Page page :  block.getPages()) {
-			drawPage(g2d, x, y, pageIndex++, page);
+		if(visualConfig.isShowPages()){
+			int pageIndex = 0;
+			for (Page page :  block.getPages()) {
+				drawPage(g2d, x, y, pageIndex++, page);
+			}			
+		}
+		else{
+			drawBlockWithoutPages(g2d);
 		}
 
 	}
 
 	private void drawBG(Graphics2D g2d) {
-		Color bgColor = block.getBGColor();
+		Color bgColor = block.getBGColor();;
+		
 		if(bgColor != null) {			
 			g2d.setColor(bgColor);
 			g2d.fillRect(0, 0, dimension.width, dimension.height);
 		}
 	}
+	
+	private void drawBlockWithoutPages(Graphics2D g2d) {
+		Color bgColor = null;
+		
+		switch (visualConfig.getBlocksColorMeaning()) {
+		case AVERAGE_TEMPERATURE:
+			if(block instanceof HotColdBlock){
+				boolean blockClean = true;
+				for(Page page : block.getPages()){
+					if(!page.isClean()){
+						blockClean = false;
+						break;
+					}
+				}
+				if (blockClean) {
+					bgColor = block.getPage(0).getBGColor();
+					break;
+				}
+				int colorRangeIndex = (int)(((HotColdBlock)block).getBlockTemperatureToMaxTempRatio() * (Consts.defaultColorRange.size()-1));
+				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
+			}
+			break;
+		case AVERAGE_WRITE_LEVEL:
+			if(block instanceof ReusableBlock){
+				ReusableBlock rBlock = ((ReusableBlock)block); 
+				boolean blockClean = true;
+				for(ReusablePage page : rBlock.getPages()){
+					if(!(page.getWriteLevel() < 1)){
+						blockClean = false;
+						break;
+					}
+				}
+				if (blockClean) {
+					bgColor = block.getPage(0).getBGColor();
+					break;
+				}
+				int colorRangeIndex = Math.max(0, (int)((rBlock.getAveragePageWriteLevel() - 1) * (visualConfig.getBlocksColorRange().size()-1)));
+				bgColor = visualConfig.getBlocksColorRange().get(colorRangeIndex);
+			}
+			break;
+		case VALID_COUNT:
+				bgColor = block.getBlockValidColor();
+				break;
+		case ERASE_COUNT:
+			bgColor = block.getBlockEraseColor();
+			break;
+		default:
+			break;
+		}
+		if(bgColor != null) {			
+			g2d.setColor(bgColor);
+			g2d.fillRect(spacing, spacing, blockWidth, blockHeight);
+		}
+	}
 
 	private void drawFrame(Graphics2D g2d, Block<?> block) {
 		Color frameColor = block.getFrameColor();
-		if (frameColor != null) {
+		if (frameColor != null && visualConfig.isDrawFrame()) {
 			BasicStroke bs3 = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			g2d.setStroke(bs3);
 			g2d.setColor(frameColor);
@@ -159,14 +227,22 @@ public class BlockView extends Component {
 		y += (pageIndex/pagesInRow) * pageHeight;
 		
 		Color color = page.getBGColor();
+		
 		String title = page.getTitle();
-		TexturePaint tp = page.getPageTexture(color);
 		g2d.setColor(color);
-		g2d.setPaint(tp);
+
+		TexturePaint tp = page.getPageTexture(color);
+		if (visualConfig.isMovedPattern()) {
+			g2d.setPaint(tp);
+		} else if (tp != null) {
+			color = UIUtils.brighten(color, 0.25);
+			g2d.setColor(color);
+		}
+		
 		g2d.fillRect(x, y, pageWidth, pageHeight);
 		
 		if (!page.isValid() && !page.isClean()) {
-			UIUtils.drawInvalidPage(g2d, x, y, pageWidth, pageHeight);
+			UIUtils.drawInvalidPage(g2d, x, y, pageWidth, pageHeight, visualConfig);
 		}
 		
 		g2d.setColor(Consts.Colors.PAGE_TEXT);

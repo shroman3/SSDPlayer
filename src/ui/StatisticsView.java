@@ -27,9 +27,9 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import manager.VisualConfig;
 import entities.Device;
 import entities.StatisticsGetter;
+import manager.VisualConfig;
 
 public class StatisticsView extends JPanel {
 	private static final long serialVersionUID = 1L;

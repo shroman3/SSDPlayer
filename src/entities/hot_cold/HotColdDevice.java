@@ -22,11 +22,12 @@
 package entities.hot_cold;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import entities.Device;
 import manager.HotColdPartition;
 import manager.HotColdSSDManager;
-import entities.Device;
 
 
 public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip> {
@@ -83,10 +84,16 @@ public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlan
 	public HotColdDevice writeLP(int lp, int temperature) {
 		HotColdDevice device = (HotColdDevice) super.writeLP(lp, temperature);
 		HotColdPartition partition = manager.getPartition(temperature);
-		return device.getSelfBuilder().setTotalWritten(partition, totalWrittenMap.get(partition) + 1).build();
+		return (HotColdDevice) device.getSelfBuilder()
+				.setTotalWritten(partition, totalWrittenMap.get(partition) + 1)
+				.build();
 	}
 
 	public int getTotalWritten(HotColdPartition partition) {
 		return totalWrittenMap.get(partition);
+	}
+	
+	public List<HotColdPartition> getPartitions(){
+		return manager.getPartitions();
 	}
 }

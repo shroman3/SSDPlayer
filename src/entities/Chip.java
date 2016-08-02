@@ -49,17 +49,31 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 			return this;
 		}
 		
+		public Builder<P,B,T> setTotalWritten(int totalWritten) {
+			chip.totalWritten = totalWritten;
+			return this;
+		}
+
+		public Builder<P,B,T> setTotalGCInvocations(int number) {
+			chip.totalGCInvocations = number;
+			return this;
+		}
+		
 		protected void setChip(Chip<P,B,T> chip) {
 			this.chip = chip;
 		}
 	}
 	
 	private List<T> planesList;
+	private int totalWritten = 0;
+	private int totalGCInvocations = 0;
 	
 	protected Chip() {}	
 	
 	protected Chip(Chip<P,B,T> other) {
 		this.planesList = new ArrayList<T>(other.planesList);
+		this.totalWritten = other.getTotalWritten();
+		this.totalGCInvocations = other.totalGCInvocations;
 	}
 	
 	abstract public Builder<P,B,T> getSelfBuilder();
@@ -88,16 +102,25 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Pair<Chip<P, B, T>, Integer> clean() {
+	public Pair<Chip<P, B, T>, Integer> clean(int chipIndex) {
 		List<T> cleanPlanes = new ArrayList<T>();
 		int moved = 0;
+		int i = 0;
 		for (T plane : getPlanes()) {
 			Pair<? extends Plane<P, B>, Integer> clean = plane.clean();
 			moved += clean.getValue1();
+			if(moved > 0){
+				ActionLog.addAction(new CleanAction(chipIndex, i, clean.getValue1()));
+			}
 			cleanPlanes.add((T) clean.getValue0());
+			i++;
 		}
+		if(moved == 0){
+			return new Pair<Chip<P, B, T>, Integer>(this, moved);
+		}
+		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T> builder = getSelfBuilder();
-		builder.setPlanes(cleanPlanes);
+		builder.setPlanes(cleanPlanes).setTotalGCInvocations(gcInvocations);
 		return new Pair<Chip<P, B, T>, Integer>(builder.build(), moved);
 	}
 	
@@ -131,15 +154,29 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	@SuppressWarnings("unchecked")
 	public Chip<P, B, T> writeLP(int lp, int arg) {
 		int index = getMinValidCountPlaneIndex();
-		return setPlane(index, (T) getPlane(index).writeLP(lp, arg));
-	}
-
-	public Chip<P, B, T> setPlane(int index, T t) {
+		
+		T newPlane = (T) getPlane(index).writeLP(lp, arg);
 		List<T> updatedPlanes = getNewPlanesList();
-		updatedPlanes.set(index, t);
+		updatedPlanes.set(index, newPlane);
 		Builder<P, B, T> builder = getSelfBuilder();
-		builder.setPlanes(updatedPlanes);
+		builder.setPlanes(updatedPlanes).setTotalWritten(getTotalWritten()  + 1);;
 		return builder.build();
 	}
-	
+
+
+	public int getNumOfClean() {
+		int cleanBlocks = 0;
+		for (Plane<?, ?> plane : planesList){
+			cleanBlocks += plane.getNumOfClean();
+		}
+		return cleanBlocks;
+	}
+
+	public int getTotalWritten() {
+		return totalWritten;
+	}
+
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
+	}
 }

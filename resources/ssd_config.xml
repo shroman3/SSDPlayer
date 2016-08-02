@@ -6,14 +6,15 @@
 		<overprovisioning>7</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
 		<gc_threshold>30</gc_threshold>
-		<chips>8</chips>
+		<chips>2</chips>
 		<planes>2</planes>
-		<blocks>16</blocks>
-		<pages>16</pages>
+		<blocks>12</blocks>
+		<pages>32</pages>
+		<max_erasures>30</max_erasures>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>
-		<speed>9000</speed><!-- Number of frames per minute -->
+		<speed>15000</speed><!-- Number of frames per minute -->
 		<page_width>18</page_width>
 		<page_height>13</page_height>
 		<block_space>2</block_space><!-- spacing between the blocks in the plane -->
@@ -26,7 +27,7 @@
 	<ReusableVisualizationSSDManager>
 		<name>Reusable Simulation</name>
 		<clean_color r="255" g="255" b="255"/>
-		<first_write r="50" g="255" b="150"/>
+		<first_write r="50" g="255" b="150"/> 
 		<second_write r="50" g="150" b="255"/>
 	</ReusableVisualizationSSDManager>
 	<ReusableSSDManager>

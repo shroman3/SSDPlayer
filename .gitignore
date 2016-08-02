@@ -1,0 +1,4 @@
+/target/
+/bin/
+/traces/
+/resources/breakpoints_examples.txt

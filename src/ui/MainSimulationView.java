@@ -21,15 +21,8 @@
  *******************************************************************************/
 package ui;
 
-import entities.Device;
-import entities.StatisticsGetter;
-import general.Consts;
-import general.OneObjectCallback;
-import general.TwoObjectsCallback;
-import general.XMLGetter;
-import general.XMLParsingException;
-
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -37,6 +30,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -49,26 +43,48 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import breakpoints.BreakpointBase;
+import breakpoints.BreakpointsConstraints;
+import breakpoints.BreakpointsDeserializer;
+import entities.Device;
+import entities.StatisticsGetter;
+import general.ConfigProperties;
+import general.Consts;
+import general.MessageLog;
+import general.OneObjectCallback;
+import general.TwoObjectsCallback;
+import general.XMLGetter;
+import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
-
-import org.xml.sax.SAXException;
+import ui.breakpoints.LogView;
+import ui.zoom.ZoomLevelPanel;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
 	private static final String VERSION = "1.0";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
+	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private VisualConfig visualConfig;
+	private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
 	private JPanel statisticsPanel;
 	private DeviceView deviceView;
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
+	private JPanel southInnerPanel;
+	private ZoomLevelPanel zoomLevelPanel;
 
 	public static void main(String[] args) {
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+			
+			ConfigProperties.initialize(xmlGetter);
+			BreakpointsConstraints.initialize(xmlGetter);
 			SSDManager.initializeManager(xmlGetter);
+			
 			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 
 			initLookAndFeel();
@@ -116,24 +132,73 @@ public class MainSimulationView extends JFrame {
 		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
-		tracePlayer = new TracePlayer(visualConfig, new TwoObjectsCallback<Device<?,?,?,?>, Iterable<StatisticsGetter>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
-				resetDevice(device, statisticsGetters);
-			}
-		}, new OneObjectCallback<Device<?,?,?,?>>() {
-			@Override
-			public void message(Device<?, ?, ?, ?> device) {
-				updateDevice(device);				
-			}
-		});
+		
+		tracePlayer = new TracePlayer(visualConfig,
+                new TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>>() {
+                        @Override
+                        public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
+                                resetDevice(device, statisticsGetters);
+                                if (zoomLevelPanel != null) {
+                                	zoomLevelPanel.setZoomLevel(tracePlayer.getZoomLevel());
+                                }
+                        }
+                }, new OneObjectCallback<Device<?, ?, ?, ?>>() {
+                        @Override
+                        public void message(Device<?, ?, ?, ?> device) {
+                                updateDevice(device);
+                        }
+                }, new OneObjectCallback<Boolean>() {
+                        @Override
+                        public void message(Boolean repaintDevice) {
+                                deviceView.repaintDevice();
+                                devicePanel.updateUI();
+                    			zoomLevelPanel.setZoomLevel(tracePlayer.getZoomLevel());
+                        }
+                });
+
 		southPanel.add(tracePlayer);
-		statisticsPanel = new JPanel(new FlowLayout());
+		southInnerPanel = new JPanel();
+		southInnerPanel.setLayout(new BoxLayout(southInnerPanel, BoxLayout.X_AXIS));
+
+		LogView logView = new LogView();
+		MessageLog.initialize(logView, tracePlayer);
+		
+		initialBreakpoints = BreakpointsDeserializer.deserialize(BREAKPOINTS_XML);
+		tracePlayer.setInitialBreakpoints(initialBreakpoints);
+		
+		JPanel logPanel = new JPanel(new FlowLayout());
+		logPanel.setMinimumSize(new Dimension(320, 150));
+		logPanel.setPreferredSize(new Dimension(320, 150));
+		logPanel.setMaximumSize(new Dimension(320, 150));
+		logPanel.add(logView);
+		
+		JScrollPane scrollableMessagesPane = new JScrollPane(logPanel);
+		setEdgesPaneSize(scrollableMessagesPane);
+
+		statisticsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		zoomLevelPanel = new ZoomLevelPanel(tracePlayer.getZoomLevel(), visualConfig);
+		
+		JScrollPane scrollableZoomPane = new JScrollPane(zoomLevelPanel);
+		setEdgesPaneSize(scrollableZoomPane);
+		
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
 		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
-		southPanel.add(scrollableStatisticsPane);
+		
+		statisticsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Consts.Colors.BORDER));
+		southInnerPanel.add(scrollableZoomPane);
+		southInnerPanel.add(scrollableStatisticsPane);
+		southInnerPanel.add(scrollableMessagesPane);
+		southPanel.add(southInnerPanel);
 		
 		setMinimumSize(new Dimension(550, 550));
+	}
+
+
+	private void setEdgesPaneSize(JScrollPane scrollableMessagesPane) {
+		scrollableMessagesPane.setMinimumSize(new Dimension(320, 150));
+		scrollableMessagesPane.setPreferredSize(new Dimension(320, 150));
+		scrollableMessagesPane.setMaximumSize(new Dimension(320, 150));
+		scrollableMessagesPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 
 	private void resetDevice(final Device<?, ?, ?, ?> device, final Iterable<StatisticsGetter> statisticsGetters) {
@@ -146,6 +211,7 @@ public class MainSimulationView extends JFrame {
 				
 				statisticsPanel.removeAll();
 				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
+				statisticsView.setAlignmentY(Component.CENTER_ALIGNMENT);
 				statisticsPanel.add(statisticsView);
 				statisticsPanel.updateUI();
 			}
@@ -156,7 +222,6 @@ public class MainSimulationView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				deviceView.setDevice(device);
-				devicePanel.updateUI();
 				statisticsView.updateStatistics(device);
 				statisticsPanel.updateUI();
 			}
@@ -179,7 +244,7 @@ public class MainSimulationView extends JFrame {
 		UIManager.put("controlLHighlight", Consts.Colors.HIGHLIGHT);
 		UIManager.put("ComboBox.background", Consts.Colors.CONTROL);
 		UIManager.put("Button.background", Consts.Colors.CONTROL);
-		
+		UIManager.put("ScrollBar.minimumThumbSize", new Dimension(32, 32));
 		
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {

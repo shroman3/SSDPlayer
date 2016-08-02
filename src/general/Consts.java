@@ -23,14 +23,15 @@ package general;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 public class Consts {
 	public static class UI {
-		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 13);
-		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 11);
-		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 11);
-		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 9);
-		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 8);
+		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 16);
+		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 16);
+		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 12);
+		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 10);
 		public static final Font INVISIBLE_FONT = new Font("Segoe UI", Font.PLAIN, 0);
 	}
 	
@@ -47,4 +48,17 @@ public class Consts {
 		public static final Color CONTROL_LIGHTER = new Color(50,50,50);
 		public static final Color HIGHLIGHT = new Color(85,85,85);
 	}
+	
+	@SuppressWarnings("serial")
+	public static ArrayList<Color> defaultColorRange = new ArrayList<Color>() {{
+		 add(Color.white);
+		 add(new Color(242, 242, 242));
+		 add(new Color(217, 217, 217));
+		 add(new Color(191, 191, 191));
+		 add(new Color(166, 166, 166));
+		 add(new Color(140, 140, 140));
+		 add(new Color(115, 115, 115));
+		 add(new Color(89, 89, 89));
+		 add(new Color(64, 64, 64));
+	}};
 }

@@ -111,6 +111,6 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 
 	public Chip<RAIDPage,RAIDBlock,RAIDPlane> writePP(int stripe, int parityNum) {
 		int index = getMinValidCountPlaneIndex();
-		return setPlane(index, (RAIDPlane) getPlane(index).writePP(stripe, parityNum));
+		return setPlane((RAIDPlane) getPlane(index).writePP(stripe, parityNum), index);
 	}
 }

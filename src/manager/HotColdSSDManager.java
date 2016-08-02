@@ -39,6 +39,8 @@ import general.XMLParsingException;
 import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
 import manager.HotColdStatistics.PartitionDistributionGetter;
 import ui.WorkloadWidget;
+import zoom.BlocksAvgTempZoomLevel;
+import zoom.SmallBlocksAvgTempZoomLevel;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
 	private int minTemperature;
@@ -50,10 +52,19 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	
 
 	HotColdSSDManager() {
+		setSupportedZoomLevels();
 	}
 
 	public Color getTemperatureColor(int temperature) {
 		return colorsMap.get(temperature);
+	}
+	
+	public int getMaxTemperature(){
+		return maxTemperature;
+	}
+	
+	public int getMinTemperature(){
+		return minTemperature;
 	}
 	
 	@Override
@@ -65,7 +76,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return partitionsMap.get(temperature);
 	}
 
-	public Iterable<HotColdPartition> getPartitions() {
+	public List<HotColdPartition> getPartitions() {
 		return partitions;
 	}
 
@@ -174,6 +185,13 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return (int) (end*weight + start*(1-weight));
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		supportedZoomLevels.add(new BlocksAvgTempZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksAvgTempZoomLevel());
+	}
+	
 	@Override
 	protected HotColdDevice getEmptyDevice(List<HotColdChip> chips) {
 		HotColdDevice.Builder builder = new HotColdDevice.Builder();

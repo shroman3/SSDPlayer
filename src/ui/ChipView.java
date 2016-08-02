@@ -54,6 +54,9 @@ public class ChipView extends JPanel {
 	}
 
 	public void setChip(Chip<?,?,?> chip) {
+		if(this.chip == chip){
+			return;
+		}
     	this.chip = chip;
 		int planeIndex = 0;
 		for (Plane<?,?> plane :  chip.getPlanes()) {

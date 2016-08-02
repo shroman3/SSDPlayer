@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -48,10 +50,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import breakpoints.BreakpointBase;
+import breakpoints.IBreakpoint;
+import entities.ActionLog;
 import entities.Device;
 import entities.StatisticsGetter;
 import entities.RAID.RAIDBasicPage;
 import general.Consts;
+import general.MessageLog;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import manager.RAIDBasicSSDManager;
@@ -60,7 +66,10 @@ import manager.TraceParser;
 import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
+import ui.breakpoints.ManageBreakpointsDialog;
+import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
+import zoom.IZoomLevel;
 
 /**
  * 
@@ -79,7 +88,9 @@ public class TracePlayer extends JPanel {
 	private JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
 	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
 	private JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
-
+	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
+	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
+	
 	private JProgressBar progressBar;
 	private TraceParser<?,?> parser;
     
@@ -98,7 +109,7 @@ public class TracePlayer extends JPanel {
 
 	private SeparatorComboBox managersList;
 
-	private SSDManager<?,?,?,?,?> manager;
+	private static SSDManager<?,?,?,?,?> manager;
 
 	private LoadGeneratorsCreatorsFrame creatorsFrame;
 	
@@ -108,17 +119,33 @@ public class TracePlayer extends JPanel {
 
 	private TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice;
 
-    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice) {
+	private Device<?,?,?,?> currentDevice;
+	
+	private List<BreakpointBase> breakpoints;
+	private ManageBreakpointsDialog breakpointsDialog;
+	private ZoomLevelDialog zoomDialog;
+	private VisualConfig visualConfig;
+
+	private OneObjectCallback<Boolean> resetDeviceView;
+
+    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice, OneObjectCallback<Boolean> resetDeviceView) {
     	Utils.validateNotNull(updateDevice, "Update device callback");
     	Utils.validateNotNull(resetDevice, "Reset device callback");
 		this.resetDevice = resetDevice;
 		this.updateDevice = updateDevice;
+		this.resetDeviceView = resetDeviceView;
+		this.visualConfig = visualConfig;
+		ActionLog.resetLog();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBorder(new RoundedBorder(Consts.Colors.BORDER));
 		initTraceParsing(visualConfig);
 		initManagerSelection();
 		initButtons();
 		initProgressBar();
+    }
+    
+    public boolean isPaused() {
+    	return isPaused;
     }
 
 	public void stopTrace() {
@@ -142,6 +169,21 @@ public class TracePlayer extends JPanel {
 				RAIDBasicPage.resetHighlights();
 			}
 		}
+	}
+	
+	public void setInitialBreakpoints(List<BreakpointBase> initialBreakpoints) {
+		breakpoints = new ArrayList<BreakpointBase>();
+		breakpoints.addAll(initialBreakpoints);
+		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this), manager);
+		breakpointsDialog.setBreakpoints(breakpoints);
+	}
+	
+	public static SSDManager<?,?,?,?,?> getManager() {
+		return manager;
+	}
+	
+	public IZoomLevel getZoomLevel() {
+		return zoomDialog.getZoomLevel();
 	}
 	
 	private void initManagerSelection() {
@@ -174,6 +216,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
+		SSDManager.setCurrentManager(managerName);
 		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
@@ -183,7 +226,14 @@ public class TracePlayer extends JPanel {
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
 		setStripeInformation(manager);
+		setZoomLevelOptions(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
+		ActionLog.resetLog();
+	}
+
+	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
+		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager, visualConfig, resetDeviceView);
+		zoomDialog.resetZoomLevel();
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {
@@ -228,6 +278,16 @@ public class TracePlayer extends JPanel {
 		addButton(generateButton, "Generate New Workload");
 		generateButton.setEnabled(true);
 		
+		breakpointsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showBreakpointsDialog();
+			}
+		});
+		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		breakpointsButton.setEnabled(true);
+		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.Colors.ACTIVE));
+		
 		playPauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -253,6 +313,16 @@ public class TracePlayer extends JPanel {
 			}
 		});
 		addButton(stopButton , "Stop Trace");
+		
+		zoomButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showZoomDialog();
+			}
+		});
+		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		zoomButton.setEnabled(true);
+
 		add(Box.createRigidArea(new Dimension(5,0)));
 		
 		showStripeButton.addActionListener(new ActionListener() {
@@ -397,6 +467,10 @@ public class TracePlayer extends JPanel {
 				updateDevice.message(updatedDevice);
 				setProgressBarFrame(currFrameCounter);
 				++currFrameCounter;
+				
+				Device<?,?,?,?> previousDevice = currentDevice;
+				currentDevice = updatedDevice;
+				checkBreakpoints(previousDevice, currentDevice);
 			} else {
 				System.out.println("Trace has ended before stop frame was reached");
 				return false;
@@ -405,9 +479,31 @@ public class TracePlayer extends JPanel {
 			e.printStackTrace();
 			return false;
 		}
+    	ActionLog.nextCommand();
     	return true;
 	}
 
+	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+		boolean anyHits = false;
+		
+		for (IBreakpoint breakpoint : breakpoints) {
+			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
+				breakpoint.setIsHit(true);
+				MessageLog.log("HIT: " + breakpoint.getHitDescription());
+				anyHits = true;
+			} else {
+				breakpoint.setIsHit(false);
+			}
+		}
+		
+		if (anyHits) {
+			pauseTrace();
+			breakpointsButton.setBorderPainted(true);
+		} else {
+			breakpointsButton.setBorderPainted(false);
+		}
+	}
+	
 	private void playPauseTrace() {
 		if (isPaused) {
 			isPaused = false;
@@ -415,11 +511,15 @@ public class TracePlayer extends JPanel {
 			playPauseButton.setToolTipText("Pause");
 			showStripeButton.setEnabled(false);
 		} else {
-			isPaused = true;
-			playPauseButton.setIcon(iconPlay);
-			playPauseButton.setToolTipText("Play");
-			showStripeButton.setEnabled(true);
+			pauseTrace();
 		}
+	}
+
+	public void pauseTrace() {
+		isPaused = true;
+		playPauseButton.setIcon(iconPlay);
+		playPauseButton.setToolTipText("Play");
+		showStripeButton.setEnabled(true);
 	}
 	
 	private void showGeneratorCreatorsTrace() {
@@ -438,5 +538,20 @@ public class TracePlayer extends JPanel {
 	private void showStripesInfo() {
 		stripesFrame = new StripesInfoFrame(SwingUtilities.windowForComponent(this), (RAIDBasicSSDManager<?, ?, ?, ?, ?>) manager, parser, updateDevice);
 		stripesFrame.setVisible(true);
+	}
+	
+	private void showBreakpointsDialog() {
+		pauseTrace();
+		breakpointsDialog.setManager(manager);
+		breakpointsDialog.updateHitBreakpoints();
+		breakpointsDialog.setVisible(true);
+		
+		breakpoints.clear();
+		breakpoints.addAll(breakpointsDialog.getBreakpoints());
+	}
+	
+	private void showZoomDialog() {
+		pauseTrace();
+		zoomDialog.setVisible(true);
 	}
 }

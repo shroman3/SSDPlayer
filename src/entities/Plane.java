@@ -24,10 +24,9 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import manager.SSDManager;
-
 import org.javatuples.Pair;
 
+import manager.SSDManager;
 import utils.Utils;
 
 /**
@@ -57,6 +56,16 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			return this;
 		}
 		
+		public Builder<P,B> setTotalWritten(int totalWritten) {
+			plane.totalWritten = totalWritten;
+			return this;
+		}
+
+		public Builder<P,B> setTotalGCInvocations(int number) {
+			plane.totalGCInvocations = number;
+			return this;
+		}
+		
 		protected void setPlane(Plane<P,B> plane) {
 			this.plane = plane;
 		}
@@ -74,12 +83,16 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	private int activeBlockIndex = -1;
 	private int lowestEraseCleanBlockIndex = -1;
 	private int lowestValidBlockIndex = -1;
+	private int totalWritten = 0;
+	private int totalGCInvocations = 0;
 
 	protected Plane() {}
 
 	protected Plane(Plane<P,B> other) {
 		this.blocksList = new ArrayList<B>(other.blocksList);
 		this.manager = other.manager;
+		this.totalWritten = other.totalWritten;		
+		this.totalGCInvocations = other.totalGCInvocations;
 		initValues();
 	}
 	
@@ -157,7 +170,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return getNumOfClean();
 	}
 
-	protected int getNumOfClean() {
+	public int getNumOfClean() {
 		return numOfClean;
 	}
 	
@@ -181,7 +194,8 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	 * @return block index of block with smallest sum of valid counters
 	 */
 	protected Pair<Integer, B> pickBlockToClean() {
-		return new Pair<Integer, B>(getLowestValidBlockIndex(), getBlock(getLowestValidBlockIndex()));
+		int victimBlock = getLowestValidBlockIndex();
+		return new Pair<Integer, B>(victimBlock, getBlock(victimBlock));
 	}
 	
 	protected boolean invokeCleaning() {
@@ -192,6 +206,10 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return block.getStatus() == BlockStatusGeneral.USED;
 	}
 
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
+	}
+	
 	/**
 	 * On creation this methods initializes the counters of the plane
 	 */
@@ -218,5 +236,9 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			}
 			++i;
 		}
+	}
+
+	public int getTotalWritten() {
+		return totalWritten ;
 	}
 }

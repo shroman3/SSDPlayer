@@ -62,4 +62,14 @@ public class DeviceView extends JPanel {
 		}
 		return chipsList;
 	}
+	
+	public void repaintDevice() {
+		this.removeAll();
+		setLayout(new FlowLayout());
+		chipList =initChips();
+		int chipIndex = 0;
+		for (Chip<?,?,?> chip : device.getChips()) {
+			chipList.get(chipIndex++).setChip(chip);
+		}
+	}
 }

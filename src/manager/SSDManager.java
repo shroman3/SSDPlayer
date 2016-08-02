@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,13 @@ import entities.StatisticsGetter;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
+import zoom.BlocksEraseCountZoomLevel;
+import zoom.BlocksValidCountZoomLevel;
+import zoom.DetailedZoomLevel;
+import zoom.IZoomLevel;
+import zoom.PagesZoomLevel;
+import zoom.SmallBlocksEraseCountZoomLevel;
+import zoom.SmallBlocksValidCountZoomLevel;
 
 
 /**
@@ -71,6 +79,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static List<String> simulatorsList = new ArrayList<>();
 	private static List<String> visualizationsList = new ArrayList<>();
+	private static String currentManagerName =  null;
 	
 	/**
 	 * Initialize SSD manager using given configuration.
@@ -120,6 +129,14 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		return managersMap.get(managerName);
 	}
 	
+	public static void setCurrentManager(String managerName) {
+		currentManagerName = managerName;
+	}
+	
+	public static SSDManager<?, ?, ?, ?, ?> getCurrentManager(){
+		return getManager(currentManagerName);
+	}
+	
 	/**
 	 * @return all the use case simulation managers
 	 */
@@ -145,6 +162,8 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int blocksInPlane = -1;
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
+	
+	protected Set<IZoomLevel> supportedZoomLevels = new LinkedHashSet<>();
 
 	/**
 	 * @return get trace parser for this manager
@@ -367,6 +386,19 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 			pages.add(page);
 		}
 		return pages;
+	}
+	
+	protected void setSupportedZoomLevels() {
+		supportedZoomLevels.add(new DetailedZoomLevel());
+		supportedZoomLevels.add(new PagesZoomLevel());
+		supportedZoomLevels.add(new BlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new BlocksEraseCountZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksValidCountZoomLevel());
+		supportedZoomLevels.add(new SmallBlocksEraseCountZoomLevel());
+	}
+	
+	public Set<IZoomLevel> getSupportedZoomLevels() {
+		return supportedZoomLevels;
 	}
 	
 	D getEmptyDevice() {

@@ -25,15 +25,14 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
-import manager.ReusableSSDManager;
-
 import org.javatuples.Pair;
 
-import utils.Utils;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
 import general.Consts;
+import manager.ReusableSSDManager;
+import utils.Utils;
 
 public class ReusableBlock extends Block<ReusablePage> {
 	public static class Builder extends Block.Builder<ReusablePage> {
@@ -175,5 +174,32 @@ public class ReusableBlock extends Block<ReusablePage> {
 			}
 		}
 		return false;
+	}
+	
+
+	public float getAveragePageWriteLevel() {
+		float writeLevelSum = 0;
+		int count = 0;
+		for(ReusablePage page : this.getPages()){
+			if(page.getWriteLevel() >= 1){
+				count++;
+				writeLevelSum += page.getWriteLevel();
+			}
+		}
+		if(count == 0){
+			return 0;
+		}
+		
+		return writeLevelSum/count;
+	}
+
+	public int getWriteLevel() {
+		int maxLevel = 0;
+		for(ReusablePage page : this.getPages()){
+			if(page.getWriteLevel() > maxLevel){
+				maxLevel = page.getWriteLevel();
+			}
+		}
+		return maxLevel;
 	}
 }

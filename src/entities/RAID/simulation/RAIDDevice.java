@@ -29,8 +29,10 @@ import org.javatuples.Quartet;
 import org.javatuples.Triplet;
 import org.javatuples.Pair;
 
+import entities.ActionLog;
 import entities.BlockStatus;
 import entities.Device;
+import entities.WriteInStripeAction;
 import entities.RAID.RAIDBasicDevice;
 
 /**
@@ -100,7 +102,7 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			
 			int currentStripe = getPageStripe(currentLP);
 			stripesInvolved.add(currentStripe);
-			
+			ActionLog.addAction(new WriteInStripeAction(currentStripe));
 			
 			int chipIndex = getChipIndex(currentLP);
 			RAIDChip chip = tempDevice.getChip(chipIndex);
