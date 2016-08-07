@@ -111,7 +111,7 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			updatedChips.set(chipIndex, (RAIDChip) chip.writeLP(currentLP, currentStripe));
 			
 			Builder builder = (Builder) tempDevice.getSelfBuilder();
-			builder.setTotalDataWritten(getTotalDataWritten() + 1).setChips(updatedChips);
+			builder.setTotalDataWritten(tempDevice.getTotalDataWritten() + 1).setChips(updatedChips);
 			tempDevice = (RAIDDevice) builder.build();
 			tempDevice = (RAIDDevice) tempDevice.setHighlightByLogicalP(isHighlighted, currentLP).getValue2();
 			isFirstWrite = false;
@@ -128,30 +128,31 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			
 			// lets update this stripe's parity pages
 			for(int parityNumber = 1; parityNumber <= paritiesNumber; parityNumber++) { // decide which parity needs an update
-				if (parityNeedUpdate(currentLP, parityNumber) == true) {
-					Boolean isHighlighted = isPageHighlighted(parityNumber, stripe);
-					tempDevice = (RAIDDevice) tempDevice.invokeCleaning();
-					tempDevice = (RAIDDevice) tempDevice.invalidate(stripe, parityNumber);
-					
-					updatedChips = tempDevice.getNewChipsList();
-					
-					int chipIndex = getParityChipIndex(currentLP, parityNumber);
-					RAIDChip currentChip = tempDevice.getChip(chipIndex);
-					
-					// write the parity page to the fitting chip
-					updatedChips.set(chipIndex, (RAIDChip) currentChip.writePP(stripe, parityNumber));
-					
-					Builder builder = (Builder) tempDevice.getSelfBuilder();
-					builder.setTotalParityWritten(getTotalParityWritten() + 1).setChips(updatedChips);
-					tempDevice = (RAIDDevice) builder.build();
-					tempDevice = (RAIDDevice) tempDevice.setHighlightByParityP(isHighlighted, parityNumber, stripe, true).getValue2();
+				if (parityNeedUpdate(currentLP, parityNumber) == false) {
+					continue;
 				}
+				Boolean isHighlighted = isPageHighlighted(parityNumber, stripe);
+				tempDevice = (RAIDDevice) tempDevice.invokeCleaning();
+				tempDevice = (RAIDDevice) tempDevice.invalidate(stripe, parityNumber);
+				
+				updatedChips = tempDevice.getNewChipsList();
+				
+				int chipIndex = getParityChipIndex(currentLP, parityNumber);
+				RAIDChip currentChip = tempDevice.getChip(chipIndex);
+				
+				// write the parity page to the fitting chip
+				updatedChips.set(chipIndex, (RAIDChip) currentChip.writePP(stripe, parityNumber));
+				
+				Builder builder = (Builder) tempDevice.getSelfBuilder();
+				builder.setTotalParityWritten(tempDevice.getTotalParityWritten() + 1).setChips(updatedChips);
+				tempDevice = (RAIDDevice) builder.build();
+				tempDevice = (RAIDDevice) tempDevice.setHighlightByParityP(isHighlighted, parityNumber, stripe, true).getValue2();
 			}
-			
+
 			// we just took care of this stripe's parity pages, we don't need this stripe anymore and have to remove it.
 			stripesInvolved.remove(stripe);
 		}
-		
+
 		return tempDevice;
 	}
 	
