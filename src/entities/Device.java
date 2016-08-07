@@ -112,18 +112,26 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		int moved = 0;
 		List<C> cleanChips = new ArrayList<C>(getChipsNum());
 		int i = 0; 
+		boolean cleaningInvoked = false;
 		for (C chip : getChips()) {
 			Pair<Chip<P,B,T>,Integer> clean = chip.clean(i);
-			moved += clean.getValue1();
-			cleanChips.add((C) clean.getValue0());
+			if (clean == null) {
+				cleanChips.add(chip);
+			} else {
+				cleaningInvoked = true;
+				moved += clean.getValue1();
+				cleanChips.add((C) clean.getValue0());
+			}
 			i++;
 		}
+		if (!cleaningInvoked) {
+			return this;
+		}
 		
-		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T,C> builder = getSelfBuilder();
 		builder.setChips(cleanChips)
 			   .setTotalMoved(totalMoved + moved)
-			   .setTotalGCInvocations(gcInvocations);
+			   .setTotalGCInvocations(getTotalGCInvocations() + 1);
 		return builder.build();
 	}
 

@@ -161,7 +161,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	 */
 	public Pair<? extends Plane<P,B>, Integer> clean() {
 		if(!invokeCleaning()) {
-			return new Pair<Plane<P, B>, Integer>(this, 0);
+			return null;
 		}
 		return cleanPlane();
 	}

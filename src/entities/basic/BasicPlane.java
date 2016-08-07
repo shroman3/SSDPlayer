@@ -90,6 +90,10 @@ public class BasicPlane extends Plane<BasicPage, BasicBlock> {
 		Pair<Integer, BasicBlock> pickedToClean =  pickBlockToClean();
 		int toMove = pickedToClean.getValue1().getValidCounter();
 		int active = getActiveBlockIndex();
+		if (active == -1) {
+			active = getLowestEraseCleanBlockIndex();
+			cleanBlocks.set(active, (BasicBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE));
+		}
 		BasicBlock activeBlock = cleanBlocks.get(active);
 		
 		for (BasicPage page : pickedToClean.getValue1().getPages()) {

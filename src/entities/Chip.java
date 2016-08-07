@@ -103,24 +103,27 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	
 	@SuppressWarnings("unchecked")
 	public Pair<Chip<P, B, T>, Integer> clean(int chipIndex) {
-		List<T> cleanPlanes = new ArrayList<T>();
+		List<T> cleanPlanes = new ArrayList<T>(getPlanesNum());
 		int moved = 0;
 		int i = 0;
+		boolean cleaningInvoked = false;
 		for (T plane : getPlanes()) {
 			Pair<? extends Plane<P, B>, Integer> clean = plane.clean();
-			moved += clean.getValue1();
-			if(moved > 0){
+			if (clean == null){
+				cleanPlanes.add(plane);
+			} else {
+				cleaningInvoked = true;
+				moved += clean.getValue1();
 				ActionLog.addAction(new CleanAction(chipIndex, i, clean.getValue1()));
+				cleanPlanes.add((T) clean.getValue0());
 			}
-			cleanPlanes.add((T) clean.getValue0());
 			i++;
 		}
-		if(moved == 0){
-			return new Pair<Chip<P, B, T>, Integer>(this, moved);
+		if(!cleaningInvoked){
+			return null;
 		}
-		int gcInvocations = (moved > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
 		Builder<P,B,T> builder = getSelfBuilder();
-		builder.setPlanes(cleanPlanes).setTotalGCInvocations(gcInvocations);
+		builder.setPlanes(cleanPlanes).setTotalGCInvocations(getTotalGCInvocations() + 1);
 		return new Pair<Chip<P, B, T>, Integer>(builder.build(), moved);
 	}
 	
