@@ -1,5 +1,5 @@
 /target/
 /bin/
 /traces/
-/.settings/
+/.settings
 /resources/breakpoints_examples.txt
