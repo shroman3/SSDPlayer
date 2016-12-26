@@ -24,6 +24,7 @@ package manager.RAIDStatistics;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Device;
 import entities.StatisticsColumn;
 import entities.RAID.RAIDBasicDevice;
 import manager.RAIDBasicSSDManager;
@@ -47,10 +48,10 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 
 	@Override
 	public List<StatisticsColumn> getRAIDStatistics(D device) {
-		int total = device.getTotalParityWritten() + device.getTotalDataWritten();
+		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn("data + parity writes to data writes", 
-										total==0 ? 1 : ((double)total)/((double)device.getTotalDataWritten()), false));
+										total==0 ? 1 : ((double)total)/((double)(device.getTotalDataWritten()+ device.getTotalDataMoved())), false));
 		return list;
 	}
 
@@ -58,4 +59,13 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 	public GeneralStatisticsGraph getStatisticsGraph() {
 		return new RegularHistoryGraph("Parity Overhead Histogram", this, 1.5, 1);
 	}
+	
+ 	public static double getParityOverhead(Device<?,?,?,?> device) {
+		if (!(device instanceof RAIDBasicDevice)) {
+			return 1;
+		}
+		int total = ((RAIDBasicDevice<?,?,?,?>) device).getTotalParityWritten() + ((RAIDBasicDevice<?,?,?,?>) device).getTotalDataWritten();
+		double parityOverhead = total==0 ? 1 : ((double)total)/((RAIDBasicDevice<?,?,?,?>) device).getTotalDataWritten();
+		return parityOverhead;
+ 	}
 }

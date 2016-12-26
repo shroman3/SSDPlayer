@@ -21,13 +21,14 @@
  *******************************************************************************/
 package entities.RAID.simulation;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
-import entities.BlockStatus;
+import entities.ActionLog;
 import entities.Chip;
+import entities.CleanAction;
 import entities.RAID.RAIDBasicChip;
 
 /**
@@ -75,38 +76,32 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 	public Builder getSelfBuilder() {
 		return new Builder(this);
 	}
-	
-	public RAIDChip invalidatePage(Triplet<Integer, Integer, Integer> sourceIndex) {
-		RAIDPlane plane = getPlane(sourceIndex.getValue0());
-		RAIDBlock block = plane.getBlock(sourceIndex.getValue1());
-		RAIDPage page = block.getPage(sourceIndex.getValue2());
-		page = (RAIDPage) page.getSelfBuilder().setValid(false).build();
-		block = block.setPage(page, sourceIndex.getValue2());
-		plane = plane.setBlock(block, sourceIndex.getValue1());
-		return setPlane(plane, sourceIndex.getValue0());
-	}
-	
-	public RAIDChip changeStatus(Pair<Integer, Integer> blockIndex, BlockStatus status) {
-		RAIDPlane plane = getPlane(blockIndex.getValue0());
-		RAIDBlock block = plane.getBlock(blockIndex.getValue1());
-		block = (RAIDBlock) block.getSelfBuilder().setStatus(status).build();
-		plane = plane.setBlock(block, blockIndex.getValue1());
-		return setPlane(plane, blockIndex.getValue0());
-	}
-	
-	public RAIDChip changeGC(Pair<Integer, Integer> blockIndex, boolean isInGC) {
-		RAIDPlane plane = getPlane(blockIndex.getValue0());
-		RAIDBlock block = plane.getBlock(blockIndex.getValue1());
-		block = (RAIDBlock) block.getSelfBuilder().setInGC(isInGC).build();
-		plane = plane.setBlock(block, blockIndex.getValue1());
-		return setPlane(plane, blockIndex.getValue0());
-	}
-	
-	public RAIDChip eraseBlock(Pair<Integer, Integer> blockIndex) {
-		RAIDPlane plane = getPlane(blockIndex.getValue0());
-		RAIDBlock block = plane.getBlock(blockIndex.getValue1());
-		plane = plane.setBlock((RAIDBlock) block.eraseBlock(), blockIndex.getValue1());
-		return setPlane(plane, blockIndex.getValue0());
+
+	public Triplet<RAIDChip, Integer, Integer> cleanRAID(int chipIndex) {
+		List<RAIDPlane> cleanPlanes = new ArrayList<RAIDPlane>(getPlanesNum());
+		int dataMoved = 0;
+		int parityMoved = 0;
+		int i = 0;
+		boolean cleaningInvoked = false;
+		for (RAIDPlane plane : getPlanes()) {
+			Triplet<RAIDPlane, Integer, Integer> clean = plane.cleanRAID();
+			if (clean == null){
+				cleanPlanes.add(plane);
+			} else {
+				cleaningInvoked = true;
+				dataMoved += clean.getValue1();
+				parityMoved += clean.getValue2();
+				ActionLog.addAction(new CleanAction(chipIndex, i, clean.getValue1()));
+				cleanPlanes.add(clean.getValue0());
+			}
+			i++;
+		}
+		if(!cleaningInvoked){
+			return null;
+		}
+		Builder builder = getSelfBuilder();
+		builder.setPlanes(cleanPlanes).setTotalGCInvocations(getTotalGCInvocations() + 1);
+		return new Triplet<RAIDChip, Integer, Integer>(builder.build(), dataMoved, parityMoved);
 	}
 
 	public Chip<RAIDPage,RAIDBlock,RAIDPlane> writePP(int stripe, int parityNum) {

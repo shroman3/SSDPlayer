@@ -93,7 +93,7 @@ public class RAIDVisualizationDevice extends RAIDBasicDevice<RAIDVisualizationPa
 	public RAIDVisualizationDevice writeData(Quartet<Integer, Integer, Integer, Integer> pageIndex, int lp, int stripe, boolean toHighlight) {
 		RAIDVisualizationDevice device = writeOnPage(pageIndex, lp, 0, stripe, false, toHighlight);
 		Builder deviceBuilder = device.getSelfBuilder();
-		deviceBuilder.setTotalDataWritten(getTotalDataWritten()+1);
+		deviceBuilder.increaseTotalDataWritten();
 		return deviceBuilder.build();
 	}
 	
@@ -103,7 +103,7 @@ public class RAIDVisualizationDevice extends RAIDBasicDevice<RAIDVisualizationPa
 		}
 		RAIDVisualizationDevice device = writeOnPage(pageIndex, -1, parityAddress.getValue1(), stripe, false, toHighlight);
 		Builder deviceBuilder = device.getSelfBuilder();
-		deviceBuilder.setTotalParityWritten(getTotalParityWritten()+1);
+		deviceBuilder.increaseTotalParityWritten();
 		return deviceBuilder.build();
 	}
 	

@@ -81,8 +81,7 @@ public class DefineBreakpointDialog extends JDialog implements ActionListener {
 				IBreakpointCBoxEntry entry = (IBreakpointCBoxEntry) mBreakpointsCBox.getItemAt(0);
 				if (entry instanceof BreakpointsGroup) {
 					BreakpointsGroup groupEntry = (BreakpointsGroup) entry;
-					String firstKey = groupEntry.getGroup().keySet().iterator().next();
-					mBreakpoint = groupEntry.getGroup().getOrDefault(firstKey, null).newInstance();
+					mBreakpoint = groupEntry.getGroup().entrySet().iterator().next().getValue().newInstance();
 				} else {
 					SingleBreakpoint singleBp = (SingleBreakpoint) entry;
 					mBreakpoint = singleBp.getBPClass().newInstance();

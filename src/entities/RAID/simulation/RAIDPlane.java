@@ -24,6 +24,7 @@ package entities.RAID.simulation;
 import java.util.List;
 
 import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
 import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicPlane;
@@ -115,11 +116,23 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return builder.build();
 	}
 	
+	public Triplet<RAIDPlane, Integer, Integer> cleanRAID() {
+		if(!invokeCleaning()) {
+			return null;
+		}
+		return cleanRAIDPlane();
+	}
+	
 	@Override
 	protected Pair<RAIDPlane, Integer> cleanPlane() {
+		throw new UnsupportedOperationException();
+	}
+	
+	protected Triplet<RAIDPlane, Integer, Integer> cleanRAIDPlane() {
 		List<RAIDBlock> cleanBlocks = getNewBlocksList();
 		Pair<Integer, RAIDBlock> pickedToClean =  pickBlockToClean();
-		int toMove = pickedToClean.getValue1().getValidCounter();
+		int parityToMove = pickedToClean.getValue1().getParityValidCounter();
+		int dataToMove = pickedToClean.getValue1().getDataValidCounter();
 		int active = getActiveBlockIndex();
 		RAIDBlock activeBlock = cleanBlocks.get(active);
 		
@@ -135,6 +148,6 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
 		builder.setBlocks(cleanBlocks);
-		return new Pair<>(builder.build(), toMove);
+		return new Triplet<>(builder.build(), dataToMove, parityToMove);
 	}
 }

@@ -38,19 +38,40 @@ import manager.SSDManager;
  */
 public abstract class RAIDBasicBlock<P extends RAIDBasicPage> extends Block<P>{
 	public static abstract class Builder<P extends RAIDBasicPage> extends Block.Builder<P> {
+		private RAIDBasicBlock<P> block;
+
 		public abstract RAIDBasicBlock<P> build();
 
+		public Builder<P> setDataValidCounter(int dataValidCounter) {
+			block.dataValidCounter = dataValidCounter;
+			return this;
+		}
+		
+		public Builder<P> setParityValidCounter(int parityValidCounter) {
+			block.parityValidCounter = parityValidCounter;
+			return this;
+		}
+	
 		public Builder<P> setManager(RAIDBasicSSDManager<P, ?, ?, ?, ?> manager) {
 			super.setManager((SSDManager<P, ?, ?, ?, ?>) manager);
 			return this;
 		}
-
+		
+		protected void setBlock(RAIDBasicBlock<P> block) {
+			super.setBlock(block);
+			this.block = block;
+		}		
 	}
+	
+	private int dataValidCounter;
+	private int parityValidCounter;
 	
 	protected RAIDBasicBlock() { }
 	
 	protected RAIDBasicBlock(RAIDBasicBlock<P> other) {
 		super(other);
+		dataValidCounter = other.dataValidCounter;
+		parityValidCounter = other.parityValidCounter;
 	}
 
 	abstract public Builder<P> getSelfBuilder();
@@ -61,20 +82,28 @@ public abstract class RAIDBasicBlock<P extends RAIDBasicPage> extends Block<P>{
 	 * if doesn't contain the specified LP returns itself..
 	 */
 	@Override
-	public Block<P> invalidate(int lp) {
+	public RAIDBasicBlock<P> invalidate(int lp) {
 		boolean wasFound = false;
+		boolean isParity = false;
 		List<P> pages = new ArrayList<P>(getPagesNum());
 		for (P page : getPages()) {
 			if (page.isValid() && (page.getLp() == lp)) {
+				isParity = page.isParity();
 				page = invalidatePage(page);
 				wasFound = true;
 			}
 			pages.add(page);
 		}
+		if (!wasFound) {
+			return this;
+		}
+		
 		Builder<P> builder = getSelfBuilder();
-		builder.setPagesList(pages);
-		if (wasFound) {
-			builder.setValidCounter(getValidCounter()-1);
+		builder.setPagesList(pages).setValidCounter(getValidCounter()-1);
+		if (isParity) {
+			builder.setParityValidCounter(getParityValidCounter()-1);
+		} else {
+			builder.setDataValidCounter(getDataValidCounter()-1);
 		}
 		return builder.build();
 	}
@@ -85,20 +114,27 @@ public abstract class RAIDBasicBlock<P extends RAIDBasicPage> extends Block<P>{
 	 * @return new block with the Logical Page specified invalidated
 	 * if doesn't contain the specified LP returns itself..
 	 */
-	public Block<P> invalidate(int stripe, int parityNumber) {
+	public RAIDBasicBlock<P> invalidate(int stripe, int parityNumber) {
 		boolean wasFound = false;
+		boolean isParity = false;
 		List<P> pages = new ArrayList<P>(getPagesNum());
 		for (P page : getPages()) {
 			if (page.isValid() && (page.getStripe() == stripe) && (page.getParityNumber() == parityNumber)) {
+				isParity = page.isParity();
 				page = invalidatePage(page);
 				wasFound = true;
 			}
 			pages.add(page);
 		}
+		if (!wasFound) {
+			return this;
+		}
 		Builder<P> builder = getSelfBuilder();
-		builder.setPagesList(pages);
-		if (wasFound) {
-			builder.setValidCounter(getValidCounter()-1);
+		builder.setPagesList(pages).setValidCounter(getValidCounter()-1);
+		if (isParity) {
+			builder.setParityValidCounter(getParityValidCounter()-1);
+		} else {
+			builder.setDataValidCounter(getDataValidCounter()-1);
 		}
 		return builder.build();
 	}
@@ -234,6 +270,14 @@ public abstract class RAIDBasicBlock<P extends RAIDBasicPage> extends Block<P>{
 		details = details.setAt2(builder.build());
 		details = details.setAt1(stripePages);
 		return details;
+	}
+	
+	public int getDataValidCounter() {
+		return dataValidCounter;
+	}
+
+	public int getParityValidCounter() {
+		return parityValidCounter;
 	}
 	
 	@SuppressWarnings("unchecked")

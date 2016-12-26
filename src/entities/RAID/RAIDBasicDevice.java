@@ -23,17 +23,28 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 			super.setDevice(device);
 			this.device = device;
 		}
-
 		
-		public Builder<P,B,T,C> setTotalDataWritten(int totalDataWritten) {
-			device.totalDataWritten = totalDataWritten;
+		public Builder<P,B,T,C> increaseTotalDataWritten() {
+			device.totalDataWritten++;
 			setTotalWritten(device.getTotalWritten()+1);
 			return this;
 		}
 		
-		public Builder<P,B,T,C> setTotalParityWritten(int totalParityWritten) {
-			device.totalParityWritten = totalParityWritten;
+		public Builder<P,B,T,C> increaseTotalParityWritten() {
+			device.totalParityWritten++;
 			setTotalWritten(device.getTotalWritten()+1);
+			return this;
+		}
+		
+		public Builder<P,B,T,C> increaseTotalDataMoved(int totalDataMoved) {
+			device.totalDataMoved+= totalDataMoved;
+			setTotalMoved(device.getTotalMoved()+totalDataMoved);
+			return this;
+		}
+		
+		public Builder<P,B,T,C> increaseTotalParityMoved(int totalParityMoved) {
+			device.totalParityMoved+= totalParityMoved;
+			setTotalMoved(device.getTotalMoved()+totalParityMoved);
 			return this;
 		}
 	}
@@ -41,12 +52,17 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	private int totalDataWritten = 0;
 	private int totalParityWritten = 0;
 	
+	private int totalDataMoved = 0;
+	private int totalParityMoved = 0;
+	
 	protected RAIDBasicDevice() {}
 	
 	protected RAIDBasicDevice(RAIDBasicDevice<P,B,T,C> other) {
 		super(other);
 		this.totalDataWritten = other.totalDataWritten;
 		this.totalParityWritten = other.totalParityWritten;
+		this.totalDataMoved = other.totalDataMoved;
+		this.totalParityMoved = other.totalParityMoved;
 	}
 	
 	public abstract Builder<P,B,T,C> getSelfBuilder();
@@ -57,6 +73,14 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	
 	public int getTotalParityWritten() {
 		return totalParityWritten;
+	}
+	
+	public int getTotalDataMoved() {
+		return totalDataMoved;
+	}
+	
+	public int getTotalParityMoved() {
+		return totalParityMoved;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -34,6 +34,7 @@ import entities.RAID.simulation.RAIDPage;
 import entities.RAID.simulation.RAIDPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import manager.RAIDStatistics.ParityOverheadGetter;
 import ui.AddressWidget;
 import ui.WorkloadWidget;
 
@@ -149,7 +150,7 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	@Override
 	protected List<StatisticsGetter> initStatisticsGetters() {
 		List<StatisticsGetter> statisticsGetters = new ArrayList<StatisticsGetter>();
-		statisticsGetters.add(new ParityOverheadGetter());
+		statisticsGetters.add(new ParityOverheadGetter<>(this, RAIDDevice.class));
 		statisticsGetters.add(new LogicalWritesPerEraseGetter(this));
 		statisticsGetters.add(new WriteAmplificationGetter());
 		statisticsGetters.add(new ValidDistributionGetter(this));

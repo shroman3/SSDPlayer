@@ -22,14 +22,13 @@
 package entities.RAID.simulation;
 
 import java.awt.Color;
-import java.util.List;
 
-import manager.RAIDSSDManager;
-import utils.Utils;
 import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
 import general.Consts;
+import manager.RAIDSSDManager;
+import utils.Utils;
 
 /**
  * 
@@ -53,7 +52,7 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 			block.manager = manager;
 			return this;
 		}
-		
+	
 		@Override
 		public RAIDBlock build() {
 			validate();
@@ -96,16 +95,16 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		return null;
 	}
 	
-	RAIDBlock setPage(RAIDPage page, int index) {
-		List<RAIDPage> newPagesList = getNewPagesList();
-		newPagesList.set(index, page);
-		Builder builder = getSelfBuilder();
-		builder.setPagesList(newPagesList);
-		if(page.isValid()) {
-			builder.setValidCounter(getValidCounter() + 1);
-		}
-		return builder.build();
-	}
+//	RAIDBlock setPage(RAIDPage page, int index) {
+//		List<RAIDPage> newPagesList = getNewPagesList();
+//		newPagesList.set(index, page);
+//		Builder builder = getSelfBuilder();
+//		builder.setPagesList(newPagesList);
+//		if(page.isValid()) {
+//			builder.setValidCounter(getValidCounter() + 1);
+//		}
+//		return builder.build();
+//	}
 
 	public RAIDBlock move(int lp, int parityNumber, int stripe, boolean isHighlighted) {
 		int index = 0;
@@ -149,6 +148,15 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		}
 		return null;
 	}
+
+	@Override
+	public RAIDBlock eraseBlock() {
+		RAIDBlock block = (RAIDBlock) super.eraseBlock();
+		Builder builder = block.getSelfBuilder();
+		builder.setDataValidCounter(0)
+			.setParityValidCounter(0);
+		return builder.build();
+	}
 	
 	protected RAIDPage invalidatePage(RAIDPage page) {
 		RAIDBasicPage.Builder builder = page.getSelfBuilder();
@@ -167,5 +175,17 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		
 		builder.setInvalidLp();
 		return (RAIDPage) builder.build();
+	}
+
+	@Override
+	protected RAIDBlock addValidPage(int index, RAIDPage page) {
+		RAIDBlock block = (RAIDBlock) super.addValidPage(index, page);
+		Builder blockBuilder = block.getSelfBuilder();
+		if(page.isParity()) {
+			blockBuilder.setParityValidCounter(getParityValidCounter() + 1);
+		} else {
+			blockBuilder.setDataValidCounter(getDataValidCounter() + 1);
+		}
+		return blockBuilder.build();
 	}
 }

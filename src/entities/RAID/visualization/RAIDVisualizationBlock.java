@@ -104,6 +104,11 @@ public class RAIDVisualizationBlock extends RAIDBasicBlock<RAIDVisualizationPage
 		if(page.isValid()) {
 			builder.setValidCounter(getValidCounter() + 1);
 		}
+		if(page.isParity()) {
+			builder.setParityValidCounter(getParityValidCounter()+1);
+		} else {
+			builder.setDataValidCounter(getDataValidCounter()+1);
+		}
 		return builder.build();
 	}
 

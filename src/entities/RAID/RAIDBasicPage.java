@@ -93,6 +93,33 @@ public abstract class RAIDBasicPage extends Page {
 	public static void resetHighlights() {
 		highlightedStripes = null;
 	}
+
+	public int getParityNumber() {
+		return parityNumber;
+	}
+	
+	public int getStripe() {
+		return stripe;
+	}
+	
+	public boolean isHighlighted() {
+		return isHighlighted;
+	}
+
+	public String getTitle() {
+		if (parityNumber > 0) {
+			return "" + stripe;
+		}
+		return super.getTitle();
+	}
+	
+	public Color getStripeFrameColor() {
+		return Consts.Colors.PAGE_TEXT;
+	}
+	
+	public boolean isParity() {
+		return getParityNumber() > 0;
+	}
 	
 	/**
 	 * Update the highlighted stripes static list.
@@ -218,28 +245,5 @@ public abstract class RAIDBasicPage extends Page {
 				highlightedStripes.add(stripeIndex, new Triplet<Integer, List<Integer>, List<Integer>>(stripe, stripeNode.getValue1(), newParityNumbers));
 			}
 		}
-	}
-
-	public int getParityNumber() {
-		return parityNumber;
-	}
-	
-	public int getStripe() {
-		return stripe;
-	}
-	
-	public boolean isHighlighted() {
-		return isHighlighted;
-	}
-
-	public String getTitle() {
-		if (parityNumber > 0) {
-			return "" + stripe;
-		}
-		return super.getTitle();
-	}
-	
-	public Color getStripeFrameColor() {
-		return Consts.Colors.PAGE_TEXT;
 	}
 }

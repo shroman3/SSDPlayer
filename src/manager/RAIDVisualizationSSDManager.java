@@ -34,6 +34,7 @@ import entities.RAID.visualization.RAIDVisualizationPage;
 import entities.RAID.visualization.RAIDVisualizationPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
+import manager.RAIDStatistics.ParityOverheadGetter;
 import ui.AddressWidget;
 
 /**
@@ -130,7 +131,7 @@ public class RAIDVisualizationSSDManager extends RAIDBasicSSDManager<RAIDVisuali
 	@Override
 	protected List<StatisticsGetter> initStatisticsGetters() {
 		List<StatisticsGetter> statisticsGetters = new ArrayList<StatisticsGetter>();
-		statisticsGetters.add(new ParityOverheadGetter());
+		statisticsGetters.add(new ParityOverheadGetter<RAIDVisualizationDevice, RAIDVisualizationSSDManager>(this, RAIDVisualizationDevice.class));
 		statisticsGetters.add(new LogicalWritesPerEraseGetter(this));
 		statisticsGetters.add(new WriteAmplificationGetter());
 		statisticsGetters.add(new ValidDistributionGetter(this));

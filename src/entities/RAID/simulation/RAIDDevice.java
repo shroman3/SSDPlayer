@@ -21,16 +21,14 @@
  *******************************************************************************/
 package entities.RAID.simulation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.javatuples.Quartet;
 import org.javatuples.Triplet;
-import org.javatuples.Pair;
 
 import entities.ActionLog;
-import entities.BlockStatus;
 import entities.Device;
 import entities.WriteInStripeAction;
 import entities.RAID.RAIDBasicDevice;
@@ -43,7 +41,9 @@ import entities.RAID.RAIDBasicDevice;
 public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip> {
 	public abstract static class Builder extends RAIDBasicDevice.Builder<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip> {
 		private RAIDDevice device;		
-		
+
+		public abstract RAIDDevice build();
+
 		protected void setDevice(RAIDDevice device) {
 			super.setDevice(device);
 			this.device = device;
@@ -79,9 +79,39 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 	
 	public abstract Builder getSelfBuilder();
 
-
-	public Device<RAIDPage,RAIDBlock,RAIDPlane,RAIDChip> writeLP(int lp, int size) {
+	public RAIDDevice invokeCleaning() {
+		int dataMoved = 0;
+		int parityMoved = 0;
+		List<RAIDChip> cleanChips = new ArrayList<RAIDChip>(getChipsNum());
+		int i = 0; 
+		boolean cleaningInvoked = false;
+		for (RAIDChip chip : getChips()) {
+			Triplet<RAIDChip, Integer, Integer> clean = chip.cleanRAID(i);
+			if (clean == null) {
+				cleanChips.add(chip);
+			} else {
+				cleaningInvoked = true;
+				dataMoved += clean.getValue1();
+				parityMoved += clean.getValue2();
+				cleanChips.add(clean.getValue0());
+			}
+			i++;
+		}
+		if (!cleaningInvoked) {
+			return this;
+		}
 		
+		Builder builder = getSelfBuilder();
+		builder.increaseTotalDataMoved(dataMoved)
+				.increaseTotalParityMoved(parityMoved)
+				.setChips(cleanChips)
+				.setTotalGCInvocations(getTotalGCInvocations() + 1);
+		return builder.build();
+	}
+	
+
+	@Override
+	public Device<RAIDPage,RAIDBlock,RAIDPlane,RAIDChip> writeLP(int lp, int size) {
 		/* write the data pages */
 		boolean isFirstWrite = true; // if size > 1, this field gets false after the first write 
 		RAIDDevice tempDevice = (RAIDDevice) getSelfBuilder().build();
@@ -111,7 +141,7 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			updatedChips.set(chipIndex, (RAIDChip) chip.writeLP(currentLP, currentStripe));
 			
 			Builder builder = (Builder) tempDevice.getSelfBuilder();
-			builder.setTotalDataWritten(tempDevice.getTotalDataWritten() + 1).setChips(updatedChips);
+			builder.increaseTotalDataWritten().setChips(updatedChips);
 			tempDevice = (RAIDDevice) builder.build();
 			tempDevice = (RAIDDevice) tempDevice.setHighlightByLogicalP(isHighlighted, currentLP).getValue2();
 			isFirstWrite = false;
@@ -144,7 +174,7 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 				updatedChips.set(chipIndex, (RAIDChip) currentChip.writePP(stripe, parityNumber));
 				
 				Builder builder = (Builder) tempDevice.getSelfBuilder();
-				builder.setTotalParityWritten(tempDevice.getTotalParityWritten() + 1).setChips(updatedChips);
+				builder.increaseTotalParityWritten().setChips(updatedChips);
 				tempDevice = (RAIDDevice) builder.build();
 				tempDevice = (RAIDDevice) tempDevice.setHighlightByParityP(isHighlighted, parityNumber, stripe, true).getValue2();
 			}
@@ -192,84 +222,24 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 	 */
 	protected abstract int getParityChipIndex(int lp, int parityNumber);
 	
-	public RAIDDevice setChip(RAIDChip chip, int chipIndex) {
-		Builder deviceBuilder = (Builder) getSelfBuilder();
-		List<RAIDChip> newChipsList = getNewChipsList();
-		newChipsList.set(chipIndex, chip);
-		deviceBuilder.setChips(newChipsList);
-		return (RAIDDevice) deviceBuilder.build();
-	}
-	
-	public RAIDDevice moveData(Quartet<Integer, Integer, Integer, Integer> pageIndex, int lp, int stripe, boolean toHighlight) {
-		RAIDDevice device = writeOnPage(pageIndex, lp, -1, stripe, true, toHighlight);
-		Builder deviceBuilder = (Builder) device.getSelfBuilder();
-		deviceBuilder.setTotalMoved(getTotalMoved()+1);
-		return (RAIDDevice) deviceBuilder.build();
-	}
-	
-	public RAIDDevice moveParity(Quartet<Integer, Integer, Integer, Integer> pageIndex, Pair<Integer, Integer> parityAddress, int stripe, boolean toHighlight) {
-		if (parityAddress.getValue0() != stripe) {
-			throw new IllegalArgumentException("The stripe in logical parity page adress and in <stripe> must be the same!");
-		}
-		RAIDDevice device = writeOnPage(pageIndex, -1, parityAddress.getValue1(), stripe, true, toHighlight);
-		Builder deviceBuilder = (Builder) device.getSelfBuilder();
-		deviceBuilder.setTotalMoved(getTotalMoved()+1);
-		return (RAIDDevice) deviceBuilder.build();
-	}
-	
-	public RAIDDevice writeData(Quartet<Integer, Integer, Integer, Integer> pageIndex, int lp, int stripe, boolean toHighlight) {
-		RAIDDevice device = writeOnPage(pageIndex, lp, 0, stripe, false, toHighlight);
-		Builder deviceBuilder = (Builder) device.getSelfBuilder();
-		deviceBuilder.setTotalDataWritten(getTotalDataWritten()+1);
-		return (RAIDDevice) deviceBuilder.build();
-	}
-	
-	public RAIDDevice writeParity(Quartet<Integer, Integer, Integer, Integer> pageIndex, Pair<Integer, Integer> parityAddress, int stripe, boolean toHighlight) {
-		if (parityAddress.getValue0() != stripe) {
-			throw new IllegalArgumentException("The stripe in logical parity page adress and in <stripe> must be the same!");
-		}
-		RAIDDevice device = writeOnPage(pageIndex, -1, parityAddress.getValue1(), stripe, false, toHighlight);
-		Builder deviceBuilder = (Builder) device.getSelfBuilder();
-		deviceBuilder.setTotalParityWritten(getTotalParityWritten()+1);
-		return (RAIDDevice) deviceBuilder.build();
-	}
-	
-	private RAIDDevice writeOnPage(Quartet<Integer, Integer, Integer, Integer> pageIndex, int lp, int parityNumber, int stripe, boolean isGC, boolean toHighlight) {
-		RAIDChip chip = getChip(pageIndex.getValue0());
-		RAIDPlane plane = chip.getPlane(pageIndex.getValue1());
-		RAIDBlock block = plane.getBlock(pageIndex.getValue2());
-		
-		RAIDPage.Builder builder = block.getPage(pageIndex.getValue3()).getSelfBuilder();
-		builder.setLp(lp)
-				.setGC(isGC)
-				.setValid(true)
-				.setClean(false);
-		builder.setStripe(stripe)
-				.setParityNumber(parityNumber)
-				.setIsHighlighted(toHighlight);
-		
-		block = block.setPage(builder.build(), pageIndex.getValue3());
-		plane = plane.setBlock(block, pageIndex.getValue2());
-		chip = chip.setPlane(plane, pageIndex.getValue1());
-		return setChip(chip, pageIndex.getValue0());
-	}
-	
-	public RAIDDevice changeStatus(Triplet<Integer, Integer, Integer> blockIndex, BlockStatus status) {
-		RAIDChip chip = getChip(blockIndex.getValue0());
-		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
-		return setChip(chip.changeStatus(blockInChip, status), blockIndex.getValue0());
-	}
-	
-	public RAIDDevice changeGC(Triplet<Integer, Integer, Integer> blockIndex, boolean isInGC) {
-		RAIDChip chip = getChip(blockIndex.getValue0());
-		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
-		return setChip(chip.changeGC(blockInChip, isInGC), blockIndex.getValue0());
-	}
-	
-	public RAIDDevice eraseBlock(Triplet<Integer, Integer, Integer> blockIndex) {
-		RAIDChip chip = getChip(blockIndex.getValue0());
-		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
-		return setChip(chip.eraseBlock(blockInChip), blockIndex.getValue0());
-	}
+//	public RAIDDevice setChip(RAIDChip chip, int chipIndex) {
+//		Builder deviceBuilder = (Builder) getSelfBuilder();
+//		List<RAIDChip> newChipsList = getNewChipsList();
+//		newChipsList.set(chipIndex, chip);
+//		deviceBuilder.setChips(newChipsList);
+//		return (RAIDDevice) deviceBuilder.build();
+//	}
+//	
+//	public RAIDDevice changeGC(Triplet<Integer, Integer, Integer> blockIndex, boolean isInGC) {
+//		RAIDChip chip = getChip(blockIndex.getValue0());
+//		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
+//		return setChip(chip.changeGC(blockInChip, isInGC), blockIndex.getValue0());
+//	}
+//	
+//	public RAIDDevice eraseBlock(Triplet<Integer, Integer, Integer> blockIndex) {
+//		RAIDChip chip = getChip(blockIndex.getValue0());
+//		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
+//		return setChip(chip.eraseBlock(blockInChip), blockIndex.getValue0());
+//	}
 
 }

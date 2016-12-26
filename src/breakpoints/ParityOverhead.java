@@ -1,10 +1,10 @@
 package breakpoints;
 
 import entities.Device;
-import manager.ParityOverheadGetter;
 import manager.RAIDSSDManager;
 import manager.RAIDVisualizationSSDManager;
 import manager.SSDManager;
+import manager.RAIDStatistics.ParityOverheadGetter;
 
 public class ParityOverhead extends BreakpointBase {
 	private double mValue = 1.0;
