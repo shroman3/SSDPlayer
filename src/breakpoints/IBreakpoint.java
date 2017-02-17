@@ -29,4 +29,8 @@ public interface IBreakpoint {
 	public boolean isEquals(IBreakpoint other);
 	
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager);
+
+	public boolean isActive();
+
+	public void setIsActive(boolean paramBoolean);
 }

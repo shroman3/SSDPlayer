@@ -23,7 +23,9 @@ package manager.HotColdStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import entities.Device;
 import entities.StatisticsColumn;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
@@ -73,6 +75,11 @@ public class HotColdWriteAmplificationGetter extends HotColdStatisticsGetter {
 			hotcoldWA[partitionIndex] = logicalWritten==0 ? 1 : ((double)total)/logicalWritten;
 		}
 		return hotcoldWA;
+	}
+
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return null;
 	}
 
 	@Override

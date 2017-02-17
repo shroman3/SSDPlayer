@@ -3,7 +3,7 @@ package breakpoints;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+import manager.SSDManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -12,6 +12,7 @@ import manager.SSDManager;
 public abstract class BreakpointBase implements IBreakpoint {
 	protected List<BreakpointComponent> mComponents = new ArrayList<>();
 	protected boolean mIsHit;
+	protected boolean mIsActive = true;
 
 	public BreakpointBase() {
 		addComponents();
@@ -19,6 +20,10 @@ public abstract class BreakpointBase implements IBreakpoint {
 	
 	@Override
 	public void readXml(Element xmlElement) throws Exception {
+		NodeList activeNodes = xmlElement.getElementsByTagName("active");
+		if (activeNodes.getLength() != 0) {
+			setIsActive(Boolean.parseBoolean(activeNodes.item(0).getTextContent()));
+		}
 		for (BreakpointComponent component : mComponents) {
 			NodeList nodes = xmlElement.getElementsByTagName(component.getPropertyName());
 			if (nodes.getLength() == 0) {
@@ -52,5 +57,13 @@ public abstract class BreakpointBase implements IBreakpoint {
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
 		return true;
+	}
+
+	public boolean isActive() {
+		return this.mIsActive;
+	}
+
+	public void setIsActive(boolean active) {
+		this.mIsActive = active;
 	}
 }

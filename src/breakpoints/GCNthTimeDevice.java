@@ -14,11 +14,11 @@ public class GCNthTimeDevice extends BreakpointBase {
 		if (previousDevice == null) {
 			return false;
 		}
-		
-		int prevGCCount = previousDevice.getTotalGCInvocations();
-		int currGCCount = currentDevice.getTotalGCInvocations();
-		
-		return prevGCCount != mValue && currGCCount == mValue;
+
+		int prevGCCount = previousDevice.getGCExecutions();
+		int currGCCount = currentDevice.getGCExecutions();
+
+		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
 	
 	public int getValue() {

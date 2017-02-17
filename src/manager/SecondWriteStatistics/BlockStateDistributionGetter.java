@@ -23,6 +23,7 @@ package manager.SecondWriteStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import manager.SSDManager;
 import ui.GeneralStatisticsGraph;
@@ -85,5 +86,10 @@ public class BlockStateDistributionGetter implements StatisticsGetter {
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
 		return new StatisticsGraph("Block State Dist.", this);
+	}
+	
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return null;
 	}
 }

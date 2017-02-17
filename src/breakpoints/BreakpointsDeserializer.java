@@ -1,12 +1,13 @@
 package breakpoints;
 
+import general.MessageLog;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
+import log.Message.ErrorMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -31,9 +32,10 @@ public class BreakpointsDeserializer {
 						result.add(BreakpointFactory.getBreakpoint(type + level, breakpointElement));
 					} catch (Exception e) {}
 				}
-		} catch(Exception e) {
-			System.err.println(("Some breakpoints were unable to load from file (" + bpFilePath + ")\n" + e.getMessage()));
-			return new ArrayList<BreakpointBase>(); 
+		} catch (Exception e) {
+			MessageLog.log(new ErrorMessage(
+					"Some breakpoints were unable to load from file (" + bpFilePath + ")\n" + e.getMessage()));
+			return new ArrayList<BreakpointBase>();
 		}
 		
 		return result;

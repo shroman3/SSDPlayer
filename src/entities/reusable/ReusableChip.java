@@ -22,6 +22,7 @@
 package entities.reusable;
 
 import entities.Chip;
+import entities.EntityInfo;
 
 public class ReusableChip extends Chip<ReusablePage, ReusableBlock, ReusablePlane> {
 	public static class Builder extends Chip.Builder<ReusablePage, ReusableBlock, ReusablePlane> {
@@ -55,5 +56,28 @@ public class ReusableChip extends Chip<ReusablePage, ReusableBlock, ReusablePlan
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Recycled blocks", Integer.toString(getNumOfRecycledBlocks()), 4);
+		return result;
+	}
+
+	public int getNumOfRecycledBlocks() {
+		int recycledBlocks = 0;
+		for (ReusablePlane plane : getPlanes()) {
+			recycledBlocks += plane.getNumOfRecycledBlocks();
+		}
+		return recycledBlocks;
+	}
+
+	public int getGCExecutions() {
+		int gcExecutions = 0;
+		for (ReusablePlane plane : getPlanes()) {
+			gcExecutions += plane.getGCExecutions();
+		}
+		return gcExecutions;
 	}
 }

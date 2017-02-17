@@ -21,8 +21,10 @@
  *******************************************************************************/
 package manager;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import ui.GeneralStatisticsGraph;
 import ui.StatisticsGraph;
@@ -64,6 +66,29 @@ public class ValidDistributionGetter implements StatisticsGetter {
 			list.add(new StatisticsColumn(i+"", ((double)counters[i]*100)/overallBlocks,i%2==0));
 		}
 		return list;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		List<StatisticsColumn> statistics = getStatistics(device);
+		StringBuilder sb = new StringBuilder();
+		int colCount = 0;
+		for (StatisticsColumn col : statistics) {
+			sb.append(col.getColumnName());
+			sb.append(": ");
+			sb.append((int) col.getValue());
+			colCount++;
+			if (colCount != statistics.size()) {
+				if (colCount % 6 == 5) {
+					sb.append(",\n");
+				} else {
+					sb.append(", ");
+				}
+			}
+		}
+
+		return new AbstractMap.SimpleEntry("Valid histogram", sb.toString());
 	}
 
 	@Override

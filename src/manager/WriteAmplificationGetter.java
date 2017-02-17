@@ -21,8 +21,10 @@
  *******************************************************************************/
 package manager;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import ui.GeneralStatisticsGraph;
 import ui.RegularHistoryGraph;
@@ -54,5 +56,10 @@ public class WriteAmplificationGetter implements StatisticsGetter {
 		int total = device.getTotalMoved() + device.getTotalWritten();
 		double valueWA = total==0 ? 1 : ((double)total)/device.getTotalWritten();
 		return valueWA;
+	}
+	
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return new AbstractMap.SimpleEntry("Write amplification", Double.toString(computeWA(device)));
 	}
 }

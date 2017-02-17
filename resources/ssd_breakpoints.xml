@@ -5,6 +5,7 @@
 <!-- 			<blockIndex>0</blockIndex> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Number of clean blocks in plane	-->
@@ -12,61 +13,71 @@
 <!-- 			<count>2</count> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 
 <!--  		Number of clean blocks in chip	-->
 <!-- 		<breakpoint type="CleanBlocks" level="Chip"> -->
 <!-- 			<count>2</count> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 
 <!--  		Number of clean blocks in device	-->
 <!-- 		<breakpoint type="CleanBlocks" level="Device"> -->
 <!-- 			<count>2</count> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 		<!--  		Erase block B	-->
-		<breakpoint type="EraseBlock">
-			<blockIndex>0</blockIndex> 	
-			<planeIndex>0</planeIndex> 	
-			<chipIndex>0</chipIndex>	
-		</breakpoint> 					
+<!-- 		<breakpoint type="EraseBlock"> -->
+<!-- 			<blockIndex>0</blockIndex> 	 -->
+<!-- 			<planeIndex>0</planeIndex> 	 -->
+<!-- 			<chipIndex>0</chipIndex>	 -->
+<!-- 			<active>false</active> -->
+<!-- 		</breakpoint> 					 -->
 		
 <!--  		Any block reaches erase count	-->
 <!-- 		<breakpoint type="EraseCountAnyBlock"> -->
 <!-- 			<count>2</count> -->
+<!-- 			<active>false</active>  -->
 <!-- 		</breakpoint> -->
 		
 		<!--  		Block reaches erase count	-->
-		<breakpoint type="EraseCountBlock">
-			<count>2</count>
-			<blockIndex>0</blockIndex>
-			<planeIndex>0</planeIndex>
-			<chipIndex>0</chipIndex>
-		</breakpoint>
+<!-- 		<breakpoint type="EraseCountBlock"> -->
+<!-- 			<count>2</count> -->
+<!-- 			<blockIndex>0</blockIndex> -->
+<!-- 			<planeIndex>0</planeIndex> -->
+<!-- 			<chipIndex>0</chipIndex> -->
+<!-- 			<active>false</active> -->
+<!-- 		</breakpoint> -->
 
 <!--  		Invoke garbage collection in the i-th time in plane P	-->
 <!-- 		<breakpoint type="GCNthTime" level="Plane"> -->
 <!-- 			<value>2</value> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Invoke garbage collection in the i-th time in chip C	-->
 <!-- 		<breakpoint type="GCNthTime" level="Chip"> -->
 <!-- 			<value>2</value> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Invoke garbage collection in the i-th time in the device	-->
 <!-- 		<breakpoint type="GCNthTime" level="Device"> -->
 <!-- 			<value>2</value> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		HotCold partition holds percent of blocks	-->
 <!-- 		<breakpoint type="HotColdPartitionHoldsPercentOfBlocks"> -->
 <!-- 			<percent>20</percent> -->
 <!-- 			<partition>0</partition> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		X pages are written in plane	-->
@@ -74,17 +85,20 @@
 <!-- 			<count>2</count> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		X pages are written in chip	-->
 <!-- 		<breakpoint type="PagesWritten" level="Chip"> -->
 <!-- 			<count>2</count> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		X pages are written in device	-->
 <!-- 		<breakpoint type="PagesWritten" level="Device"> -->
 <!-- 			<count>2</count> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Reusable block B is recycled	-->
@@ -92,22 +106,26 @@
 <!-- 			<blockIndex>2</blockIndex> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Reusable percent of blocks in write level	-->
 <!-- 		<breakpoint type="ReusableLevelBlocksPercent"> -->
 <!-- 			<percent>10</percent> -->
 <!-- 			<level>0</level> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Write Amplification reaches W	 -->
 <!-- 		<breakpoint type="WriteAmplification"> -->
 <!-- 			<value>1.1</value> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Write logical page L	-->
 <!-- 		<breakpoint type="WriteLp"> -->
 <!-- 			<lp>0</lp> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 		
 <!--  		Write physical page P	 -->
@@ -116,27 +134,32 @@
 <!-- 			<blockIndex>0</blockIndex> -->
 <!-- 			<planeIndex>0</planeIndex> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 	
 <!--  		Writes per erase reach W	-->
 <!-- 		<breakpoint type="WritesPerErase"> -->
 <!-- 			<value>1.1</value> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 	
 <!-- 		Hot-Cold partition write amplification reaches W -->
 <!-- 		<breakpoint type="HotColdWriteAmplification"> -->
 <!-- 			<partitionIndex>0</partitionIndex> -->
 <!-- 			<value>1.1</value> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 <!-- 		Victim block has X valid pages -->
 <!-- 		<breakpoint type="VictimBlockHasValidPages" level="Device"> -->
 <!--			<count>18</count> -->
+<!--  			<active>false</active>   -->
 <!--		</breakpoint> -->
 
 <!-- 		Victim in chip block has X valid pages	 -->
 <!-- 		<breakpoint type="VictimBlockHasValidPages" level="Chip"> -->
 <!-- 			<count>17</count> -->
 <!-- 			<chipIndex>0</chipIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 
 <!--  		victim in plane block has X valid pages	-->
@@ -144,16 +167,19 @@
 <!-- 			<count>17</count> -->
 <!-- 			<chipIndex>0</chipIndex> -->
 <!-- 			<planeIndex>0</planeIndex> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->	
 
 <!-- 		Parity overhead reaches W -->
 <!-- 		<breakpoint type="ParityOverhead"> -->
 <!-- 			<value>1.1</value> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 
 <!-- 		Logical write in stripe P -->
 <!-- 		<breakpoint type="WriteInStripe"> -->
 <!-- 			<stripe>0</stripe> -->
+<!--  			<active>false</active>   -->
 <!-- 		</breakpoint> -->
 	</breakpoints>
 </root>

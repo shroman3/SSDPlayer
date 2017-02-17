@@ -37,6 +37,8 @@ import general.XMLParsingException;
 import manager.RAIDStatistics.ParityOverheadGetter;
 import ui.AddressWidget;
 import ui.WorkloadWidget;
+import zoom.BlocksRaidParityZoomLevel;
+import zoom.SmallBlocksRaidParityZoomLevel;
 
 /**
  * 
@@ -183,4 +185,10 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 		return builder.build();
 	}
 
+	@Override
+	protected void setSupportedZoomLevels() {
+		super.setSupportedZoomLevels();
+		this.supportedZoomLevels.add(new BlocksRaidParityZoomLevel());
+		this.supportedZoomLevels.add(new SmallBlocksRaidParityZoomLevel());
+	}
 }

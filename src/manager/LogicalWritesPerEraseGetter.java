@@ -21,8 +21,10 @@
  *******************************************************************************/
 package manager;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import ui.GeneralStatisticsGraph;
 import ui.RegularHistoryGraph;
@@ -78,5 +80,10 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
 		return new RegularHistoryGraph("Writes Per Erase", this, maxPagesPerErase, 0);
+	}
+
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return new AbstractMap.SimpleEntry("Writes per erase", Double.toString(getLogicalWritesPerErase(device)));
 	}
 }

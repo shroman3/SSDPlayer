@@ -25,6 +25,7 @@ import java.awt.Color;
 
 import utils.Utils;
 import manager.HotColdSSDManager;
+import entities.EntityInfo;
 import entities.Page;
 
 public class HotColdPage extends Page {
@@ -92,5 +93,12 @@ public class HotColdPage extends Page {
 			return manager.getCleanColor();
 		} 
 		return manager.getTemperatureColor(temperature);
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Temperature", Integer.toString(getTemperature()), 5);
+		return result;
 	}
 }

@@ -22,6 +22,7 @@
 package entities;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import ui.GeneralStatisticsGraph;
 
@@ -48,4 +49,6 @@ public interface StatisticsGetter {
 	 */
 	List<StatisticsColumn> getStatistics(Device<?,?,?,?> device);
 	GeneralStatisticsGraph getStatisticsGraph();
+	Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> paramDevice);
+
 }

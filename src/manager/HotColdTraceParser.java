@@ -24,6 +24,8 @@ package manager;
 import java.io.IOException;
 
 import entities.Device;
+import general.MessageLog;
+import log.Message.ErrorMessage;
 
 
 public class HotColdTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParserGeneral<D,S> {
@@ -40,10 +42,10 @@ public class HotColdTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<
 				int temprature = Integer.parseInt(operationParts[5]);
 				return manager.writeLP(device, lp, temprature);
 			} catch (NumberFormatException e) {
-				System.out.println("\n\nIllegal Logical Page given: " + operationParts[2] + " line:" + line);
+				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
 			}
 		}
-		System.out.println("\n\nIllegal trace line: " + command + " line:" + line);
+		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
 		return null;
 	}
 

@@ -177,6 +177,25 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		return (RAIDPage) builder.build();
 	}
 
+	public float getParityRatio() {
+		float notClean = 0;
+		float parityCount = 0;
+		for (RAIDPage page : getPages()) {
+			if (!page.isClean()) {
+				notClean += 1;
+				if (page.getParityNumber() > 0) {
+					parityCount += 1;
+				}
+			}
+		}
+
+		if (notClean == 0) {
+			return 0;
+		}
+
+		return parityCount / notClean;
+	}
+
 	@Override
 	protected RAIDBlock addValidPage(int index, RAIDPage page) {
 		RAIDBlock block = (RAIDBlock) super.addValidPage(index, page);

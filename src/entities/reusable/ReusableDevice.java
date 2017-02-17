@@ -22,6 +22,7 @@
 package entities.reusable;
 
 import entities.Device;
+import entities.EntityInfo;
 
 
 public class ReusableDevice extends Device<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip> {
@@ -57,5 +58,28 @@ public class ReusableDevice extends Device<ReusablePage, ReusableBlock, Reusable
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Recycled blocks", Integer.toString(getNumOfRecycledBlocks()), 4);
+		return result;
+	}
+
+	private int getNumOfRecycledBlocks() {
+		int recycledBlocks = 0;
+		for (ReusableChip chip : getChips()) {
+			recycledBlocks += chip.getNumOfRecycledBlocks();
+		}
+		return recycledBlocks;
+	}
+
+	public int getGCExecutions() {
+		int gcExecutions = 0;
+		for (ReusableChip chip : getChips()) {
+			gcExecutions += chip.getGCExecutions();
+		}
+		return gcExecutions;
 	}
 }

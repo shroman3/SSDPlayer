@@ -180,6 +180,30 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 	}
 
 	public int getTotalGCInvocations() {
-		return totalGCInvocations;
+		return this.totalGCInvocations;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Total logical pages written", Integer.toString(getTotalWritten()), 2);
+		result.add("Clean blocks", Integer.toString(getNumOfClean()), 3);
+		result.add("GC invocations", Integer.toString(getGCExecutions()), 4);
+		result.add("Number of planes", Integer.toString(getPlanesNum()), 1);
+		result.add("Block erasures", Integer.toString(getNumOfBlockErasures()), 3);
+
+		return result;
+	}
+
+	public int getNumOfBlockErasures() {
+		int numOfErasures = 0;
+		for (Plane<?, ?> plane : getPlanes()) {
+			numOfErasures += plane.getNumOfBlockErasures();
+		}
+		return numOfErasures;
+	}
+
+	public int getGCExecutions() {
+		return getTotalGCInvocations();
 	}
 }

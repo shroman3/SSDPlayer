@@ -83,7 +83,7 @@ public class VisualizationPlane extends Plane<VisualizationPage, VisualizationBl
 		List<VisualizationBlock> newBlocksList = getNewBlocksList();
 		newBlocksList.set(index, block);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(newBlocksList);
+		builder.setBlocks(newBlocksList).setTotalWritten(getTotalWritten());
 		return builder.build();
 	}
 

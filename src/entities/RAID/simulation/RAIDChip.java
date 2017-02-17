@@ -29,6 +29,7 @@ import org.javatuples.Triplet;
 import entities.ActionLog;
 import entities.Chip;
 import entities.CleanAction;
+import entities.EntityInfo;
 import entities.RAID.RAIDBasicChip;
 
 /**
@@ -37,6 +38,9 @@ import entities.RAID.RAIDBasicChip;
  *
  */
 public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
+	public int totalDataWritten = 0;
+	public int totalParityWritten = 0;
+
 	public static class Builder extends RAIDBasicChip.Builder<RAIDPage, RAIDBlock, RAIDPlane> {
 		private RAIDChip chip;
 		
@@ -56,19 +60,36 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 			super.setChip(chip);
 			this.chip = chip;
 		}
+
+		public Builder setTotalDataWritten(int totalDataWritten) {
+			this.chip.totalDataWritten = totalDataWritten;
+			return this;
+		}
+
+		public Builder setTotalParityWritten(int totalParityWritten) {
+			this.chip.totalParityWritten = totalParityWritten;
+			return this;
+		}
 	}
 	
 	protected RAIDChip() {}	
 	
 	protected RAIDChip(RAIDChip other) {
 		super(other);
+		this.totalDataWritten = other.totalDataWritten;
+		this.totalParityWritten = other.totalParityWritten;
 	}
 	
 	RAIDChip setPlane(RAIDPlane plane, int index) {
+		return setPlane(plane, index, this.totalDataWritten, this.totalParityWritten, getTotalWritten());
+	}
+
+	RAIDChip setPlane(RAIDPlane plane, int index, int totalDataWritten, int totalParityWritten, int totalWritten) {
 		List<RAIDPlane> newPlanesList = getNewPlanesList();
 		newPlanesList.set(index, plane);
 		Builder builder = getSelfBuilder();
-		builder.setPlanes(newPlanesList);
+		builder.setTotalDataWritten(totalDataWritten).setTotalParityWritten(totalParityWritten)
+				.setTotalWritten(totalWritten).setPlanes(newPlanesList);
 		return builder.build();
 	}
 
@@ -106,6 +127,36 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 
 	public Chip<RAIDPage,RAIDBlock,RAIDPlane> writePP(int stripe, int parityNum) {
 		int index = getMinValidCountPlaneIndex();
-		return setPlane((RAIDPlane) getPlane(index).writePP(stripe, parityNum), index);
+
+		return setPlane(((RAIDPlane) getPlane(index)).writePP(stripe, parityNum), index, getTotalDataWritten(),
+				getTotalParityWritten() + 1, getTotalWritten() + 1);
+	}
+
+	public Chip<RAIDPage, RAIDBlock, RAIDPlane> writeLP(int lp, int arg) {
+		int index = getMinValidCountPlaneIndex();
+
+		RAIDPlane newPlane = ((RAIDPlane) getPlane(index)).writeLP(lp, arg);
+		List<RAIDPlane> updatedPlanes = getNewPlanesList();
+		updatedPlanes.set(index, newPlane);
+		Builder builder = getSelfBuilder();
+		builder.setTotalDataWritten(getTotalDataWritten() + 1).setPlanes(updatedPlanes)
+				.setTotalWritten(getTotalWritten() + 1);
+		return builder.build();
+	}
+
+	public int getTotalDataWritten() {
+		return this.totalDataWritten;
+	}
+
+	public int getTotalParityWritten() {
+		return this.totalParityWritten;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Total parity pages written", Integer.toString(getTotalParityWritten()), 2);
+		result.add("Total data pages written", Integer.toString(getTotalDataWritten()), 2);
+		return result;
 	}
 }

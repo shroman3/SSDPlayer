@@ -1,12 +1,12 @@
 package breakpoints;
 
-import java.util.HashMap;
-import java.util.List;
-
 import general.ConfigProperties;
 import general.MessageLog;
 import general.XMLGetter;
 import general.XMLParsingException;
+import java.util.HashMap;
+import java.util.List;
+import log.Message.ErrorMessage;
 import manager.HotColdSSDManager;
 
 public class BreakpointsConstraints {
@@ -124,8 +124,8 @@ public class BreakpointsConstraints {
 	}
 
 	public static Exception reportSetterException(SetterError setterError) {
-		MessageLog.log(mErrorMap.get(setterError));
-		return new Exception(mErrorMap.get(setterError));
+		MessageLog.log(new ErrorMessage((String) mErrorMap.get(setterError)));
+		return new Exception((String) mErrorMap.get(setterError));
 	}
 
 	public static boolean isStripeLegal(int stripe) {

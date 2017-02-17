@@ -31,6 +31,7 @@ import java.awt.TexturePaint;
 
 import entities.Block;
 import entities.Page;
+import entities.RAID.simulation.RAIDBlock;
 import entities.hot_cold.HotColdBlock;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusablePage;
@@ -189,6 +190,24 @@ public class BlockView extends Component {
 				break;
 		case ERASE_COUNT:
 			bgColor = block.getBlockEraseColor();
+			break;
+		case PARITY_COUNT:
+			if ((this.block instanceof RAIDBlock)) {
+				boolean blockClean = true;
+				for (Page page : this.block.getPages()) {
+					if (!page.isClean()) {
+						blockClean = false;
+						break;
+					}
+				}
+				if (blockClean) {
+					bgColor = this.block.getPage(0).getBGColor();
+				} else {
+					int colorRangeIndex = (int) (((RAIDBlock) this.block).getParityRatio()
+							* (this.visualConfig.getBlocksColorRange().size() - 1));
+					bgColor = (Color) this.visualConfig.getBlocksColorRange().get(colorRangeIndex);
+				}
+			}
 			break;
 		default:
 			break;

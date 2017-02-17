@@ -21,14 +21,17 @@
  *******************************************************************************/
 package manager.SecondWriteStatistics;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import manager.ReusableSSDManager;
 import ui.GeneralStatisticsGraph;
 import ui.StatisticsGraph;
+import entities.Device;
 import entities.StatisticsColumn;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableChip;
@@ -79,5 +82,27 @@ public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
 		return new StatisticsGraph("Valid "+writeLevel+" Histogram", this);
+	}
+
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		List<StatisticsColumn> statistics = getStatistics(device);
+		StringBuilder sb = new StringBuilder();
+		int colCount = 0;
+		for (StatisticsColumn col : statistics) {
+			sb.append(col.getColumnName());
+			sb.append(": ");
+			sb.append((int) col.getValue());
+			colCount++;
+			if (colCount != statistics.size()) {
+				if (colCount % 6 == 5) {
+					sb.append(",\n");
+				} else {
+					sb.append(", ");
+				}
+			}
+		}
+
+		return new AbstractMap.SimpleEntry("Valid" + this.writeLevel + " histogram", sb.toString());
 	}
 }

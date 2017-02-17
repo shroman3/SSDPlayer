@@ -16,13 +16,11 @@ public class GCNthTimePlane extends BreakpointBase {
 		if (previousDevice == null) {
 			return false;
 		}
-		
-		int prevGCCount = previousDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex).getTotalGCInvocations();
-		int currGCCount = currentDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex).getTotalGCInvocations();
-		
-		return prevGCCount != mValue && currGCCount == mValue;
+
+		int prevGCCount = previousDevice.getChip(this.mChipIndex).getPlane(this.mPlaneIndex).getGCExecutions();
+		int currGCCount = currentDevice.getChip(this.mChipIndex).getPlane(this.mPlaneIndex).getGCExecutions();
+
+		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
 	
 	public int getValue() {

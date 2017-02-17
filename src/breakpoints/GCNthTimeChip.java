@@ -15,11 +15,11 @@ public class GCNthTimeChip extends BreakpointBase {
 		if (previousDevice == null) {
 			return false;
 		}
-		
-		int prevGCCount = previousDevice.getChipByIndex(mChipIndex).getTotalGCInvocations();
-		int currGCCount = currentDevice.getChipByIndex(mChipIndex).getTotalGCInvocations();
-		
-		return prevGCCount != mValue && currGCCount == mValue;
+
+		int prevGCCount = previousDevice.getChipByIndex(this.mChipIndex).getGCExecutions();
+		int currGCCount = currentDevice.getChipByIndex(this.mChipIndex).getGCExecutions();
+
+		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
 	
 	public int getValue() {

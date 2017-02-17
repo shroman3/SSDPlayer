@@ -3,6 +3,8 @@ package breakpoints;
 import java.util.ArrayList;
 import java.util.List;
 
+import general.MessageLog;
+import log.Message.ErrorMessage;
 import ui.breakpoints.BreakpointUIComponent;
 
 public class BreakpointDescriptor {
@@ -22,8 +24,9 @@ public class BreakpointDescriptor {
 						(component.getPropertyName(), component.getParamType(), component.getLabel()));
 			}
 		} catch (Exception e) {
-			System.err.println("Error instantiating ui descriptor for breakpoint " + mBreakpointClass.getSimpleName());
-			System.err.println(e.getMessage());
+			MessageLog.log(new ErrorMessage(
+					"Error instantiating ui descriptor for breakpoint " + this.mBreakpointClass.getSimpleName()));
+			MessageLog.log(new ErrorMessage(e.getMessage()));
 		}
 		
 	}
