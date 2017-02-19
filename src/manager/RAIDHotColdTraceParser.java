@@ -19,55 +19,46 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package manager.RAIDStatistics;
+package manager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-import entities.Device;
-import entities.StatisticsColumn;
-import entities.RAID.RAIDBasicDevice;
-import manager.RAIDBasicSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.RegularHistoryGraph;
+import entities.RAID.hot_cold.RAIDHotColdDevice;
 
 /**
  * 
  * @author Or Mauda
  *
  */
-public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends RAIDBasicSSDManager<?,?,?,?,D>> extends RAIDStatisticsGetter<D,S> {
-	public ParityOverheadGetter(S manager, Class<?> diviceclass) {
-		super(manager, diviceclass);
+public class RAIDHotColdTraceParser extends TraceParserGeneral<RAIDHotColdDevice, RAIDHotColdSSDManager>
+		implements SettableTraceParser<RAIDHotColdDevice, RAIDHotColdSSDManager> {
+	public RAIDHotColdTraceParser(RAIDHotColdSSDManager manager) {
+		super(manager);
 	}
 
 	@Override
-	public int getNumberOfColumns() {
-		return 1;
-	}
-
-	@Override
-	public List<StatisticsColumn> getRAIDStatistics(D device) {
-		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
-		list.add(new StatisticsColumn("data + parity writes to data writes", 
-										calcParityOverhead(device), false));
-		return list;
-	}
-
-	@Override
-	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new RegularHistoryGraph("Parity Overhead Histogram", this, 1, 0);
-	}
-	
- 	public static double getParityOverhead(Device<?,?,?,?> device) {
-		if (!(device instanceof RAIDBasicDevice)) {
-			return 0;
+	protected RAIDHotColdDevice parseCommand(String command, int line, RAIDHotColdDevice device, RAIDHotColdSSDManager manager)
+			throws IOException {
+		String[] operationParts = command.split("[ \t]+");
+		if ((operationParts.length == 5) && (operationParts[4].equals("W"))) {
+			try {
+				int lp = Integer.parseInt(operationParts[2]);
+				int size = Integer.parseInt(operationParts[3]);
+				return manager.writeLP(device, lp, size);
+			} catch (NumberFormatException e) {
+				System.out.println("\n\nIllegal Logical Page given: " + operationParts[2] + " line:" + line);
+			}
 		}
-		return calcParityOverhead((RAIDBasicDevice<?, ?, ?, ?>) device);
- 	}
- 	
- 	private static double calcParityOverhead(RAIDBasicDevice<?,?,?,?> device) {
- 		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
- 		return total==0 ? 0 : (((double)(device.getTotalParityWritten()+ device.getTotalParityMoved())/(double)total));
- 	}
+		System.out.println("\n\nIllegal trace line: " + command + " line:" + line);
+		return null;
+	}
+
+	@Override
+	public String getFileExtensions() {
+		return "trace";
+	}
+
+	public void setDevice(RAIDHotColdDevice device) {
+		this.device = device;
+	}
 }

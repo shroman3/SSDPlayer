@@ -19,55 +19,45 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package manager.RAIDStatistics;
+package manager;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import entities.Device;
-import entities.StatisticsColumn;
-import entities.RAID.RAIDBasicDevice;
-import manager.RAIDBasicSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.RegularHistoryGraph;
+import entities.RAID.hot_cold.RAID5HotColdDevice;
+import entities.RAID.hot_cold.RAIDHotColdChip;
+import entities.RAID.hot_cold.RAIDHotColdDevice;
 
 /**
  * 
  * @author Or Mauda
  *
  */
-public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends RAIDBasicSSDManager<?,?,?,?,D>> extends RAIDStatisticsGetter<D,S> {
-	public ParityOverheadGetter(S manager, Class<?> diviceclass) {
-		super(manager, diviceclass);
-	}
-
-	@Override
-	public int getNumberOfColumns() {
-		return 1;
-	}
-
-	@Override
-	public List<StatisticsColumn> getRAIDStatistics(D device) {
-		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
-		list.add(new StatisticsColumn("data + parity writes to data writes", 
-										calcParityOverhead(device), false));
-		return list;
-	}
-
-	@Override
-	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new RegularHistoryGraph("Parity Overhead Histogram", this, 1, 0);
+public class RAID5HotColdSSDManager extends RAIDHotColdSSDManager {
+	
+	protected void setParitiesNumber() {
+		this.paritiesNumber = 1;
 	}
 	
- 	public static double getParityOverhead(Device<?,?,?,?> device) {
-		if (!(device instanceof RAIDBasicDevice)) {
-			return 0;
-		}
-		return calcParityOverhead((RAIDBasicDevice<?, ?, ?, ?>) device);
- 	}
- 	
- 	private static double calcParityOverhead(RAIDBasicDevice<?,?,?,?> device) {
- 		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
- 		return total==0 ? 0 : (((double)(device.getTotalParityWritten()+ device.getTotalParityMoved())/(double)total));
- 	}
+	@Override
+	protected void setStripeSize() {
+		this.stripeSize = getChipsNum() - paritiesNumber;
+	}
+	
+//	@Override
+//	protected RAIDDevice getEmptyDevice(List<RAIDChip> emptyChips) {
+//		RAID5Device.Builder builder = new RAID5Device.Builder();
+//		builder.setChips(emptyChips);
+//		builder.setStripeSize(getStripeSize());
+//		builder.setParitiesNumber(getParitiesNumber());
+//		return builder.build();
+//	}
+
+	@Override
+	protected RAIDHotColdDevice getEmptyDevice(List<RAIDHotColdChip> emptyChips) {
+		RAID5HotColdDevice.Builder builder = new RAID5HotColdDevice.Builder();
+		builder.setChips(emptyChips);
+		builder.setStripeSize(getStripeSize());
+		builder.setParitiesNumber(getParitiesNumber());
+		return builder.build();
+	}
 }

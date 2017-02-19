@@ -27,7 +27,7 @@ import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
 import general.Consts;
-import manager.RAIDSSDManager;
+import manager.RAIDBasicSSDManager;
 import utils.Utils;
 
 /**
@@ -47,7 +47,7 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 			setBlock(new RAIDBlock(block));
 		}
 		
-		public Builder setManager(RAIDSSDManager manager) {
+		public Builder setManager(RAIDBasicSSDManager<RAIDPage, ?, ?, ?, ?> manager) {
 			super.setManager(manager);
 			block.manager = manager;
 			return this;
@@ -71,7 +71,7 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		}
 	}
 	
-	private RAIDSSDManager manager = null;
+	private RAIDBasicSSDManager<RAIDPage,?,?,?,?> manager = null;
 
 	protected RAIDBlock() { }
 	

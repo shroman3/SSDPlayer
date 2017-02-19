@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.javatuples.Triplet;
 
-import manager.RAIDSSDManager;
-import utils.Utils;
 import entities.RAID.RAIDBasicPage;
+import manager.RAIDBasicSSDManager;
+import utils.Utils;
 
 /**
  * 
@@ -52,7 +52,7 @@ public class RAIDPage extends RAIDBasicPage {
 			this.page = page;
 		}
 
-		public Builder setManager(RAIDSSDManager manager) {
+		public Builder setManager(RAIDBasicSSDManager<RAIDPage, ?,?,?,?> manager) {
 			page.manager = manager;
 			return this;
 		}
@@ -67,7 +67,7 @@ public class RAIDPage extends RAIDBasicPage {
 		}
 	}
 	
-	private RAIDSSDManager manager = null;
+	private RAIDBasicSSDManager<RAIDPage, ?, ?, ?, ?> manager = null;
 	
 	RAIDPage() {}
 	

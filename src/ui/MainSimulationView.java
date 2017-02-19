@@ -103,7 +103,6 @@ public class MainSimulationView extends JFrame {
 		}
 	}
 
-
 	public MainSimulationView(VisualConfig visualConfig) {
 		super("SSDPlayer " + VERSION);
 		addWindowListener(new WindowAdapter() {
