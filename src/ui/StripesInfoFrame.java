@@ -49,8 +49,6 @@ import entities.Page;
 import entities.RAID.RAIDBasicDevice;
 import general.OneObjectCallback;
 import manager.RAIDBasicSSDManager;
-import manager.RAIDSSDManager;
-import manager.RAIDVisualizationSSDManager;
 import manager.SettableTraceParser;
 import manager.TraceParser;
 import utils.Utils;
@@ -310,12 +308,12 @@ public class StripesInfoFrame extends JDialog {
 		stripesNumber++;
 		
 		// Get the stripe's color
-		Color stripeColor;
-		if (manager.getManagerName().toLowerCase().contains("raid simulation") == true) { // means we're in visualization
-			stripeColor = ((RAIDVisualizationSSDManager) manager).getStripeFrameColor(information.getValue0()); 
-		} else { // means we're not in visualization
-			stripeColor = ((RAIDSSDManager) manager).getStripeFrameColor(information.getValue0());
-		}
+		Color stripeColor = manager.getStripeFrameColor(information.getValue0());
+//		if (manager.getManagerName().toLowerCase().contains("raid simulation") == true) { // means we're in visualization
+//			stripeColor = ((RAIDVisualizationSSDManager) manager).getStripeFrameColor(information.getValue0()); 
+//		} else { // means we're not in visualization
+//			stripeColor = ((RAIDSSDManager) manager).getStripeFrameColor(information.getValue0());
+//		}
 		
 		// The color of the border (equals the color of the matched stripe)
 		LineBorder coloredBorder = new LineBorder(stripeColor, 3);

@@ -250,11 +250,12 @@ public class TracePlayer extends JPanel {
 			StripesInfoFrame.reset(stripesFrame);
 			RAIDBasicPage.resetHighlights();
 		}
-		showStripeButton.setVisible(true);
-		showStripeButton.setEnabled(false);
 		if (!manager.hasStripes()) {
 			stripesFrame = null;
 			showStripeButton.setVisible(false);
+		} else {
+			showStripeButton.setVisible(true);
+			showStripeButton.setEnabled(false);			
 		}
 	}
 

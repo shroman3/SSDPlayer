@@ -56,7 +56,7 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new RegularHistoryGraph("Parity Overhead Histogram", this, 1, 0);
+		return new RegularHistoryGraph("Parity Update Overhead", this, 1, 0);
 	}
 	
  	public static double getParityOverhead(Device<?,?,?,?> device) {
