@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -239,7 +239,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 
 	public int getTotalWritten() {
-		return this.totalWritten;
+		return totalWritten;
 	}
 
 	public EntityInfo getInfo() {
