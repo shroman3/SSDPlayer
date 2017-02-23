@@ -157,7 +157,7 @@ public class HotColdBlock extends Block<HotColdPage> {
 
 	public float getBlockTemperatureToMaxTempRatio() {
 		int maxTemperature = manager.getMaxTemperature();
-		return getAveragePageTemperature() / maxTemperature;
+		return getAveragePageTemperature()/maxTemperature;
 	}
 
 	private String getDisplayStatusName() {
