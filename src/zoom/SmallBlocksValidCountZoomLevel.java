@@ -29,5 +29,4 @@ public class SmallBlocksValidCountZoomLevel implements IZoomLevel  {
 	public String getGroup() {
 		return "Small Blocks";
 	}
-
 }

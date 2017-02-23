@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -21,8 +21,10 @@
  *******************************************************************************/
 package manager.RAIDStatistics;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import entities.Device;
 import entities.StatisticsColumn;
@@ -70,4 +72,9 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
  		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
  		return total==0 ? 0 : (((double)(device.getTotalParityWritten()+ device.getTotalParityMoved())/(double)total));
  	}
+
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return new AbstractMap.SimpleEntry("Parity Overhead", Double.toString(getParityOverhead(device)));
+	}
 }

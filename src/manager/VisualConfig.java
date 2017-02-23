@@ -31,7 +31,7 @@ public class VisualConfig {
 	public static final String VISUAL_CONFIG = "visual";
 
 	public enum BlockColorMeaning {
-		VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
+		PARITY_COUNT, VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
 	}
 	
 	private int xmlSpeed = -1;

@@ -197,4 +197,28 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 		}
 		return cleanBlocks;
 	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Total logical pages written", Integer.toString(getTotalWritten()), 2);
+		result.add("Number of chips", Integer.toString(getChipsNum()), 1);
+		result.add("Clean blocks", Integer.toString(getNumOfClean()), 3);
+		result.add("Block erasures", Integer.toString(getNumOfBlockErasures()), 3);
+		result.add("GC invocations", Integer.toString(getGCExecutions()), 4);
+
+		return result;
+	}
+
+	public int getNumOfBlockErasures() {
+		int numOfErasures = 0;
+		for (Chip<?, ?, ?> chip : getChips()) {
+			numOfErasures += chip.getNumOfBlockErasures();
+		}
+		return numOfErasures;
+	}
+
+	public int getGCExecutions() {
+		return getTotalGCInvocations();
+	}
 }

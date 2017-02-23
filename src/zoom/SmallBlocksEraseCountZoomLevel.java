@@ -29,5 +29,4 @@ public class SmallBlocksEraseCountZoomLevel implements IZoomLevel  {
 	public String getGroup() {
 		return "Small Blocks";
 	}
-
 }

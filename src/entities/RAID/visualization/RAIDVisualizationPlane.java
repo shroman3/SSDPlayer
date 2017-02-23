@@ -75,7 +75,7 @@ public class RAIDVisualizationPlane extends RAIDBasicPlane<RAIDVisualizationPage
 		List<RAIDVisualizationBlock> newBlocksList = getNewBlocksList();
 		newBlocksList.set(index, block);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(newBlocksList);
+		builder.setBlocks(newBlocksList).setTotalWritten(getTotalWritten());
 		return builder.build();
 	}
 
@@ -93,7 +93,7 @@ public class RAIDVisualizationPlane extends RAIDBasicPlane<RAIDVisualizationPage
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setBlocks(updatedBlocks).setTotalWritten(getTotalWritten());
 		return builder.build();
 	}
 	
@@ -116,7 +116,7 @@ public class RAIDVisualizationPlane extends RAIDBasicPlane<RAIDVisualizationPage
 		cleanBlocks.set(active, activeBlock);
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDVisualizationBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(cleanBlocks);
-		return new Pair<>(builder.build(), toMove);
+		builder.setBlocks(cleanBlocks).setTotalWritten(getTotalWritten());
+		return new Pair(builder.build(), toMove);
 	}
 }

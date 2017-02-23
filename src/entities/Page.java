@@ -142,4 +142,15 @@ public abstract class Page {
 	public Color getStripeFrameColor() {
 		return null;
 	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Moved by GC", Boolean.toString(isGC()), 2);
+		result.add("Is clean", Boolean.toString(isClean()), 1);
+		result.add("LP", Integer.toString(getLp()), 0);
+		result.add("Is valid", Boolean.toString(isValid()), 1);
+
+		return result;
+	}
 }

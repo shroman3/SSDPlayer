@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -26,6 +26,7 @@ import java.awt.Color;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
+import entities.EntityInfo;
 import manager.HotColdPartition;
 import manager.HotColdSSDManager;
 import utils.Utils;
@@ -157,5 +158,22 @@ public class HotColdBlock extends Block<HotColdPage> {
 	public float getBlockTemperatureToMaxTempRatio() {
 		int maxTemperature = manager.getMaxTemperature();
 		return getAveragePageTemperature()/maxTemperature;
+	}
+
+	private String getDisplayStatusName() {
+		if ((getStatus() != BlockStatusGeneral.CLEAN) && (this.partition != null)) {
+			return getStatus().getStatusName() + " " + this.partition.getDsiplayName();
+		}
+		return getStatus().getStatusName();
+	}
+	
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Average page temperature", Float.toString(getAveragePageTemperature()), 2);
+		result.add("Status", getDisplayStatusName(), 1);
+
+		result.add("Partition", getPartition() != null ? getPartition().getDsiplayName() : "None", 1);
+		return result;
 	}
 }

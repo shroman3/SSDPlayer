@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.javatuples.Triplet;
 
+import entities.EntityInfo;
 import entities.Page;
 import general.Consts;
 
@@ -245,5 +246,13 @@ public abstract class RAIDBasicPage extends Page {
 				highlightedStripes.add(stripeIndex, new Triplet<Integer, List<Integer>, List<Integer>>(stripe, stripeNode.getValue1(), newParityNumbers));
 			}
 		}
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Stripe", Integer.toString(getStripe()), 1);
+		result.add("Parity number", Integer.toString(getParityNumber()), 1);
+		return result;
 	}
 }

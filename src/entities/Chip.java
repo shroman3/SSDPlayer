@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -181,5 +181,29 @@ public abstract class Chip<P extends Page, B extends Block<P>, T extends Plane<P
 
 	public int getTotalGCInvocations() {
 		return totalGCInvocations;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Total logical pages written", Integer.toString(getTotalWritten()), 2);
+		result.add("Clean blocks", Integer.toString(getNumOfClean()), 3);
+		result.add("GC invocations", Integer.toString(getGCExecutions()), 4);
+		result.add("Number of planes", Integer.toString(getPlanesNum()), 1);
+		result.add("Block erasures", Integer.toString(getNumOfBlockErasures()), 3);
+
+		return result;
+	}
+
+	public int getNumOfBlockErasures() {
+		int numOfErasures = 0;
+		for (Plane<?, ?> plane : getPlanes()) {
+			numOfErasures += plane.getNumOfBlockErasures();
+		}
+		return numOfErasures;
+	}
+
+	public int getGCExecutions() {
+		return getTotalGCInvocations();
 	}
 }

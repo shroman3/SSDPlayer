@@ -30,6 +30,7 @@ import org.javatuples.Pair;
 import entities.Block;
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
+import entities.EntityInfo;
 import general.Consts;
 import manager.ReusableSSDManager;
 import utils.Utils;
@@ -201,5 +202,13 @@ public class ReusableBlock extends Block<ReusablePage> {
 			}
 		}
 		return maxLevel;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Average page write level", Float.toString(getAveragePageWriteLevel()), 2);
+		result.add("Write level", Integer.toString(getWriteLevel()), 1);
+		return result;
 	}
 }

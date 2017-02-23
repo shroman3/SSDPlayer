@@ -3,6 +3,7 @@ package ui.breakpoints;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,9 +11,11 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -30,6 +33,8 @@ import javax.swing.border.EmptyBorder;
 
 import breakpoints.BreakpointBase;
 import breakpoints.IBreakpoint;
+import general.MessageLog;
+import log.Message.ErrorMessage;
 import manager.SSDManager;
 
 public class ManageBreakpointsDialog extends JDialog {
@@ -52,7 +57,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		setModal(true);
 		setResizable(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setSize(460, 350);
+		setSize(720, 350);
 		setLocationRelativeTo(parentWindow);
 		initComponents();
 	}
@@ -130,7 +135,10 @@ public class ManageBreakpointsDialog extends JDialog {
 
 	public void addBreakpoint(BreakpointBase newBreakpoint) {
 		for (BreakpointBase bp : mBreakpoints.keySet()) {
-			if (bp.isEquals(newBreakpoint)) return;
+			if (bp.isEquals(newBreakpoint)) {
+				MessageLog.log(new ErrorMessage("Breakpoint already exists."));
+				return;
+			}
 		}
 		
 		JPanel breakpointPanel = new JPanel();
@@ -143,8 +151,9 @@ public class ManageBreakpointsDialog extends JDialog {
 
 	private void buildBreakpointPanel(BreakpointBase breakpoint, JPanel breakpointPanel) {
 		breakpointPanel.setLayout(new GridBagLayout());
-		addBreakpointLabel(breakpoint, breakpointPanel);
+		JLabel lable = addBreakpointLabel(breakpoint, breakpointPanel);
 		addEditButton(breakpointPanel, breakpoint);
+		addActiveButton(breakpointPanel, breakpoint, lable);
 		addRemoveButton(breakpointPanel, breakpoint);
 		addSeparator(breakpointPanel);
 	}
@@ -156,7 +165,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		updateNoBreakpointsLabelVisibility();
 	}
 
-	private void addBreakpointLabel(IBreakpoint breakpoint, JPanel breakpointPanel) {
+	private JLabel addBreakpointLabel(IBreakpoint breakpoint, JPanel breakpointPanel) {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -165,8 +174,18 @@ public class ManageBreakpointsDialog extends JDialog {
 		constraints.insets = new Insets(1,1,1,3);
 		
 		JLabel breakpointLabel = new JLabel(breakpoint.getDescription());
+		updateBreakpointActiveLableFont(breakpoint, breakpointLabel);
 		breakpointLabel.setOpaque(true);
 		breakpointPanel.add(breakpointLabel, constraints);
+		return breakpointLabel;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void updateBreakpointActiveLableFont(IBreakpoint breakpoint, JLabel breakpointLabel) {
+		Map attributes = breakpointLabel.getFont().getAttributes();
+		attributes.put(TextAttribute.STRIKETHROUGH, Boolean.valueOf(!breakpoint.isActive()));
+		Font newFont = new Font(attributes);
+		breakpointLabel.setFont(newFont);
 	}
 
 	private void addEditButton(final JPanel breakpointPanel, final BreakpointBase breakpoint) {
@@ -191,6 +210,25 @@ public class ManageBreakpointsDialog extends JDialog {
 		breakpointPanel.add(editButton, constraints);
 	}
 	
+		private void addActiveButton(JPanel breakpointPanel, final BreakpointBase breakpoint,
+			final JLabel breakpointLabel) {
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = 13;
+		constraints.insets = new Insets(1, 5, 1, 1);
+		constraints.gridx = 2;
+
+		final JButton activeButton = new JButton(breakpoint.isActive() ? "Active" : "Inactive");
+		activeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				breakpoint.setIsActive(!breakpoint.isActive());
+				ManageBreakpointsDialog.this.updateBreakpointActiveLableFont(breakpoint, breakpointLabel);
+				activeButton.setText(breakpoint.isActive() ? "Active" : "Inactive");
+			}
+		});
+		activeButton.setPreferredSize(new Dimension(85, 25));
+		breakpointPanel.add(activeButton, constraints);
+	}
+
 	private void editBreakpoint(JPanel breakpointPanel, final BreakpointBase oldBreakpoint, 
 			BreakpointBase newBreakpoint) {
 		breakpointPanel.removeAll();
@@ -205,7 +243,7 @@ public class ManageBreakpointsDialog extends JDialog {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.EAST;
 		constraints.insets = new Insets(0,0,0,0);
-		constraints.gridx = 2;
+		constraints.gridx = 3;
 		
 		JButton removeButton = new JButton("X");
 		removeButton.addActionListener(new ActionListener() {

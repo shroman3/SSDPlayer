@@ -24,11 +24,13 @@ package manager.SecondWriteStatistics;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import manager.ReusableSSDManager;
 import ui.GeneralStatisticsGraph;
 import ui.RegularHistoryGraph;
+import entities.Device;
 import entities.StatisticsColumn;
 import entities.reusable.ReusableBlock;
 import entities.reusable.ReusableChip;
@@ -78,6 +80,11 @@ public class WritesToGCGetter extends SecondWritesStatisticsGetter {
 					i%2==0, manager.getWriteLevelColor(i+1)));
 		}
 		return list;
+	}
+	
+	@Override
+	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+		return null;
 	}
 
 	@Override

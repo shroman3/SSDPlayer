@@ -24,6 +24,8 @@ package manager;
 import java.io.IOException;
 
 import entities.RAID.simulation.RAIDDevice;
+import general.MessageLog;
+import log.Message.ErrorMessage;
 
 /**
  * 
@@ -44,10 +46,10 @@ public class RAIDTraceParser extends TraceParserGeneral<RAIDDevice, RAIDSSDManag
 				int size = Integer.parseInt(operationParts[3]);
 				return manager.writeLP(device, lp, size);
 			} catch (NumberFormatException e) {
-				System.out.println("\n\nIllegal Logical Page given: " + operationParts[2] + " line:" + line);
+				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
 			}
 		}
-		System.out.println("\n\nIllegal trace line: " + command + " line:" + line);
+		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
 		return null;
 	}
 

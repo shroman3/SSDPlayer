@@ -56,16 +56,21 @@ import entities.ActionLog;
 import entities.Device;
 import entities.StatisticsGetter;
 import entities.RAID.RAIDBasicPage;
+import general.ConfigProperties;
 import general.Consts;
 import general.MessageLog;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
+import log.Message.BreakpointMessage;
+import log.Message.ErrorMessage;
+import log.Message.InfoMessage;
 import manager.RAIDBasicSSDManager;
 import manager.SSDManager;
 import manager.TraceParser;
 import manager.TraceParserGeneral;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
+import ui.breakpoints.InfoDialog;
 import ui.breakpoints.ManageBreakpointsDialog;
 import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
@@ -90,7 +95,8 @@ public class TracePlayer extends JPanel {
 	private JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
 	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
 	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
-	
+	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
+
 	private JProgressBar progressBar;
 	private TraceParser<?,?> parser;
     
@@ -124,6 +130,7 @@ public class TracePlayer extends JPanel {
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
 	private ZoomLevelDialog zoomDialog;
+	private InfoDialog infoDialog;
 	private VisualConfig visualConfig;
 
 	private OneObjectCallback<Boolean> resetDeviceView;
@@ -226,8 +233,14 @@ public class TracePlayer extends JPanel {
 		setWorkloadGenerators(manager);
 		setStripeInformation(manager);
 		setZoomLevelOptions(manager);
-		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
+		setInfoDialog(manager);
+		this.resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		ActionLog.resetLog();
+	}
+
+	private void setInfoDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
+		this.infoDialog = new InfoDialog(SwingUtilities.windowForComponent(this), manager, this.visualConfig,
+				this.resetDeviceView);
 	}
 
 	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
@@ -322,6 +335,15 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
 		zoomButton.setEnabled(true);
+
+		this.infoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				TracePlayer.this.showInfoDialog();
+			}
+		});
+		addButton(this.infoButton, "Info");
+		this.infoButton.setEnabled(true);
 
 		add(Box.createRigidArea(new Dimension(5,0)));
 		
@@ -457,12 +479,12 @@ public class TracePlayer extends JPanel {
 	}
 
 	private boolean parseNextCommand() {
-		if(currFrameCounter >= numberOfLines) {
-    		return false;
-    	}
-    		
-    	try {
-			Device<?,?,?,?> updatedDevice = parser.parseNextCommand();
+		if (currFrameCounter >= numberOfLines) {
+			MessageLog.log(new InfoMessage("Simulation Ended"));
+			return false;
+		}
+		try {
+			Device<?, ?, ?,?> updatedDevice = this.parser.parseNextCommand();
 			if (updatedDevice != null) {
 				updateDeviceView.message(updatedDevice);
 				setProgressBarFrame(currFrameCounter);
@@ -470,12 +492,20 @@ public class TracePlayer extends JPanel {
 				
 				Device<?,?,?,?> previousDevice = currentDevice;
 				currentDevice = updatedDevice;
+				updateInfo(this.currentDevice, this.currFrameCounter);
 				checkBreakpoints(previousDevice, currentDevice);
 			} else {
-				System.out.println("Trace has ended before stop frame was reached");
+				String errorString = "Trace has ended before stop frame was reached";
+				MessageLog.log(new ErrorMessage(errorString));
+				System.out.println(errorString);
+				return false;
+			}
+			if (updatedDevice.getNumOfBlockErasures() > ConfigProperties.getMaxErasures()) {
+				MessageLog.log(new ErrorMessage("Erase count exeeded max erasures"));
 				return false;
 			}
 		} catch (Throwable e) {
+			MessageLog.log(new ErrorMessage("Failed to parse next command. " + e.getMessage()));
 			e.printStackTrace();
 			return false;
 		}
@@ -483,13 +513,17 @@ public class TracePlayer extends JPanel {
     	return true;
 	}
 
+	private void updateInfo(Device<?, ?, ?, ?> currentDevice, int currFrameCounter) {
+		this.infoDialog.setDevice(currentDevice, currFrameCounter - 1);
+	}
+
 	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
 		boolean anyHits = false;
-		
-		for (IBreakpoint breakpoint : breakpoints) {
-			if (breakpoint.breakpointHit(previousDevice, currentDevice)) {
+
+		for (IBreakpoint breakpoint : this.breakpoints) {
+			if ((breakpoint.breakpointHit(previousDevice, currentDevice)) && (breakpoint.isActive())) {
 				breakpoint.setIsHit(true);
-				MessageLog.log("HIT: " + breakpoint.getHitDescription());
+				MessageLog.log(new BreakpointMessage(breakpoint.getHitDescription()));
 				anyHits = true;
 			} else {
 				breakpoint.setIsHit(false);
@@ -552,6 +586,11 @@ public class TracePlayer extends JPanel {
 	
 	private void showZoomDialog() {
 		pauseTrace();
-		zoomDialog.setVisible(true);
+		this.zoomDialog.setVisible(true);
+	}
+
+	private void showInfoDialog() {
+		pauseTrace();
+		this.infoDialog.setVisible(true);
 	}
 }

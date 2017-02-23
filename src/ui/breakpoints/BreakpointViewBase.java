@@ -14,6 +14,8 @@ import javax.swing.SwingUtilities;
 
 import breakpoints.BreakpointBase;
 import breakpoints.BreakpointFactory;
+import general.MessageLog;
+import log.Message.ErrorMessage;
 
 public class BreakpointViewBase extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -64,7 +66,7 @@ public class BreakpointViewBase extends JPanel {
 				mFieldsPanel.add(componentPanel);
 			}
 		} catch (Exception e) {
-			System.err.println("Error instantiate breakpoint with given parameters.");
+			MessageLog.log(new ErrorMessage("Error instantiate breakpoint with given parameters."));
 		}
 	}
 	
@@ -81,19 +83,19 @@ public class BreakpointViewBase extends JPanel {
 				} else if (uiComponent.getParamType().equals(double.class)) {
 					method.invoke(mBreakpoint, Double.parseDouble(text));
 				} else {
-					System.err.println("Error instantiate breakpoint with given parameters.");
+					MessageLog.log(new ErrorMessage("Error instantiate breakpoint with given parameters."));
 					return null;
 				}
 			} catch (Exception e) {
-				showError(e);
+				MessageLog.log(new ErrorMessage(showError(e)));
 				return null;
 			}
 		}
 		
 		return mBreakpoint;
 	}
-	
-	private void showError(Exception e) {
+
+	private String showError(Exception e) {
 		String error = "";
 		
 		if (e.getCause() == null) {
@@ -105,7 +107,8 @@ public class BreakpointViewBase extends JPanel {
 		JLabel errorLabel = new JLabel(error);
 		errorLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		mErrorDialog.add(errorLabel);
-			
+
 		mErrorDialog.setVisible(true);
+		return error;
 	}
 }

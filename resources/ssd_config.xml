@@ -10,7 +10,7 @@
 		<planes>1</planes>
 		<blocks>16</blocks>
 		<pages>32</pages>
-		<max_erasures>30</max_erasures>
+		<max_erasures>0</max_erasures>
 	</physical>
 	<visual>
 		<show_counters>yes</show_counters>

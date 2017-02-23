@@ -27,6 +27,7 @@ import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 import entities.BlockStatusGeneral;
+import entities.EntityInfo;
 import entities.RAID.RAIDBasicPlane;
 
 /**
@@ -35,6 +36,9 @@ import entities.RAID.RAIDBasicPlane;
  *
  */
 public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
+	public int totalDataWritten;
+	public int totalParityWritten;
+
 	public static class Builder extends RAIDBasicPlane.Builder<RAIDPage, RAIDBlock> {
 		private RAIDPlane plane;
 		
@@ -59,12 +63,24 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		protected void validate() {
 			super.validate();
 		}
+
+		public Builder setTotalDataWritten(int totalDataWritten) {
+			this.plane.totalDataWritten = totalDataWritten;
+			return this;
+		}
+
+		public Builder setTotalParityWritten(int totalParityWritten) {
+			this.plane.totalParityWritten = totalParityWritten;
+			return this;
+		}
 	}
 	
 	protected RAIDPlane() {}
 		
 	protected RAIDPlane(RAIDPlane other) {
 		super(other);
+		this.totalDataWritten = other.totalDataWritten;
+		this.totalParityWritten = other.totalParityWritten;
 	}
 
 	@Override
@@ -76,7 +92,7 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		List<RAIDBlock> newBlocksList = getNewBlocksList();
 		newBlocksList.set(index, block);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(newBlocksList);
+		builder.setBlocks(newBlocksList).setTotalWritten(getTotalWritten());
 		return builder.build();
 	}
 
@@ -94,7 +110,8 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setTotalDataWritten(getTotalDataWritten() + 1).setBlocks(updatedBlocks)
+				.setTotalWritten(getTotalWritten() + 1);
 		return builder.build();
 	}
 	
@@ -112,7 +129,8 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		}
 		updatedBlocks.set(active, activeBlock);
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks);
+		builder.setTotalParityWritten(getTotalParityWritten() + 1).setBlocks(updatedBlocks)
+				.setTotalWritten(getTotalWritten() + 1);
 		return builder.build();
 	}
 	
@@ -147,7 +165,23 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		cleanBlocks.set(active, activeBlock);
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
-		builder.setBlocks(cleanBlocks);
+		builder.setBlocks(cleanBlocks).setTotalWritten(getTotalWritten())
+				.setTotalGCInvocations(getTotalGCInvocations() + 1);
 		return new Triplet<>(builder.build(), dataToMove, parityToMove);
+	}
+	public int getTotalDataWritten() {
+		return this.totalDataWritten;
+	}
+
+	public int getTotalParityWritten() {
+		return this.totalParityWritten;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Total parity pages written", Integer.toString(getTotalParityWritten()), 2);
+		result.add("Total data pages written", Integer.toString(getTotalDataWritten()), 2);
+		return result;
 	}
 }

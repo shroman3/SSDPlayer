@@ -28,6 +28,7 @@ import java.util.List;
 import general.ConfigProperties;
 import general.Consts;
 import general.MessageLog;
+import log.Message.ErrorMessage;
 import manager.SSDManager;
 import utils.Utils;
 
@@ -256,9 +257,21 @@ public abstract class Block<P extends Page> {
 		return Consts.defaultColorRange.get(colorRangeIndex);
 	}
 	
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Status", getStatus().getStatusName(), 1);
+		result.add("Number of pages", Integer.toString(getPagesNum()), 0);
+		result.add("Erase count", Integer.toString(getEraseCounter()), 1);
+		result.add("Valid count", Integer.toString(getValidCounter()), 1);
+
+		return result;
+	}
+
 	public Color getBlockEraseColor() {
 		if (this.eraseCounter > ConfigProperties.getMaxErasures()) {
-			MessageLog.logAndPause("Erase count is bigger than max erasures, please change zoom level.");
+			MessageLog.logAndPause(
+					new ErrorMessage("Erase count is bigger than max erasures, please change zoom level."));
 		}
 		
 		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.defaultColorRange.size()-1));
