@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -156,7 +156,7 @@ public class HotColdBlock extends Block<HotColdPage> {
 	}
 
 	public float getBlockTemperatureToMaxTempRatio() {
-		int maxTemperature = this.manager.getMaxTemperature();
+		int maxTemperature = manager.getMaxTemperature();
 		return getAveragePageTemperature() / maxTemperature;
 	}
 
