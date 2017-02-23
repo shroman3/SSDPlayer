@@ -37,8 +37,8 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 		for (B block : getBlocks()) {
 			updatedBlocks.add((B) block.invalidate(stripe, parityNumber));
 		}
-		Builder<P, B> builder = getSelfBuilder();
-		builder.setBlocks(updatedBlocks).setTotalWritten(getTotalWritten());
+		Builder<P,B> builder = getSelfBuilder();
+		builder.setBlocks(updatedBlocks);
 		return builder.build();
 	}
 	
@@ -100,8 +100,8 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 			}
 			planeBlocks.add((B) blockDetails.getValue2());
 		}
-		Builder<P, B> builder = getSelfBuilder();
-		builder.setBlocks(planeBlocks).setTotalWritten(getTotalWritten());
+		Builder<P,B> builder = getSelfBuilder();
+		builder.setBlocks(planeBlocks);
 		details = details.setAt2(builder.build());
 		details = details.setAt1(pages);
 		return details;
@@ -130,8 +130,8 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 			}
 			planeBlocks.add((B) blockDetails.getValue2());
 		}
-		Builder<P, B> builder = getSelfBuilder();
-		builder.setBlocks(planeBlocks).setTotalWritten(getTotalWritten());
+		Builder<P,B> builder = getSelfBuilder();
+		builder.setBlocks(planeBlocks);
 		details = details.setAt2(builder.build());
 		details = details.setAt1(pages);
 		return details;
@@ -161,7 +161,7 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 			}
 			planeBlocks.add((B) blockDetails.getValue2());
 		}
-		Builder<P, B> builder = getSelfBuilder();
+		Builder<P,B> builder = getSelfBuilder();
 		builder.setBlocks(planeBlocks);
 		details = details.setAt2(builder.build());
 		details = details.setAt1(pages);
