@@ -121,7 +121,7 @@ public class TracePlayer extends JPanel {
 	
 	private StripesInfoFrame stripesFrame;
 	
-	private OneObjectCallback<Device<?, ?, ?, ?>> updateDevice;
+	private OneObjectCallback<Device<?, ?, ?, ?>> updateDeviceView;
 
 	private TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice;
 
@@ -135,11 +135,11 @@ public class TracePlayer extends JPanel {
 
 	private OneObjectCallback<Boolean> resetDeviceView;
 
-    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDevice, OneObjectCallback<Boolean> resetDeviceView) {
-    	Utils.validateNotNull(updateDevice, "Update device callback");
+    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView) {
+    	Utils.validateNotNull(updateDeviceView, "Update device callback");
     	Utils.validateNotNull(resetDevice, "Reset device callback");
 		this.resetDevice = resetDevice;
-		this.updateDevice = updateDevice;
+		this.updateDeviceView = updateDeviceView;
 		this.resetDeviceView = resetDeviceView;
 		this.visualConfig = visualConfig;
 		ActionLog.resetLog();
@@ -263,11 +263,12 @@ public class TracePlayer extends JPanel {
 			StripesInfoFrame.reset(stripesFrame);
 			RAIDBasicPage.resetHighlights();
 		}
-		showStripeButton.setVisible(true);
-		showStripeButton.setEnabled(false);
 		if (!manager.hasStripes()) {
 			stripesFrame = null;
 			showStripeButton.setVisible(false);
+		} else {
+			showStripeButton.setVisible(true);
+			showStripeButton.setEnabled(false);			
 		}
 	}
 
@@ -485,7 +486,7 @@ public class TracePlayer extends JPanel {
 		try {
 			Device<?, ?, ?,?> updatedDevice = this.parser.parseNextCommand();
 			if (updatedDevice != null) {
-				updateDevice.message(updatedDevice);
+				updateDeviceView.message(updatedDevice);
 				setProgressBarFrame(currFrameCounter);
 				++currFrameCounter;
 				
@@ -569,7 +570,7 @@ public class TracePlayer extends JPanel {
     }
 	
 	private void showStripesInfo() {
-		stripesFrame = new StripesInfoFrame(SwingUtilities.windowForComponent(this), (RAIDBasicSSDManager<?, ?, ?, ?, ?>) manager, parser, updateDevice);
+		stripesFrame = new StripesInfoFrame(SwingUtilities.windowForComponent(this), (RAIDBasicSSDManager<?, ?, ?, ?, ?>) manager, parser, updateDeviceView);
 		stripesFrame.setVisible(true);
 	}
 	

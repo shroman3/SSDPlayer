@@ -21,7 +21,6 @@
  *******************************************************************************/
 package manager;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,33 +45,11 @@ import zoom.SmallBlocksRaidParityZoomLevel;
  *
  */
 public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice> {
-	private Color dataPageColor;
-	private List<Color> paritiesColors;
-	private Color stripeFrameColor;
-	private Color stripeFrameStepColor;
-	private final int maxColorsNum = 1000;
-	private Boolean showOldParity; // indicates whether the invalid parity pages should be highlighted
-	private Boolean showOldData; // indicates whether the invalid data pages should be highlighted
+
 	protected int stripeSize;
 	protected int paritiesNumber;
 
 	RAIDSSDManager() {
-	}
-
-	public Color getDataPageColor() {
-		return dataPageColor;
-	}
-	
-	public Color getParityPageColor(int parityNumber) {
-		return paritiesColors.get(parityNumber-1);
-	}
-	
-	public Color getStripeFrameColor(int index) {
-		int updatedIndex = index % maxColorsNum;
-		int r = (stripeFrameColor.getRed() + updatedIndex * stripeFrameStepColor.getRed()) % 256;
-		int g = (stripeFrameColor.getGreen() + updatedIndex * stripeFrameStepColor.getGreen()) % 256;
-		int b = (stripeFrameColor.getBlue() + updatedIndex * stripeFrameStepColor.getBlue()) % 256;
-		return new Color(r, g, b);
 	}
 	
 	public int getStripeSize() {
@@ -81,14 +58,6 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	
 	public int getParitiesNumber() {
 		return paritiesNumber;
-	}
-	
-	public Boolean toShowOldParity() {
-		return showOldParity;
-	}
-	
-	public Boolean toShowOldData() {
-		return showOldData;
 	}
 	
 	protected abstract void setParitiesNumber();
@@ -102,14 +71,8 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 
 	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
 		super.initValues(xmlGetter);
-		dataPageColor = getColorField(xmlGetter, "data_color");
-		paritiesColors = new ArrayList<Color>(getColorsListField(xmlGetter, "parity_color"));
 		setParitiesNumber();
 		setStripeSize();
-		stripeFrameColor = getColorField(xmlGetter, "stripe_frame_color");
-		stripeFrameStepColor = getColorField(xmlGetter, "stripe_frame_step");
-		showOldParity = xmlGetter.getBooleanField(VisualConfig.VISUAL_CONFIG, "show_old_parity");
-		showOldData = xmlGetter.getBooleanField(VisualConfig.VISUAL_CONFIG, "show_old_data");
 	}
 
 	@Override

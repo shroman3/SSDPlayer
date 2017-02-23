@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion â€“ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -50,27 +50,27 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 
 	@Override
 	public List<StatisticsColumn> getRAIDStatistics(D device) {
-		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn("data + parity writes to data writes", 
-										total==0 ? 1 : ((double)total)/((double)(device.getTotalDataWritten()+ device.getTotalDataMoved())), false));
+										calcParityOverhead(device), false));
 		return list;
 	}
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new RegularHistoryGraph("Parity Overhead Histogram", this, 1.5, 1);
+		return new RegularHistoryGraph("Parity Update Overhead", this, 1, 0);
 	}
 	
  	public static double getParityOverhead(Device<?,?,?,?> device) {
 		if (!(device instanceof RAIDBasicDevice)) {
-			return 1;
+			return 0;
 		}
-		int total = ((RAIDBasicDevice<?,?,?,?>) device).getTotalParityWritten() + ((RAIDBasicDevice<?,?,?,?>) device).getTotalDataWritten()+ ((RAIDBasicDevice<?,?,?,?>) device).getTotalDataMoved()
-				+ ((RAIDBasicDevice<?,?,?,?>) device).getTotalParityMoved();
-		double parityOverhead = total==0 ? 1 : ((double)total)/ (((RAIDBasicDevice<?,?,?,?>)device).getTotalDataWritten()
-						+ ((RAIDBasicDevice<?,?,?,?>) device).getTotalDataMoved());
-		return parityOverhead;
+		return calcParityOverhead((RAIDBasicDevice<?, ?, ?, ?>) device);
+ 	}
+ 	
+ 	private static double calcParityOverhead(RAIDBasicDevice<?,?,?,?> device) {
+ 		int total = device.getTotalParityWritten() + device.getTotalDataWritten() + device.getTotalParityMoved() + device.getTotalDataMoved();
+ 		return total==0 ? 0 : (((double)(device.getTotalParityWritten()+ device.getTotalParityMoved())/(double)total));
  	}
 
 	@Override
