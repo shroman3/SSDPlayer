@@ -12,7 +12,7 @@
 		<pages>32</pages>
 		<max_erasures>30</max_erasures>
 	</physical>
-	<visual>
+	<visual> 
 		<show_counters>yes</show_counters>
 		<speed>60000</speed><!-- Number of frames per minute -->
 		<page_width>18</page_width>
