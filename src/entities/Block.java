@@ -200,6 +200,9 @@ public abstract class Block<P extends Page> {
 			.setEraseCounter(getEraseCounter() + 1)
 			.setValidCounter(0)
 			.setStatus(BlockStatusGeneral.CLEAN);
+		if(getEraseCounter() == ConfigProperties.getMaxErasures()) {
+			MessageLog.logAndAbort(new ErrorMessage("Erase count exeeded max erasures"));
+		}
 		return builder.build();
 	}
 	

@@ -26,4 +26,11 @@ public class MessageLog {
 		}
 		log(message);
 	}
+
+	public static void logAndAbort(Message message) {
+		if (mTracePlayer != null) {
+			mTracePlayer.abort();
+		}
+		log(message);
+	}
 }

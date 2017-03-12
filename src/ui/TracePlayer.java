@@ -56,7 +56,6 @@ import entities.ActionLog;
 import entities.Device;
 import entities.StatisticsGetter;
 import entities.RAID.RAIDBasicPage;
-import general.ConfigProperties;
 import general.Consts;
 import general.MessageLog;
 import general.OneObjectCallback;
@@ -78,7 +77,7 @@ import zoom.IZoomLevel;
 
 /**
  * 
- *  November 2015: revised by Or Mauda for additional RAID functionality.
+ * November 2015: revised by Or Mauda for additional RAID functionality.
  *
  */
 public class TracePlayer extends JPanel {
@@ -86,7 +85,7 @@ public class TracePlayer extends JPanel {
 
 	private ImageIcon iconPlay = new ImageIcon(getClass().getResource("/ui/images/play.png"));
 	private ImageIcon iconPause = new ImageIcon(getClass().getResource("/ui/images/pause.png"));
-	
+
 	private JButton playPauseButton = new JButton(iconPlay);
 	private JButton stopButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/stop.png")));
 	private JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
@@ -98,16 +97,16 @@ public class TracePlayer extends JPanel {
 	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
 
 	private JProgressBar progressBar;
-	private TraceParser<?,?> parser;
-    
+	private TraceParser<?, ?> parser;
+
 	private JFileChooser traceChooser;
 	private JLabel stopLabel;
-	
+
 	private int numberOfLines = 0;
 	private String fileName = "";
-	
+
 	private boolean isPaused = true;
-	 
+
 	private Timer traceReadTimer;
 	private int currFrameCounter = 0;
 
@@ -115,18 +114,18 @@ public class TracePlayer extends JPanel {
 
 	private SeparatorComboBox managersList;
 
-	private static SSDManager<?,?,?,?,?> manager;
+	private static SSDManager<?, ?, ?, ?, ?> manager;
 
 	private LoadGeneratorsCreatorsFrame creatorsFrame;
-	
+
 	private StripesInfoFrame stripesFrame;
-	
+
 	private OneObjectCallback<Device<?, ?, ?, ?>> updateDeviceView;
 
 	private TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice;
 
-	private Device<?,?,?,?> currentDevice;
-	
+	private Device<?, ?, ?, ?> currentDevice;
+
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
 	private ZoomLevelDialog zoomDialog;
@@ -135,9 +134,13 @@ public class TracePlayer extends JPanel {
 
 	private OneObjectCallback<Boolean> resetDeviceView;
 
-    public TracePlayer(VisualConfig visualConfig, TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice, OneObjectCallback<Device<?,?,?,?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView) {
-    	Utils.validateNotNull(updateDeviceView, "Update device callback");
-    	Utils.validateNotNull(resetDevice, "Reset device callback");
+	private boolean abortSignal = false;
+
+	public TracePlayer(VisualConfig visualConfig,
+			TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice,
+			OneObjectCallback<Device<?, ?, ?, ?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView) {
+		Utils.validateNotNull(updateDeviceView, "Update device callback");
+		Utils.validateNotNull(resetDevice, "Reset device callback");
 		this.resetDevice = resetDevice;
 		this.updateDeviceView = updateDeviceView;
 		this.resetDeviceView = resetDeviceView;
@@ -149,11 +152,11 @@ public class TracePlayer extends JPanel {
 		initManagerSelection();
 		initButtons();
 		initProgressBar();
-    }
-    
-    public boolean isPaused() {
-    	return isPaused;
-    }
+	}
+
+	public boolean isPaused() {
+		return isPaused;
+	}
 
 	public void stopTrace() {
 		isPaused = true;
@@ -177,29 +180,33 @@ public class TracePlayer extends JPanel {
 			}
 		}
 	}
-	
+
 	public void setInitialBreakpoints(List<BreakpointBase> initialBreakpoints) {
 		breakpoints = new ArrayList<BreakpointBase>();
 		breakpoints.addAll(initialBreakpoints);
 		breakpointsDialog = new ManageBreakpointsDialog(SwingUtilities.windowForComponent(this), manager);
 		breakpointsDialog.setBreakpoints(breakpoints);
 	}
-	
-	public static SSDManager<?,?,?,?,?> getManager() {
+
+	public static SSDManager<?, ?, ?, ?, ?> getManager() {
 		return manager;
 	}
-	
+
 	public IZoomLevel getZoomLevel() {
 		return zoomDialog.getZoomLevel();
 	}
-	
+
+	public void abort() {
+		abortSignal = true;
+	}
+
 	private void initManagerSelection() {
 		Vector<Object> items = new Vector<>();
-		for (String manager : SSDManager.getAllSimulationManagerNames()) {			
+		for (String manager : SSDManager.getAllSimulationManagerNames()) {
 			items.addElement(manager);
 		}
-		items.addElement( new JSeparator() );
-		for (String manager : SSDManager.getAllVisualizationManagerNames()) {			
+		items.addElement(new JSeparator());
+		for (String manager : SSDManager.getAllVisualizationManagerNames()) {
 			items.addElement(manager);
 		}
 		managersList = new SeparatorComboBox(items);
@@ -208,7 +215,7 @@ public class TracePlayer extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String managerName = (String) managersList.getItemAt(managersList.getSelectedIndex());
-				if (!manager.getManagerName().equals(managerName)) {					
+				if (!manager.getManagerName().equals(managerName)) {
 					setManager(managerName);
 				}
 			}
@@ -217,24 +224,24 @@ public class TracePlayer extends JPanel {
 		managersList.setPreferredSize(new Dimension(170, 25));
 		managersList.setToolTipText("Choose Simulation manager");
 		add(managersList);
-		add(Box.createRigidArea(new Dimension(10,0)));
+		add(Box.createRigidArea(new Dimension(10, 0)));
 		setManager((String) managersList.getItemAt(managersList.getSelectedIndex()));
 	}
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
-		TraceParserGeneral<?,?> traseParser = manager.getTraseParser();
+		TraceParserGeneral<?, ?> traseParser = manager.getTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
 		traceChooser.setCurrentDirectory(workingDirectory);
 		traceChooser.setAcceptAllFileFilterUsed(false);
-		traceChooser.setFileFilter(new FileNameExtensionFilter(manager.getManagerName() + " Trace Files", 
+		traceChooser.setFileFilter(new FileNameExtensionFilter(manager.getManagerName() + " Trace Files",
 				traseParser.getFileExtensions()));
 		setWorkloadGenerators(manager);
 		setStripeInformation(manager);
 		setZoomLevelOptions(manager);
 		setInfoDialog(manager);
-		this.resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
+		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		ActionLog.resetLog();
 	}
 
@@ -244,12 +251,13 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
-		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager, visualConfig, resetDeviceView);
+		zoomDialog = new ZoomLevelDialog(SwingUtilities.windowForComponent(this), manager, visualConfig,
+				resetDeviceView);
 		zoomDialog.resetZoomLevel();
 	}
 
 	private void setWorkloadGenerators(SSDManager<?, ?, ?, ?, ?> manager2) {
-		try {			
+		try {
 			creatorsFrame = new LoadGeneratorsCreatorsFrame(SwingUtilities.windowForComponent(this), manager);
 			generateButton.setVisible(true);
 		} catch (Exception e) {
@@ -257,7 +265,7 @@ public class TracePlayer extends JPanel {
 			generateButton.setVisible(false);
 		}
 	}
-	
+
 	private void setStripeInformation(SSDManager<?, ?, ?, ?, ?> manager) {
 		if (stripesFrame != null) {
 			StripesInfoFrame.reset(stripesFrame);
@@ -268,7 +276,7 @@ public class TracePlayer extends JPanel {
 			showStripeButton.setVisible(false);
 		} else {
 			showStripeButton.setVisible(true);
-			showStripeButton.setEnabled(false);			
+			showStripeButton.setEnabled(false);
 		}
 	}
 
@@ -290,7 +298,7 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(generateButton, "Generate New Workload");
 		generateButton.setEnabled(true);
-		
+
 		breakpointsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -300,7 +308,7 @@ public class TracePlayer extends JPanel {
 		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
 		breakpointsButton.setEnabled(true);
 		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.Colors.ACTIVE));
-		
+
 		playPauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -318,15 +326,15 @@ public class TracePlayer extends JPanel {
 			}
 		});
 		addButton(nextButton, "Next Frame");
-		
+
 		stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				stopTrace();
 			}
 		});
-		addButton(stopButton , "Stop Trace");
-		
+		addButton(stopButton, "Stop Trace");
+
 		zoomButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -345,8 +353,8 @@ public class TracePlayer extends JPanel {
 		addButton(this.infoButton, "Info");
 		this.infoButton.setEnabled(true);
 
-		add(Box.createRigidArea(new Dimension(5,0)));
-		
+		add(Box.createRigidArea(new Dimension(5, 0)));
+
 		showStripeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -357,13 +365,13 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void openTrace() {
-        int returnVal = traceChooser.showOpenDialog(SwingUtilities.windowForComponent(this));
-        if (returnVal != JFileChooser.APPROVE_OPTION) {
-        	return;
-        }
+		int returnVal = traceChooser.showOpenDialog(SwingUtilities.windowForComponent(this));
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
+			return;
+		}
 		parser = manager.getTraseParser();
-        String fileName = traceChooser.getSelectedFile().getPath();
-        if (fileName != null) {
+		String fileName = traceChooser.getSelectedFile().getPath();
+		if (fileName != null) {
 			try {
 				resetProgressBar(fileName);
 				parser.open(fileName);
@@ -376,26 +384,31 @@ public class TracePlayer extends JPanel {
 				JOptionPane.showMessageDialog(null, "Error occured during file open. Check the choosen trace.");
 				e.printStackTrace();
 			}
-        }
+		}
 	}
-	
+
 	private void initProgressBar() {
 		JLabel startLabel = new JLabel("0");
 		startLabel.setFont(Consts.UI.BOLD);
 		add(startLabel);
-		add(Box.createRigidArea(new Dimension(5,0)));
-		
+		add(Box.createRigidArea(new Dimension(5, 0)));
+
 		progressBar = new JProgressBar(0, 0);
 		add(progressBar);
 		progressBar.setFont(Consts.UI.BOLD);
 		progressBar.setBackground(Consts.Colors.BG);
 		progressBar.setForeground(Consts.Colors.TEXT);
 		progressBar.setUI(new BasicProgressBarUI() {
-		      protected Color getSelectionBackground() { return Consts.Colors.TEXT; }
-		      protected Color getSelectionForeground() { return Consts.Colors.BG; }
-		    });
-		add(Box.createRigidArea(new Dimension(5,0)));		
-		
+			protected Color getSelectionBackground() {
+				return Consts.Colors.TEXT;
+			}
+
+			protected Color getSelectionForeground() {
+				return Consts.Colors.BG;
+			}
+		});
+		add(Box.createRigidArea(new Dimension(5, 0)));
+
 		stopLabel = new JLabel("0");
 		stopLabel.setMinimumSize(new Dimension(50, 25));
 		stopLabel.setPreferredSize(new Dimension(50, 25));
@@ -407,10 +420,10 @@ public class TracePlayer extends JPanel {
 		progressBar.setBorder(BorderFactory.createLineBorder(Consts.Colors.BORDER));
 		setProgressBarFrame(0);
 	}
-	
+
 	private void addButton(JButton button, String title) {
-		button.setMaximumSize(new Dimension(25,25));
-		button.setPreferredSize(new Dimension(25,25));
+		button.setMaximumSize(new Dimension(25, 25));
+		button.setPreferredSize(new Dimension(25, 25));
 		addButtonNoSize(button, title);
 	}
 
@@ -420,16 +433,16 @@ public class TracePlayer extends JPanel {
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
 		add(button);
-		add(Box.createRigidArea(new Dimension(5,0)));
+		add(Box.createRigidArea(new Dimension(5, 0)));
 	}
 
 	private void setProgressBarFrame(int frame) {
 		progressBar.setValue(frame);
-		progressBar.setString(fileName + frame + "/"+ numberOfLines);
+		progressBar.setString(fileName + frame + "/" + numberOfLines);
 	}
-	
+
 	private void initTraceParsing(VisualConfig visualConfig) {
-		readingSpeed = 60000/visualConfig.getSpeed();
+		readingSpeed = 60000 / visualConfig.getSpeed();
 	}
 
 	private void reStartTimer() {
@@ -443,14 +456,15 @@ public class TracePlayer extends JPanel {
 			}
 
 			@Override
-		    public void run() {
-				if(isPaused) return;
-		    	if (!parseNextCommand()) {
-		    		cancel();
-		    	}
-		    }
+			public void run() {
+				if (isPaused)
+					return;
+				if (!parseNextCommand()) {
+					cancel();
+				}
+			}
 		}, 0, readingSpeed);
-		
+
 		playPauseButton.setEnabled(true);
 		stopButton.setEnabled(true);
 		nextButton.setEnabled(true);
@@ -459,21 +473,21 @@ public class TracePlayer extends JPanel {
 		generateButton.setEnabled(false);
 		managersList.setEnabled(false);
 	}
-	
+
 	private void resetProgressBar(String fileName) throws IOException {
 		LineNumberReader lnr = new LineNumberReader(new FileReader(fileName));
 		lnr.skip(Long.MAX_VALUE);
 		int numOfLines = lnr.getLineNumber() + 1;
 		lnr.close();
 		String[] filePath = fileName.split("[\\\\/]");
-		fileName = filePath[filePath.length-1];
+		fileName = filePath[filePath.length - 1];
 		resetProgressBar(fileName.split("\\.")[0], numOfLines);
 	}
 
 	private void resetProgressBar(String fileName, int numOfLines) {
 		numberOfLines = numOfLines;
 		progressBar.setMaximum(numberOfLines);
-		stopLabel.setText(""+numberOfLines);
+		stopLabel.setText("" + numberOfLines);
 		this.fileName = fileName + " : ";
 		setProgressBarFrame(0);
 	}
@@ -483,25 +497,23 @@ public class TracePlayer extends JPanel {
 			MessageLog.log(new InfoMessage("Simulation Ended"));
 			return false;
 		}
+		if (abortSignal) {
+			abortSignal = false;
+			return false;
+		}
 		try {
-			Device<?, ?, ?,?> updatedDevice = this.parser.parseNextCommand();
+			Device<?, ?, ?, ?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
 				updateDeviceView.message(updatedDevice);
 				setProgressBarFrame(currFrameCounter);
 				++currFrameCounter;
-				
-				Device<?,?,?,?> previousDevice = currentDevice;
+
+				Device<?, ?, ?, ?> previousDevice = currentDevice;
 				currentDevice = updatedDevice;
-				updateInfo(this.currentDevice, this.currFrameCounter);
+				updateInfo(currentDevice, currFrameCounter);
 				checkBreakpoints(previousDevice, currentDevice);
 			} else {
-				String errorString = "Trace has ended before stop frame was reached";
-				MessageLog.log(new ErrorMessage(errorString));
-				System.out.println(errorString);
-				return false;
-			}
-			if (updatedDevice.getNumOfBlockErasures() > ConfigProperties.getMaxErasures()) {
-				MessageLog.log(new ErrorMessage("Erase count exeeded max erasures"));
+				MessageLog.log(new ErrorMessage("Trace has ended before stop frame was reached"));
 				return false;
 			}
 		} catch (Throwable e) {
@@ -509,8 +521,8 @@ public class TracePlayer extends JPanel {
 			e.printStackTrace();
 			return false;
 		}
-    	ActionLog.nextCommand();
-    	return true;
+		ActionLog.nextCommand();
+		return true;
 	}
 
 	private void updateInfo(Device<?, ?, ?, ?> currentDevice, int currFrameCounter) {
@@ -520,8 +532,8 @@ public class TracePlayer extends JPanel {
 	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
 		boolean anyHits = false;
 
-		for (IBreakpoint breakpoint : this.breakpoints) {
-			if ((breakpoint.breakpointHit(previousDevice, currentDevice)) && (breakpoint.isActive())) {
+		for (IBreakpoint breakpoint : breakpoints) {
+			if (breakpoint.isActive() && (breakpoint.breakpointHit(previousDevice, currentDevice))) {
 				breakpoint.setIsHit(true);
 				MessageLog.log(new BreakpointMessage(breakpoint.getHitDescription()));
 				anyHits = true;
@@ -529,7 +541,7 @@ public class TracePlayer extends JPanel {
 				breakpoint.setIsHit(false);
 			}
 		}
-		
+
 		if (anyHits) {
 			pauseTrace();
 			breakpointsButton.setBorderPainted(true);
@@ -537,7 +549,7 @@ public class TracePlayer extends JPanel {
 			breakpointsButton.setBorderPainted(false);
 		}
 	}
-	
+
 	private void playPauseTrace() {
 		if (isPaused) {
 			isPaused = false;
@@ -555,38 +567,39 @@ public class TracePlayer extends JPanel {
 		playPauseButton.setToolTipText("Play");
 		showStripeButton.setEnabled(true);
 	}
-	
+
 	private void showGeneratorCreatorsTrace() {
 		if (creatorsFrame != null) {
 			creatorsFrame = new LoadGeneratorsCreatorsFrame(SwingUtilities.windowForComponent(this), manager);
 			creatorsFrame.setVisible(true);
-			WorkloadGenerator<?,?> generator = creatorsFrame.getWorkloadGenerator();
+			WorkloadGenerator<?, ?> generator = creatorsFrame.getWorkloadGenerator();
 			if (generator != null) {
 				parser = generator;
 				resetProgressBar(generator.getName(), generator.getTraceLength());
 				reStartTimer();
 			}
 		}
-    }
-	
+	}
+
 	private void showStripesInfo() {
-		stripesFrame = new StripesInfoFrame(SwingUtilities.windowForComponent(this), (RAIDBasicSSDManager<?, ?, ?, ?, ?>) manager, parser, updateDeviceView);
+		stripesFrame = new StripesInfoFrame(SwingUtilities.windowForComponent(this),
+				(RAIDBasicSSDManager<?, ?, ?, ?, ?>) manager, parser, updateDeviceView);
 		stripesFrame.setVisible(true);
 	}
-	
+
 	private void showBreakpointsDialog() {
 		pauseTrace();
 		breakpointsDialog.setManager(manager);
 		breakpointsDialog.updateHitBreakpoints();
 		breakpointsDialog.setVisible(true);
-		
+
 		breakpoints.clear();
 		breakpoints.addAll(breakpointsDialog.getBreakpoints());
 	}
-	
+
 	private void showZoomDialog() {
 		pauseTrace();
-		this.zoomDialog.setVisible(true);
+		zoomDialog.setVisible(true);
 	}
 
 	private void showInfoDialog() {
