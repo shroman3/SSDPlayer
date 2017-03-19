@@ -180,11 +180,10 @@ public class ManageBreakpointsDialog extends JDialog {
 		return breakpointLabel;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateBreakpointActiveLableFont(IBreakpoint breakpoint, JLabel breakpointLabel) {
-		Map attributes = breakpointLabel.getFont().getAttributes();
+		Map<TextAttribute, Object> attributes = new HashMap<>();
 		attributes.put(TextAttribute.STRIKETHROUGH, Boolean.valueOf(!breakpoint.isActive()));
-		Font newFont = new Font(attributes);
+		Font newFont = breakpointLabel.getFont().deriveFont(attributes);
 		breakpointLabel.setFont(newFont);
 	}
 

@@ -28,11 +28,12 @@ import general.Consts;
 
 
 public enum RAIDHotColdBlockStatus implements BlockStatus {
-	ACTIVE_PARITY("active2", "A2", Consts.Colors.ACTIVE),
-	USED_PARITY("used2", "U2", Consts.Colors.TEXT);
+	ACTIVE_PARITY("active2", "A2", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE),
+	USED_PARITY("used2", "U2", Consts.Colors.TEXT, null);
 	
 	private String statusName;
 	private String displayName;
+	private Color frameColor;
 	private Color color;
 
 	@Override
@@ -50,9 +51,15 @@ public enum RAIDHotColdBlockStatus implements BlockStatus {
 		return color;
 	}
 	
-	private RAIDHotColdBlockStatus(String statusName, String displayName, Color color) {
+	private RAIDHotColdBlockStatus(String statusName, String displayName, Color color, Color frameColor) {
 		this.statusName = statusName;
 		this.displayName = displayName;
 		this.color = color;
+		this.frameColor = frameColor;
+	}
+
+	@Override
+	public Color getFrameColor() {
+		return frameColor;
 	}
 }

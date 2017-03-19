@@ -28,12 +28,13 @@ import general.Consts;
 
 
 public enum ReusableBlockStatus implements BlockStatus {
-	RECYCLED("recycled", "RC", Consts.Colors.TEXT),
-	REUSED("reused", "RU", Consts.Colors.TEXT),
-	ACTIVE_RECYCLED("active2", "A2", Consts.Colors.ACTIVE);
+	RECYCLED("recycled", "RC", Consts.Colors.TEXT, null),
+	REUSED("reused", "RU", Consts.Colors.TEXT, null),
+	ACTIVE_RECYCLED("active2", "A2", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE);
 	
 	private String statusName;
 	private String displayName;
+	private Color frameColor;
 	private Color color;
 
 	@Override
@@ -51,9 +52,15 @@ public enum ReusableBlockStatus implements BlockStatus {
 		return color;
 	}
 	
-	private ReusableBlockStatus(String statusName, String displayName, Color color) {
+	private ReusableBlockStatus(String statusName, String displayName, Color color, Color frameColor) {
 		this.statusName = statusName;
 		this.displayName = displayName;
 		this.color = color;
+		this.frameColor = frameColor;		
+	}
+
+	@Override
+	public Color getFrameColor() {
+		return frameColor;
 	}
 }

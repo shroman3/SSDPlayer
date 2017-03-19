@@ -90,7 +90,8 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	
 	@Override
 	public int getLpRange() {
-		return (getChipsNum() / 2) * getPlanesNum() *(getBlocksNum() - getGCT() - 2)*getPagesNum();
+		int logicalChips = (int) (getChipsNum()*((double)getStripeSize()/(getStripeSize() + getParitiesNumber())));
+		return (logicalChips * getPlanesNum() *(getBlocksNum() - getGCT() - 2)*getPagesNum());
 	}
 	
 	@Override

@@ -103,6 +103,6 @@ public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 			}
 		}
 
-		return new AbstractMap.SimpleEntry("Valid" + this.writeLevel + " histogram", sb.toString());
+		return new AbstractMap.SimpleEntry<>("Valid" + this.writeLevel + " histogram", sb.toString());
 	}
 }

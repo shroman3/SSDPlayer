@@ -24,12 +24,11 @@ package entities.RAID.visualization;
 import java.awt.Color;
 import java.util.List;
 
-import manager.RAIDVisualizationSSDManager;
-import utils.Utils;
-import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
 import general.Consts;
+import manager.RAIDVisualizationSSDManager;
+import utils.Utils;
 
 /**
  * 
@@ -88,12 +87,10 @@ public class RAIDVisualizationBlock extends RAIDBasicBlock<RAIDVisualizationPage
 	
 	@Override
 	public Color getFrameColor() {
-		if(getStatus() == BlockStatusGeneral.ACTIVE) {
-			return Consts.Colors.ACTIVE;
-		} else if (isInGC()) {
+		if (isInGC()) {
 			return Consts.Colors.BLACK;
 		}
-		return null;
+		return super.getFrameColor();
 	}
 	
 	RAIDVisualizationBlock setPage(RAIDVisualizationPage page, int index) {

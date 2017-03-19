@@ -117,6 +117,6 @@ public class RAIDVisualizationPlane extends RAIDBasicPlane<RAIDVisualizationPage
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDVisualizationBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
 		builder.setBlocks(cleanBlocks).setTotalWritten(getTotalWritten());
-		return new Pair(builder.build(), toMove);
+		return new Pair<>(builder.build(), toMove);
 	}
 }

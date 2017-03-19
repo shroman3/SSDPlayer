@@ -21,12 +21,8 @@
  *******************************************************************************/
 package entities.RAID.simulation;
 
-import java.awt.Color;
-
-import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
-import general.Consts;
 import manager.RAIDBasicSSDManager;
 import utils.Utils;
 
@@ -83,16 +79,6 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
-	}
-	
-	@Override
-	public Color getFrameColor() {
-		if(getStatus() == BlockStatusGeneral.ACTIVE) {
-			return Consts.Colors.ACTIVE;
-		} else if (isInGC()) {
-			return Consts.Colors.BLACK;
-		}
-		return null;
 	}
 	
 //	RAIDBlock setPage(RAIDPage page, int index) {

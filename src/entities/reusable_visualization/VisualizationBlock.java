@@ -24,13 +24,10 @@ package entities.reusable_visualization;
 import java.awt.Color;
 import java.util.List;
 
+import entities.Block;
+import general.Consts;
 import manager.ReusableVisualizationSSDManager;
 import utils.Utils;
-import entities.Block;
-import entities.BlockStatus;
-import entities.BlockStatusGeneral;
-import entities.reusable.ReusableBlockStatus;
-import general.Consts;
 
 public class VisualizationBlock extends Block<VisualizationPage> {
 	public static class Builder extends Block.Builder<VisualizationPage> {
@@ -85,13 +82,10 @@ public class VisualizationBlock extends Block<VisualizationPage> {
 
 	@Override
 	public Color getFrameColor() {
-		BlockStatus status = getStatus();
-		if((status == BlockStatusGeneral.ACTIVE) || (status == ReusableBlockStatus.ACTIVE_RECYCLED)) {
-			return Consts.Colors.ACTIVE;
-		} else if (isInGC()) {
+		if (isInGC()) {
 			return Consts.Colors.BLACK;
 		}
-		return null;
+		return super.getFrameColor();
 	}
 	
 	VisualizationBlock setPage(VisualizationPage page, int index) {

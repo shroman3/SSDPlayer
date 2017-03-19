@@ -60,6 +60,6 @@ public class WriteAmplificationGetter implements StatisticsGetter {
 	
 	@Override
 	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
-		return new AbstractMap.SimpleEntry("Write amplification", Double.toString(computeWA(device)));
+		return new AbstractMap.SimpleEntry<>("Write amplification", Double.toString(computeWA(device)));
 	}
 }

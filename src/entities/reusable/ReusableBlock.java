@@ -21,17 +21,13 @@
  *******************************************************************************/
 package entities.reusable;
 
-import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
 import org.javatuples.Pair;
 
 import entities.Block;
-import entities.BlockStatus;
-import entities.BlockStatusGeneral;
 import entities.EntityInfo;
-import general.Consts;
 import manager.ReusableSSDManager;
 import utils.Utils;
 
@@ -83,15 +79,6 @@ public class ReusableBlock extends Block<ReusablePage> {
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
-	}
-
-	@Override
-	public Color getFrameColor() {
-		BlockStatus status = getStatus();
-		if((status == BlockStatusGeneral.ACTIVE) || (status == ReusableBlockStatus.ACTIVE_RECYCLED)) {
-			return Consts.Colors.ACTIVE;
-		}
-		return null;
 	}
 	
 	public Pair<Integer, Integer> getRecycledPageIndex() {

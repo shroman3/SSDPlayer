@@ -75,6 +75,6 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 
 	@Override
 	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
-		return new AbstractMap.SimpleEntry("Parity Overhead", Double.toString(getParityOverhead(device)));
+		return new AbstractMap.SimpleEntry<>("Parity Overhead", Double.toString(getParityOverhead(device)));
 	}
 }

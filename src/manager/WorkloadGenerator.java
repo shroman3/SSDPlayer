@@ -31,7 +31,7 @@ public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSD
 	private int traceLength;
 	protected S manager; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
 	protected D device; // Revised by Or: changed from private to protected, to enable setDevice in ResizableWorkloadGenerator.
-	protected int lpRange;
+	protected final int lpRange;
 	protected int lp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
 	protected int temp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
 	

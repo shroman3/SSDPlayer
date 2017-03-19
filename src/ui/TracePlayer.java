@@ -246,8 +246,7 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void setInfoDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
-		this.infoDialog = new InfoDialog(SwingUtilities.windowForComponent(this), manager, this.visualConfig,
-				this.resetDeviceView);
+		this.infoDialog = new InfoDialog(SwingUtilities.windowForComponent(this), manager, this.visualConfig);
 	}
 
 	private void setZoomLevelOptions(SSDManager<?, ?, ?, ?, ?> manager) {
@@ -505,7 +504,8 @@ public class TracePlayer extends JPanel {
 			Device<?, ?, ?, ?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
 				updateDeviceView.message(updatedDevice);
-				setProgressBarFrame(currFrameCounter);
+				// FrameCounter runs from 0 to numberOfLines-1, displayed from 1 to numberOfLines
+				setProgressBarFrame(currFrameCounter + 1);
 				++currFrameCounter;
 
 				Device<?, ?, ?, ?> previousDevice = currentDevice;
