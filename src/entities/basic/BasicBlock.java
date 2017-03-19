@@ -21,13 +21,9 @@
  *******************************************************************************/
 package entities.basic;
 
-import java.awt.Color;
-
+import entities.Block;
 import manager.GreedySSDManager;
 import utils.Utils;
-import entities.Block;
-import entities.BlockStatusGeneral;
-import general.Consts;
 
 public class BasicBlock extends Block<BasicPage> {
 	public static class Builder extends Block.Builder<BasicPage> {
@@ -79,14 +75,6 @@ public class BasicBlock extends Block<BasicPage> {
 		return new Builder(this);
 	}
 	
-	@Override
-	public Color getFrameColor() {
-		if(getStatus() == BlockStatusGeneral.ACTIVE) {
-			return Consts.Colors.ACTIVE;
-		}
-		return null;
-	}
-
 	public BasicBlock move(int lp) {
 		int index = 0;
 		for (BasicPage page : getPages()) {

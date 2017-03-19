@@ -24,9 +24,8 @@ package manager;
 import java.awt.Color;
 
 import utils.Utils;
-import entities.BlockStatus;
 
-public class HotColdPartition implements BlockStatus {
+public class HotColdPartition {
 	private int start;
 	private int end;
 	private final String name;
@@ -40,13 +39,11 @@ public class HotColdPartition implements BlockStatus {
 		name = start+"-"+end;
 	}
 
-	@Override
 	public String getDsiplayName() {
 		return name;
 	}
 
-	@Override
-	public String getStatusName() {
+	public String getName() {
 		return name;
 	}
 	public Color getColor() {

@@ -1,10 +1,10 @@
 package zoom;
 
 import java.awt.Color;
+
 import manager.RAIDSSDManager;
 import manager.SSDManager;
 import manager.VisualConfig;
-import manager.VisualConfig.BlockColorMeaning;
 import utils.UIUtils;
 
 public class BlocksRaidParityZoomLevel implements IZoomLevel {

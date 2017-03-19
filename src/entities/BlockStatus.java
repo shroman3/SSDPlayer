@@ -27,4 +27,5 @@ public interface BlockStatus {
 	String getDsiplayName();
 	String getStatusName();
 	Color getColor();
+	Color getFrameColor();
 }

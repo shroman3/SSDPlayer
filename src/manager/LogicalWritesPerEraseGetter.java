@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import ui.GeneralStatisticsGraph;
-import ui.RegularHistoryGraph;
 import entities.Block;
 import entities.Chip;
 import entities.Device;
 import entities.Plane;
 import entities.StatisticsColumn;
 import entities.StatisticsGetter;
+import ui.GeneralStatisticsGraph;
+import ui.RegularHistoryGraph;
 
 public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 	
@@ -84,6 +84,6 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 
 	@Override
 	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
-		return new AbstractMap.SimpleEntry("Writes per erase", Double.toString(getLogicalWritesPerErase(device)));
+		return new AbstractMap.SimpleEntry<>("Writes per erase", Double.toString(getLogicalWritesPerErase(device)));
 	}
 }

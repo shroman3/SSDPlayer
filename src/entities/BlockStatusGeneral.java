@@ -21,18 +21,19 @@
  *******************************************************************************/
 package entities;
 
-import general.Consts;
-
 import java.awt.Color;
+
+import general.Consts;
 
 
 public enum BlockStatusGeneral implements BlockStatus {
-	CLEAN("clean", "C", Consts.Colors.TEXT),
-	USED("used", "U", Consts.Colors.TEXT),
-	ACTIVE("active1", "A", Consts.Colors.ACTIVE);
+	CLEAN("clean", "C", Consts.Colors.TEXT, null),
+	USED("used", "U", Consts.Colors.TEXT, null),
+	ACTIVE("active1", "A", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE);
 	
 	private String statusName;
 	private String displayName;
+	private Color frameColor;
 	private Color color;
 
 	@Override
@@ -50,9 +51,15 @@ public enum BlockStatusGeneral implements BlockStatus {
 		return color;
 	}
 	
-	private BlockStatusGeneral(String statusName, String displayName, Color color) {
+	private BlockStatusGeneral(String statusName, String displayName, Color color, Color frameColor) {
 		this.statusName = statusName;
 		this.displayName = displayName;
 		this.color = color;
+		this.frameColor = frameColor;
+	}
+
+	@Override
+	public Color getFrameColor() {
+		return frameColor;
 	}
 }

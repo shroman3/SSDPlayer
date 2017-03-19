@@ -31,7 +31,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -43,11 +42,7 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-import log.Message.ErrorMessage;
-import log.Message.Message;
 import breakpoints.BreakpointBase;
 import breakpoints.BreakpointsConstraints;
 import breakpoints.BreakpointsDeserializer;
@@ -60,14 +55,14 @@ import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import general.XMLGetter;
 import general.XMLParsingException;
+import log.Message.ErrorMessage;
 import manager.SSDManager;
 import manager.VisualConfig;
-import ui.LogView;
 import ui.zoom.ZoomLevelPanel;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
-	private static final String VERSION = "1.0";
+	private static final String VERSION = "1.2";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private VisualConfig visualConfig;

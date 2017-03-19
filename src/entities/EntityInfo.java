@@ -1,12 +1,13 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EntityInfo {
-	private List<EntityInfoEntry> entityInfoList = new java.util.ArrayList();
+	private List<EntityInfoEntry> entityInfoList = new ArrayList<>();
 
 	public EntityInfo() {
-		this.entityInfoList = new java.util.ArrayList();
+		this.entityInfoList = new ArrayList<>();
 	}
 
 	public void add(String desc, String value, int order) {

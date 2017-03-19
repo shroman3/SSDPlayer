@@ -1,22 +1,12 @@
 package ui.breakpoints;
 
-import com.ibm.icu.util.Calendar;
-import entities.Block;
-import entities.Chip;
-import entities.Device;
-import entities.EntityInfo;
-import entities.EntityInfoEntry;
-import entities.Page;
-import entities.Plane;
-import entities.StatisticsGetter;
-import general.MessageLog;
-import general.OneObjectCallback;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Map.Entry;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,25 +23,36 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import log.Message.ErrorMessage;
-import manager.SSDManager;
-import manager.VisualConfig;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.ibm.icu.util.Calendar;
+
+import entities.Block;
+import entities.Chip;
+import entities.Device;
+import entities.EntityInfo;
+import entities.EntityInfoEntry;
+import entities.Page;
+import entities.Plane;
+import entities.StatisticsGetter;
+import general.MessageLog;
+import log.Message.ErrorMessage;
+import manager.SSDManager;
+import manager.VisualConfig;
+
 public class InfoDialog extends JDialog {
 	private static final long serialVersionUID = 3732587581005190445L;
-	private static final String DIALOG_HEADER = "Information";
+//	private static final String DIALOG_HEADER = "Information";
 	private SSDManager<?, ?, ?, ?, ?> mManager;
 	private JPanel mMainPanel;
-	private OneObjectCallback<Boolean> resetDevice;
 	private Device<?, ?, ?, ?> mCurrentDevice = null;
 	private JTree deviceInfoTree;
 	private TreeSelectionListener SelectionListener = new TreeSelectionListener() {
@@ -66,11 +67,8 @@ public class InfoDialog extends JDialog {
 	private JSplitPane splitPane;
 	private int mComandNumber;
 
-	public InfoDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig,
-			OneObjectCallback<Boolean> resetDevice) {
+	public InfoDialog(Window parentWindow, SSDManager<?, ?, ?, ?, ?> manager, VisualConfig visualConfig) {
 		super(parentWindow, "Information");
-
-		this.resetDevice = resetDevice;
 		this.mManager = manager;
 
 		setDefaultLookAndFeelDecorated(true);

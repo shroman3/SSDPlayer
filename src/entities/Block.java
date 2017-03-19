@@ -165,8 +165,9 @@ public abstract class Block<P extends Page> {
 	}
 
 	public Color getFrameColor() {
-		return null;
+		return getStatus().getFrameColor();
 	}
+
 	
 	/**
 	 * @param lp - Logical Page to be invalidated
