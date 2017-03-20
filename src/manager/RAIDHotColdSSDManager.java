@@ -126,7 +126,7 @@ public abstract class RAIDHotColdSSDManager extends RAIDBasicSSDManager<RAIDPage
 	@Override
 	public int getLpRange() {
 		int logicalChips = (int) (getChipsNum()*((double)getStripeSize()/(getStripeSize() + getParitiesNumber())));
-		return (logicalChips * getPlanesNum() *(getBlocksNum() - getGCT() - 2)*getPagesNum());
+		return (logicalChips * getPlanesNum() *(getBlocksNum() - getReserved())*getPagesNum());
 	}
 	
 	@Override

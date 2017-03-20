@@ -160,11 +160,12 @@ public abstract class RAIDHotColdDevice extends RAIDBasicDevice<RAIDPage, RAIDBl
 			
 			// lets update this stripe's parity pages
 			for(int parityNumber = 1; parityNumber <= paritiesNumber; parityNumber++) { // decide which parity needs an update
-				if (parityNeedUpdate(currentLP, parityNumber) == false) {
+				if (!parityNeedUpdate(currentLP, parityNumber)) {
 					continue;
 				}
 				Boolean isHighlighted = isPageHighlighted(parityNumber, stripe);
-				tempDevice = (RAIDHotColdDevice) tempDevice.invokeCleaning();
+				//TODO: Roma - Check if needed here
+//				tempDevice = (RAIDHotColdDevice) tempDevice.invokeCleaning();
 				tempDevice = (RAIDHotColdDevice) tempDevice.invalidate(stripe, parityNumber);
 				
 				updatedChips = tempDevice.getNewChipsList();

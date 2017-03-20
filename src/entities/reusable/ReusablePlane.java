@@ -114,28 +114,31 @@ public class ReusablePlane extends Plane<ReusablePage, ReusableBlock> {
 			cleanBlocks.set(pickedToClean.getValue0(), (ReusableBlock) pickedToClean.getValue1().setStatus(ReusableBlockStatus.RECYCLED));
 		} else {
 			int active = getActiveBlockIndex();
-			ReusableBlock activeBlock;
-			if(active < 0) {
-				active = getLowestEraseCleanBlockIndex();
-				activeBlock = (ReusableBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
-			}else {
+			ReusableBlock activeBlock = null;
+			if(active >= 0) {
 				activeBlock = cleanBlocks.get(active);
 			}
 
 			toMove = pickedToClean.getValue1().getValidCounter();
 			Set<Integer> lpMoved = new HashSet<Integer>();
 			for (ReusablePage page : pickedToClean.getValue1().getPages()) {
-				if (page.isValid() && !lpMoved.contains(page.getLp())) {						
+				if (page.isValid() && !lpMoved.contains(page.getLp())) {
+					if (active < 0) {
+						active = getLowestEraseCleanBlockIndex();
+						activeBlock = (ReusableBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
+					}
 					activeBlock = activeBlock.move(page.getLp(), page.getWriteLevel());
 					lpMoved.add(page.getLp());
 					if(!activeBlock.hasRoomForWrite()) {
 						activeBlock = (ReusableBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
-						active = getLowestEraseCleanBlockIndex();
-						activeBlock = (ReusableBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
+						cleanBlocks.set(active, activeBlock);
+						active = -1;
 					}
 				}
 			}
-			cleanBlocks.set(active, activeBlock);
+			if (active < 0) {
+				cleanBlocks.set(active, activeBlock);
+			}
 			cleanBlocks.set(pickedToClean.getValue0(), (ReusableBlock) pickedToClean.getValue1().eraseBlock());
 		}
 		
@@ -216,11 +219,13 @@ public class ReusablePlane extends Plane<ReusablePage, ReusableBlock> {
 				activeRecycledBlockIndex = i;
 				hasSecondWriteBlock = true;
 			} else	if (block.getStatus() == ReusableBlockStatus.RECYCLED) {
-				if (block.getEraseCounter() < minEraseRecycled) {
-					minEraseRecycled = block.getEraseCounter();
-					lowestEraseRecycledBlockIndex = i;
+				if ((manager.getPagesNum()-block.getValidCounter()) >= 2) {					
+					if (block.getEraseCounter() < minEraseRecycled) {
+						minEraseRecycled = block.getEraseCounter();
+						lowestEraseRecycledBlockIndex = i;
+					}
+					hasSecondWriteBlock = true;
 				}
-				hasSecondWriteBlock = true;
 				++numOfRecycled;
 			}
 			++i;

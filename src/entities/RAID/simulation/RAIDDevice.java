@@ -160,11 +160,12 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			
 			// lets update this stripe's parity pages
 			for(int parityNumber = 1; parityNumber <= paritiesNumber; parityNumber++) { // decide which parity needs an update
-				if (parityNeedUpdate(currentLP, parityNumber) == false) {
+				if (!parityNeedUpdate(currentLP, parityNumber)) {
 					continue;
 				}
 				Boolean isHighlighted = isPageHighlighted(parityNumber, stripe);
-				tempDevice = (RAIDDevice) tempDevice.invokeCleaning();
+				//TODO: Roma - Check if needed here
+//				tempDevice = (RAIDDevice) tempDevice.invokeCleaning();
 				tempDevice = (RAIDDevice) tempDevice.invalidate(stripe, parityNumber);
 				
 				updatedChips = tempDevice.getNewChipsList();

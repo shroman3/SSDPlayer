@@ -143,28 +143,29 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 			activeStatus = RAIDHotColdBlockStatus.ACTIVE_PARITY;
 		}
 		
-		RAIDBlock activeBlock;
-		if (active == -1) {
-			active = getLowestEraseCleanBlockIndex();
-			activeBlock = (RAIDBlock) cleanBlocks.get(active).setStatus(activeStatus);
-		} else {			
+		RAIDBlock activeBlock = null;
+		if (active != -1) {
 			activeBlock = cleanBlocks.get(active);
 		}
 		
 		for (RAIDPage page : pickedToClean.getValue1().getPages()) {
 			if (page.isValid()) {
+				if (active == -1) {
+					active = getLowestEraseCleanBlockIndex();
+					activeBlock = (RAIDBlock) cleanBlocks.get(active).setStatus(activeStatus);
+				} 
 				activeBlock = activeBlock.move(page.getLp(), page.getParityNumber(), page.getStripe(),
 						page.isHighlighted());
-			}
-			if (!activeBlock.hasRoomForWrite()) {
-				// This is the appropriate used status, either USED or USED_PARITY
-				cleanBlocks.set(active, (RAIDBlock) activeBlock.setStatus(pickedToClean.getValue1().getStatus()));
-				active = getLowestEraseCleanBlockIndex();
-				activeBlock = (RAIDBlock) cleanBlocks.get(active).setStatus(activeStatus);
+				if (!activeBlock.hasRoomForWrite()) {
+					// This is the appropriate used status, either USED or USED_PARITY
+					cleanBlocks.set(active, (RAIDBlock) activeBlock.setStatus(pickedToClean.getValue1().getStatus()));
+					active = -1; 
+				}
 			}
 		}
-
-		cleanBlocks.set(active, activeBlock);
+		if (active != -1) {
+			cleanBlocks.set(active, activeBlock);
+		}
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
 		builder.setBlocks(cleanBlocks);

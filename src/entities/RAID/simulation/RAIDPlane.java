@@ -152,17 +152,28 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		int parityToMove = pickedToClean.getValue1().getParityValidCounter();
 		int dataToMove = pickedToClean.getValue1().getDataValidCounter();
 		int active = getActiveBlockIndex();
-		RAIDBlock activeBlock = cleanBlocks.get(active);
+		RAIDBlock activeBlock = null;
+		if (active != -1) {
+			activeBlock = cleanBlocks.get(active);
+		}
 		
 		for (RAIDPage page : pickedToClean.getValue1().getPages()) {
 			if (page.isValid()) {						
+				if (active == -1) {
+					active = getLowestEraseCleanBlockIndex();
+					activeBlock = (RAIDBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
+				}
 				activeBlock = activeBlock.move(page.getLp(), page.getParityNumber(), page.getStripe(), page.isHighlighted());
+				if(!activeBlock.hasRoomForWrite()) {
+					cleanBlocks.set(active, (RAIDBlock) activeBlock.setStatus(BlockStatusGeneral.USED));
+					active = -1;
+				}
 			}
 		}
-		if(!activeBlock.hasRoomForWrite()) {
-			activeBlock = (RAIDBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
+		if (active != -1) {
+			cleanBlocks.set(active, activeBlock);
 		}
-		cleanBlocks.set(active, activeBlock);
+		
 		cleanBlocks.set(pickedToClean.getValue0(), (RAIDBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
 		builder.setBlocks(cleanBlocks).setTotalWritten(getTotalWritten())

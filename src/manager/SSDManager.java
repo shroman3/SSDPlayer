@@ -200,7 +200,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 * @return the size of the device in pages
 	 */
 	public int getLpRange() {
-		return chipsNum * planesNum *(blocksInPlane - gct - 2)*pagesInBlock;
+		return chipsNum * planesNum *(blocksInPlane - reserved)*pagesInBlock;
 	}
 	
 	/**

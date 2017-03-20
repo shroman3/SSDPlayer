@@ -179,7 +179,6 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 
 	protected int getLowestValidBlockIndex() {
-		Utils.validateNotNegative(lowestValidBlockIndex, "Looks like device you've configured is too small for the trace. \nlowestValidBlockIndex");
 		return lowestValidBlockIndex;
 	}
 	
@@ -199,7 +198,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 	
 	protected boolean invokeCleaning() {
-		return getWritableBlocksNum() < manager.getGCT();
+		return getWritableBlocksNum() < manager.getGCT() && getLowestValidBlockIndex() != -1;
 	}
 
 	protected boolean isUsed(B block) {
@@ -214,7 +213,8 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	 * On creation this methods initializes the counters of the plane
 	 */
 	private void initValues() {
-		int minValid = Integer.MAX_VALUE;
+		int minValid = manager.getPagesNum();
+		int minValidErased = 0;
 		int minEraseClean = Integer.MAX_VALUE;
 
 		int i = 0;
@@ -231,6 +231,11 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			} else if(isUsed(block)) {
 				if (block.getValidCounter() < minValid) {
 					minValid = block.getValidCounter();
+					minValidErased = block.getEraseCounter();
+					lowestValidBlockIndex = i;
+				} else if (block.getValidCounter() == minValid && block.getEraseCounter() < minValidErased) {
+					minValid = block.getValidCounter();
+					minValidErased = block.getEraseCounter();
 					lowestValidBlockIndex = i;
 				}
 			}

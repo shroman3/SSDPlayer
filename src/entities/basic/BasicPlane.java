@@ -90,21 +90,27 @@ public class BasicPlane extends Plane<BasicPage, BasicBlock> {
 		Pair<Integer, BasicBlock> pickedToClean =  pickBlockToClean();
 		int toMove = pickedToClean.getValue1().getValidCounter();
 		int active = getActiveBlockIndex();
-		if (active == -1) {
-			active = getLowestEraseCleanBlockIndex();
-			cleanBlocks.set(active, (BasicBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE));
-		}
-		BasicBlock activeBlock = cleanBlocks.get(active);
-		
+		BasicBlock activeBlock = null;
+		if (active != -1) {			
+			activeBlock = cleanBlocks.get(active);
+		} 
 		for (BasicPage page : pickedToClean.getValue1().getPages()) {
-			if (page.isValid()) {						
+			if (page.isValid()) {
+				if (active == -1) {
+					active = getLowestEraseCleanBlockIndex();
+					activeBlock = (BasicBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
+				}
 				activeBlock = activeBlock.move(page.getLp());
+				if(!activeBlock.hasRoomForWrite()) {
+					activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
+					cleanBlocks.set(active, activeBlock);
+					active = -1;
+				}
 			}
 		}
-		if(!activeBlock.hasRoomForWrite()) {
-			activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
+		if (active != -1) {			
+			cleanBlocks.set(active, activeBlock);
 		}
-		cleanBlocks.set(active, activeBlock);
 		cleanBlocks.set(pickedToClean.getValue0(), (BasicBlock) pickedToClean.getValue1().eraseBlock());
 		Builder builder = getSelfBuilder();
 		int gcInvocations = (toMove > 0)? getTotalGCInvocations() + 1 : getTotalGCInvocations();
