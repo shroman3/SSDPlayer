@@ -200,7 +200,8 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 * @return the size of the device in pages
 	 */
 	public int getLpRange() {
-		return chipsNum * planesNum *(blocksInPlane - reserved)*pagesInBlock;
+		int logicalNumOfBlocks = (int) ((chipsNum * planesNum * blocksInPlane) / (1 + (double) op / 100));
+		return logicalNumOfBlocks * pagesInBlock;
 	}
 	
 	/**
@@ -213,7 +214,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	/**
 	 * @return Over-Provisioning - specified in the config
 	 */
-	public double getOP() {
+	public int getOP() {
 		return op;
 	}
 	
