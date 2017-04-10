@@ -19,7 +19,7 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package manager;
+package entities.hot_cold;
 
 import java.awt.Color;
 
@@ -31,7 +31,7 @@ public class HotColdPartition {
 	private final String name;
 	private Color color;
 	
-	HotColdPartition(int start, int end, Color color) {
+	public HotColdPartition(int start, int end, Color color) {
 		Utils.validateNotNull(color, "color");
 		this.start = start;
 		this.end = end;

@@ -33,6 +33,7 @@ import entities.hot_cold.HotColdBlock;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
+import entities.hot_cold.HotColdPartition;
 import entities.hot_cold.HotColdPlane;
 import general.XMLGetter;
 import general.XMLParsingException;

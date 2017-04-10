@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import entities.Device;
-import manager.HotColdPartition;
 import manager.HotColdSSDManager;
 
 
