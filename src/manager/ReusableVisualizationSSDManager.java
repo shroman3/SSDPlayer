@@ -56,7 +56,7 @@ public class ReusableVisualizationSSDManager extends SSDManager<VisualizationPag
 	}
 
 	@Override
-	public TraceParserGeneral<VisualizationDevice, ReusableVisualizationSSDManager> getTraseParser() {
+	public FileTraceParser<VisualizationDevice, ReusableVisualizationSSDManager> getFileTraseParser() {
 		return new VisualizationTraceParser(this);
 	}
 

@@ -42,7 +42,7 @@ public abstract class RAIDStatisticsGetter<D extends RAIDBasicDevice<?,?,?,?>, S
 
 	@SuppressWarnings("unchecked") //Checked 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> someDevice) {
+	public List<StatisticsColumn> getStatistics(Device<?> someDevice) {
 		if (!(diviceclass.isInstance(someDevice))) {
 			return null;
 		}

@@ -25,8 +25,8 @@ import entities.Device;
 import entities.EntityInfo;
 
 
-public class ReusableDevice extends Device<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip> {
-	public static class Builder extends Device.Builder<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip> {
+public class ReusableDevice extends Device<ReusableChip> {
+	public static class Builder extends Device.Builder<ReusableChip> {
 		private ReusableDevice device;		
 
 		public Builder() {

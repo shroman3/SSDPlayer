@@ -18,36 +18,35 @@ public class ReusableAnyBlockRecycled extends BreakpointBase {
 	public ReusableAnyBlockRecycled() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(!(currentDevice instanceof ReusableDevice)){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (!(currentDevice instanceof ReusableDevice)) {
 			return false;
 		}
-		if(previousDevice == null){
+		if (previousDevice == null) {
 			return false;
 		}
-		
+
 		int numberOfBlocks = ConfigProperties.getBlocksInDevice();
-		for (int i = 0; i < numberOfBlocks; i++){
+		for (int i = 0; i < numberOfBlocks; i++) {
 			ReusableBlock currentBlock = (ReusableBlock) currentDevice.getBlockByIndex(i);
 			ReusableBlock prevBlock = (ReusableBlock) previousDevice.getBlockByIndex(i);
-			if (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED 
+			if (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED
 					&& prevBlock.getStatus() != ReusableBlockStatus.RECYCLED) {
 				int blocksInChip = ConfigProperties.getBlocksInPlane() * ConfigProperties.getPlanesInChip();
 				int leftoverBlocks = i;
 				mChipIndex = leftoverBlocks / blocksInChip;
 				leftoverBlocks -= mChipIndex * blocksInChip;
-				
+
 				mPlaneIndex = leftoverBlocks / ConfigProperties.getBlocksInPlane();
 				leftoverBlocks -= mPlaneIndex * ConfigProperties.getBlocksInPlane();
 				mBlockIndex = leftoverBlocks;
-				
+
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -67,28 +66,24 @@ public class ReusableAnyBlockRecycled extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof ReusableAnyBlockRecycled)) return false; 
-		
+		if (!(other instanceof ReusableAnyBlockRecycled))
+			return false;
+
 		return true;
 	}
 
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof ReusableSSDManager 
-				|| manager instanceof ReusableVisualizationSSDManager) {
+		if (manager instanceof ReusableSSDManager || manager instanceof ReusableVisualizationSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return "Reusable block (<chip,plane,block>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex
+		return "Reusable block (<chip,plane,block>): " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex
 				+ "> was recycled";
 	}
 }

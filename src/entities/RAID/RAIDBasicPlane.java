@@ -13,8 +13,8 @@ import entities.Plane;
  * @author Or Mauda
  * 
  */
-public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>> extends Plane<P, B> {
-	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>> extends Plane.Builder<P,B> {
+public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>> extends Plane<B> {
+	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>> extends Plane.Builder<B> {
 		public abstract RAIDBasicPlane<P,B> build();
 	}
 	
@@ -24,7 +24,7 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 		super(other);
 	}
 	
-	public abstract Builder<P, B> getSelfBuilder();
+	public abstract Builder<P,B> getSelfBuilder();
 	
 	/**
 	 * @param stripe - Logical Page's stripe to be invalidated (part of address)
@@ -32,7 +32,7 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 	 * @return new plane with the Logical Page specified invalidated from the blocks
 	 */
 	@SuppressWarnings("unchecked")
-	public Plane<P,B> invalidate(int stripe, int parityNumber) {
+	public Plane<B> invalidate(int stripe, int parityNumber) {
 		List<B> updatedBlocks = new ArrayList<B>();
 		for (B block : getBlocks()) {
 			updatedBlocks.add((B) block.invalidate(stripe, parityNumber));
@@ -87,7 +87,7 @@ public abstract class RAIDBasicPlane<P extends RAIDBasicPage, B extends RAIDBasi
 	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated plane.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet<Integer, List<P>, RAIDBasicPlane<P,B>> setHighlightByPhysicalP(boolean toHighlight, int stripe) {
+	public Triplet<Integer, List<P>, ? extends RAIDBasicPlane<P,B>> setHighlightByPhysicalP(boolean toHighlight, int stripe) {
 		List<P> pages = new ArrayList<P>(0);
 		List<B> planeBlocks = new ArrayList<B>();
 		Triplet<Integer, List<P>, RAIDBasicPlane<P, B>> details = new Triplet<Integer, List<P>, RAIDBasicPlane<P,B>>(-1, null, null);

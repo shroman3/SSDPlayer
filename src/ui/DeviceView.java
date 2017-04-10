@@ -34,20 +34,20 @@ import entities.Chip;
 public class DeviceView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private List<ChipView> chipList;
-	private Device<?,?,?,?> device;
+	private Device<?> device;
 	private VisualConfig visualConfig;
 
-	public DeviceView(VisualConfig visualConfig, Device<?,?,?,?> device) {
+	public DeviceView(VisualConfig visualConfig, Device<?> device) {
 		this.device = device;
 		this.visualConfig = visualConfig;
 		setLayout(new FlowLayout());
 		chipList = initChips();
 	}
 
-	public void setDevice(Device<?,?,?,?> device) {
+	public void setDevice(Device<?> device) {
 		this.device = device;
 		int chipIndex = 0;
-		for (Chip<?,?,?> chip : device.getChips()) {
+		for (Chip<?> chip : device.getChips()) {
 			chipList.get(chipIndex++).setChip(chip);
 		}
 	}
@@ -55,7 +55,7 @@ public class DeviceView extends JPanel {
 	private List<ChipView> initChips() {
 		List<ChipView> chipsList = new ArrayList<ChipView>();
 		int chipIndex = 0;
-		for (Chip<?,?,?> chip : device.getChips()) {
+		for (Chip<?> chip : device.getChips()) {
 			ChipView chipView = new ChipView(chip, chipIndex++, visualConfig);
 			chipsList.add(chipView);
 			add(chipView);
@@ -68,7 +68,7 @@ public class DeviceView extends JPanel {
 		setLayout(new FlowLayout());
 		chipList =initChips();
 		int chipIndex = 0;
-		for (Chip<?,?,?> chip : device.getChips()) {
+		for (Chip<?> chip : device.getChips()) {
 			chipList.get(chipIndex++).setChip(chip);
 		}
 	}

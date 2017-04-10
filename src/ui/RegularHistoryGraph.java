@@ -57,7 +57,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
 	}
 
     @Override
-    public void updateStatistics(Device<?, ?, ?, ?> device) {
+    public void updateStatistics(Device<?> device) {
 		List<StatisticsColumn> statistics = statisticsGetter.getStatistics(device);
 		for (StatisticsColumn column : statistics) {
 			double value = column.getValue();

@@ -40,33 +40,33 @@ import utils.Utils;
  * @param <P> - page type the block stores.
  * @param <B> - block type that the plane stores
  */
-public abstract class Plane<P extends Page, B extends Block<P>> {
-	public abstract static class Builder<P extends Page, B extends Block<P>> {
-		private Plane<P,B> plane;
+public abstract class Plane<B extends Block<?>> {
+	public abstract static class Builder<B extends Block<?>> {
+		private Plane<B> plane;
 
-		abstract public Plane<P,B> build();
+		abstract public Plane<B> build();
 		
-		public Builder<P,B> setManager(SSDManager<P,B,?,?,?> manager) {
+		public Builder<B> setManager(SSDManager<?,B,?,?,?> manager) {
 			plane.manager = manager;
 			return this;
 		}
 		
-		public Builder<P,B> setBlocks(List<B> blocksList) {
+		public Builder<B> setBlocks(List<B> blocksList) {
 			plane.blocksList = new ArrayList<B>(blocksList);
 			return this;
 		}
 		
-		public Builder<P,B> setTotalWritten(int totalWritten) {
+		public Builder<B> setTotalWritten(int totalWritten) {
 			plane.totalWritten = totalWritten;
 			return this;
 		}
 
-		public Builder<P,B> setTotalGCInvocations(int number) {
+		public Builder<B> setTotalGCInvocations(int number) {
 			plane.totalGCInvocations = number;
 			return this;
 		}
 		
-		protected void setPlane(Plane<P,B> plane) {
+		protected void setPlane(Plane<B> plane) {
 			this.plane = plane;
 		}
 
@@ -76,7 +76,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	}
 
 	private List<B> blocksList;
-	private SSDManager<P,B,?,?,?> manager;
+	private SSDManager<?,B,?,?,?> manager;
 
 	private int validPagesCounter = 0;
 	private int numOfClean = 0;
@@ -88,7 +88,7 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 
 	protected Plane() {}
 
-	protected Plane(Plane<P,B> other) {
+	protected Plane(Plane<B> other) {
 		this.blocksList = new ArrayList<B>(other.blocksList);
 		this.manager = other.manager;
 		this.totalWritten = other.totalWritten;		
@@ -99,18 +99,18 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	/**
 	 * @return builder for a copy of this plane(used in order to create a modified copy)
 	 */
-	abstract public Builder<P,B> getSelfBuilder();
+	abstract public Builder<B> getSelfBuilder();
 	/**
 	 * @param lp - the logical page to be written 
 	 * @param arg - additional data(hot/cold or something else..)
 	 * @return new Plane with the lp written on it
 	 */
-	abstract public Plane<P,B> writeLP(int lp, int arg);
+	abstract public Plane<B> writeLP(int lp, int arg);
 	/**
 	 * @return tuple: first -  Plane after being cleaned 
 	 * 				  second - the number of moved pages in process of garbage collection
 	 */
-	abstract protected Pair<? extends Plane<P, B>, Integer> cleanPlane();
+	abstract protected Pair<? extends Plane<B>, Integer> cleanPlane();
 
 	public Iterable<B> getBlocks() {
 		return blocksList;
@@ -144,36 +144,68 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 	 * @return new plane with the Logical Page specified invalidated from the blocks
 	 */
 	@SuppressWarnings("unchecked")
-	public Plane<P,B> invalidate(int lp) {
+	public Plane<B> invalidate(int lp) {
 		List<B> updatedBlocks = new ArrayList<B>();
 		for (B block : getBlocks()) {
 			updatedBlocks.add((B) block.invalidate(lp));
 		}
-		Builder<P,B> builder = getSelfBuilder();
+		Builder<B> builder = getSelfBuilder();
 		builder.setBlocks(updatedBlocks);
 		return builder.build();
 	}
-	
 	
 	/**
 	 * @return <clean plane, number of pages moved in garbage collection>
 	 * if no cleaning is invoked returns itself and 0 pages moved
 	 */
-	public Pair<? extends Plane<P,B>, Integer> clean() {
+	public Pair<? extends Plane<B>, Integer> clean() {
 		if(!invokeCleaning()) {
 			return null;
 		}
 		return cleanPlane();
 	}
 
-	protected int getWritableBlocksNum() {
-		return getNumOfClean();
+	public int getTotalWritten() {
+		return totalWritten;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Total logical pages written", Integer.toString(getTotalWritten()), 2);
+		result.add("Clean blocks", Integer.toString(getNumOfClean()), 3);
+		result.add("Number of blocks", Integer.toString(getBlocksNum()), 1);
+		result.add("Valid count", Integer.toString(getValidPagesCounter()), 4);
+		result.add("Block erasures", Integer.toString(getNumOfBlockErasures()), 3);
+		result.add("GC invocations", Integer.toString(getGCExecutions()), 3);
+
+		return result;
+	}
+
+	public int getNumOfBlockErasures() {
+		int numOfErasures = 0;
+		for (Block<?> block : getBlocks()) {
+			numOfErasures += block.getEraseCounter();
+		}
+		return numOfErasures;
+	}
+
+	public int getGCExecutions() {
+		return getTotalGCInvocations();
 	}
 
 	public int getNumOfClean() {
 		return numOfClean;
 	}
+
+	public int getTotalGCInvocations() {
+		return totalGCInvocations;
+	}
 	
+	protected int getWritableBlocksNum() {
+		return getNumOfClean();
+	}
+
 	protected int getActiveBlockIndex() {
 		return activeBlockIndex;
 	}
@@ -205,10 +237,6 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 		return block.getStatus() == BlockStatusGeneral.USED;
 	}
 
-	public int getTotalGCInvocations() {
-		return totalGCInvocations;
-	}
-	
 	/**
 	 * On creation this methods initializes the counters of the plane
 	 */
@@ -241,34 +269,5 @@ public abstract class Plane<P extends Page, B extends Block<P>> {
 			}
 			++i;
 		}
-	}
-
-	public int getTotalWritten() {
-		return totalWritten;
-	}
-
-	public EntityInfo getInfo() {
-		EntityInfo result = new EntityInfo();
-
-		result.add("Total logical pages written", Integer.toString(getTotalWritten()), 2);
-		result.add("Clean blocks", Integer.toString(getNumOfClean()), 3);
-		result.add("Number of blocks", Integer.toString(getBlocksNum()), 1);
-		result.add("Valid count", Integer.toString(getValidPagesCounter()), 4);
-		result.add("Block erasures", Integer.toString(getNumOfBlockErasures()), 3);
-		result.add("GC invocations", Integer.toString(getGCExecutions()), 3);
-
-		return result;
-	}
-
-	public int getNumOfBlockErasures() {
-		int numOfErasures = 0;
-		for (Block<?> block : getBlocks()) {
-			numOfErasures += block.getEraseCounter();
-		}
-		return numOfErasures;
-	}
-
-	public int getGCExecutions() {
-		return getTotalGCInvocations();
 	}
 }

@@ -41,8 +41,8 @@ import utils.Utils;;
  * @author Or Mauda
  *
  */
-public class LogicalAddressWidget <P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>, D extends RAIDBasicDevice<P,B,T,C>, S extends RAIDBasicSSDManager<P, B, T, C, D>>
-	extends AddressWidget<P,B,T,C,D,S> {
+public class LogicalAddressWidget<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P, B>, C extends RAIDBasicChip<P, B, T>, D extends RAIDBasicDevice<P, B, T, C>, S extends RAIDBasicSSDManager<P, B, T, C, D>>
+		extends AddressWidget<P, B, T, C, D, S> {
 	private static final long serialVersionUID = 1L;
 
 	private JFormattedTextField logicalPageInput;
@@ -50,7 +50,7 @@ public class LogicalAddressWidget <P extends RAIDBasicPage, B extends RAIDBasicB
 	public LogicalAddressWidget(S manager) {
 		this("Logical Page", manager);
 	}
-	
+
 	protected LogicalAddressWidget(String name, S manager) {
 		super(name, manager);
 		logicalPageInput = new JFormattedTextField(new DecimalFormat());
@@ -59,26 +59,26 @@ public class LogicalAddressWidget <P extends RAIDBasicPage, B extends RAIDBasicB
 	}
 
 	@Override
-	public Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> getStripeInformation() throws Exception {
-		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> information = device.setHighlightByLogicalP(true, getLogicalPage());
+	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> getStripeInformation() throws Exception {
+		Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> information = device
+				.setHighlightByLogicalP(true, getLogicalPage());
 		if (information.getValue0() == -1) { // means we didn't find this page
 			throw new Exception("This page doesn't exist.");
 		}
 		return information;
 	}
-	
-	
+
 	protected int getLogicalPage() {
-		int number = ((Number)logicalPageInput.getValue()).intValue();
+		int number = ((Number) logicalPageInput.getValue()).intValue();
 		if (number < 0) {
 			throw new IndexOutOfBoundsException("logical page must be a positive number");
 		}
 		return number;
 	}
-	
+
 	@Override
 	public void validateParms() {
-		double logicalPage = ((Number)logicalPageInput.getValue()).doubleValue();
+		double logicalPage = ((Number) logicalPageInput.getValue()).doubleValue();
 		Utils.validateNotNegative(logicalPage, "logical page");
 		Utils.validateInteger(logicalPage, "logical page");
 	}

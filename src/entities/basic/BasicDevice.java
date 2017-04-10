@@ -24,8 +24,8 @@ package entities.basic;
 import entities.Device;
 
 
-public class BasicDevice extends Device<BasicPage, BasicBlock, BasicPlane, BasicChip> {
-	public static class Builder extends Device.Builder<BasicPage, BasicBlock, BasicPlane, BasicChip> {
+public class BasicDevice extends Device<BasicChip> {
+	public static class Builder extends Device.Builder<BasicChip> {
 		private BasicDevice device;		
 
 		public Builder() {

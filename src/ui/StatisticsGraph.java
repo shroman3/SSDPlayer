@@ -46,7 +46,7 @@ public class StatisticsGraph extends GeneralStatisticsGraph {
 	}
 
     @Override
-    public void updateStatistics(Device<?, ?, ?, ?> device) {
+    public void updateStatistics(Device<?> device) {
 		columnsList = statisticsGetter.getStatistics(device);
     }
 

@@ -4,13 +4,13 @@ import entities.Device;
 
 public class GCNthTimeDevice extends BreakpointBase {
 	private int mValue;
-	
+
 	public GCNthTimeDevice() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
 		if (previousDevice == null) {
 			return false;
 		}
@@ -20,7 +20,7 @@ public class GCNthTimeDevice extends BreakpointBase {
 
 		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
-	
+
 	public int getValue() {
 		return mValue;
 	}
@@ -29,7 +29,7 @@ public class GCNthTimeDevice extends BreakpointBase {
 		if (!BreakpointsConstraints.isGCCountLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mValue = value;
 	}
 
@@ -50,9 +50,10 @@ public class GCNthTimeDevice extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof GCNthTimeDevice)) return false; 
+		if (!(other instanceof GCNthTimeDevice))
+			return false;
 		GCNthTimeDevice otherCasted = (GCNthTimeDevice) other;
-		
+
 		return mValue == otherCasted.getValue();
 	}
 

@@ -28,8 +28,8 @@ import org.javatuples.Pair;
 import entities.BlockStatusGeneral;
 import entities.Plane;
 
-public class BasicPlane extends Plane<BasicPage, BasicBlock> {
-	public static class Builder extends Plane.Builder<BasicPage, BasicBlock> {
+public class BasicPlane extends Plane<BasicBlock> {
+	public static class Builder extends Plane.Builder<BasicBlock> {
 		private BasicPlane plane;
 		
 		public Builder() {

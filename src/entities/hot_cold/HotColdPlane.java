@@ -34,8 +34,8 @@ import utils.Utils;
 import entities.BlockStatusGeneral;
 import entities.Plane;
 
-public class HotColdPlane extends Plane<HotColdPage, HotColdBlock> {
-	public static class Builder extends Plane.Builder<HotColdPage, HotColdBlock> {
+public class HotColdPlane extends Plane<HotColdBlock> {
+	public static class Builder extends Plane.Builder<HotColdBlock> {
 		private HotColdPlane plane;
 		
 		public Builder() {

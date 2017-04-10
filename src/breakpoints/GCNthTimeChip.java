@@ -5,13 +5,13 @@ import entities.Device;
 public class GCNthTimeChip extends BreakpointBase {
 	private int mChipIndex;
 	private int mValue;
-	
+
 	public GCNthTimeChip() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
 		if (previousDevice == null) {
 			return false;
 		}
@@ -21,7 +21,7 @@ public class GCNthTimeChip extends BreakpointBase {
 
 		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
-	
+
 	public int getValue() {
 		return mValue;
 	}
@@ -30,7 +30,7 @@ public class GCNthTimeChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isGCCountLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mValue = value;
 	}
 
@@ -42,7 +42,7 @@ public class GCNthTimeChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
@@ -64,13 +64,13 @@ public class GCNthTimeChip extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof GCNthTimeChip)) return false; 
+		if (!(other instanceof GCNthTimeChip))
+			return false;
 		GCNthTimeChip otherCasted = (GCNthTimeChip) other;
-		
-		return mChipIndex == otherCasted.getChipIndex()
-				&& mValue == otherCasted.getValue();
+
+		return mChipIndex == otherCasted.getChipIndex() && mValue == otherCasted.getValue();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return "Number of garbage collection invocations in chip " + getChipIndex() + " reached " + getValue();

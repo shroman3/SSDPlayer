@@ -47,8 +47,8 @@ public interface StatisticsGetter {
 	 * @param device - to calculate the statistics on
 	 * @return list of statistics columns for the current Device's state.  
 	 */
-	List<StatisticsColumn> getStatistics(Device<?,?,?,?> device);
+	List<StatisticsColumn> getStatistics(Device<?> device);
 	GeneralStatisticsGraph getStatisticsGraph();
-	Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> paramDevice);
+	Entry<String, String> getInfoEntry(Device<?> paramDevice);
 
 }

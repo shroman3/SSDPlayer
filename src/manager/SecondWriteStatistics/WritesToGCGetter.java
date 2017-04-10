@@ -83,7 +83,7 @@ public class WritesToGCGetter extends SecondWritesStatisticsGetter {
 	}
 	
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return null;
 	}
 

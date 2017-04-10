@@ -7,17 +7,16 @@ public class PagesWrittenChip extends BreakpointBase {
 	private int mCount;
 	private int mChipIndex;
 
-	public PagesWrittenChip(){
+	public PagesWrittenChip() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(previousDevice == null){
-			return currentDevice.getChip(mChipIndex).getTotalWritten() == mCount; 
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (previousDevice == null) {
+			return currentDevice.getChip(mChipIndex).getTotalWritten() == mCount;
 		}
-		return currentDevice.getChip(mChipIndex).getTotalWritten() == mCount 
+		return currentDevice.getChip(mChipIndex).getTotalWritten() == mCount
 				&& previousDevice.getChip(mChipIndex).getTotalWritten() != mCount;
 	}
 
@@ -45,7 +44,7 @@ public class PagesWrittenChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mCount = count;
 	}
 
@@ -57,17 +56,17 @@ public class PagesWrittenChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof PagesWrittenChip)) return false; 
+		if (!(other instanceof PagesWrittenChip))
+			return false;
 		PagesWrittenChip otherCasted = (PagesWrittenChip) other;
-		
-		return mCount == otherCasted.getCount()
-				&& mChipIndex == otherCasted.getChipIndex();
+
+		return mCount == otherCasted.getCount() && mChipIndex == otherCasted.getChipIndex();
 	}
 
 	@Override

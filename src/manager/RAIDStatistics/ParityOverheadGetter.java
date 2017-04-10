@@ -61,7 +61,7 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
 		return new RegularHistoryGraph("Parity Update Overhead", this, 1, 0);
 	}
 	
- 	public static double getParityOverhead(Device<?,?,?,?> device) {
+ 	public static double getParityOverhead(Device<?> device) {
 		if (!(device instanceof RAIDBasicDevice)) {
 			return 0;
 		}
@@ -74,7 +74,7 @@ public class ParityOverheadGetter<D extends RAIDBasicDevice<?,?,?,?>, S extends 
  	}
 
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return new AbstractMap.SimpleEntry<>("Parity Overhead", Double.toString(getParityOverhead(device)));
 	}
 }

@@ -88,7 +88,7 @@ public class RAIDVisualizationSSDManager extends RAIDBasicSSDManager<RAIDVisuali
 	}
 	
 	@Override
-	public TraceParserGeneral<RAIDVisualizationDevice, RAIDVisualizationSSDManager> getTraseParser() {
+	public FileTraceParser<RAIDVisualizationDevice, RAIDVisualizationSSDManager> getFileTraseParser() {
 		return new RAIDVisualizationTraceParser(this);
 	}
 

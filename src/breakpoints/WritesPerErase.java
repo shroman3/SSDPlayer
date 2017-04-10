@@ -5,10 +5,11 @@ import manager.LogicalWritesPerEraseGetter;
 
 public class WritesPerErase extends BreakpointBase {
 	private double mValue = 1.0;
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
-		double oldValue = previousDevice == null ? Double.MIN_VALUE : LogicalWritesPerEraseGetter.getLogicalWritesPerErase(previousDevice);
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		double oldValue = previousDevice == null ? Double.MIN_VALUE
+				: LogicalWritesPerEraseGetter.getLogicalWritesPerErase(previousDevice);
 		double currentValue = LogicalWritesPerEraseGetter.getLogicalWritesPerErase(currentDevice);
 		return oldValue < mValue && currentValue >= mValue;
 	}
@@ -21,10 +22,10 @@ public class WritesPerErase extends BreakpointBase {
 		if (!BreakpointsConstraints.isWritesPerEraseValueLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITES_PER_ERASE);
 		}
-		
+
 		mValue = value;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Writes per erase reach " + mValue;
@@ -42,10 +43,11 @@ public class WritesPerErase extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof WritesPerErase)) return false; 
+		if (!(other instanceof WritesPerErase))
+			return false;
 		WritesPerErase otherCasted = (WritesPerErase) other;
-		
-		return Double.compare(mValue,otherCasted.getValue()) == 0;
+
+		return Double.compare(mValue, otherCasted.getValue()) == 0;
 	}
 
 	@Override

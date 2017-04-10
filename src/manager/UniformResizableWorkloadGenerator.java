@@ -9,7 +9,7 @@ import entities.Device;
  * @author Or Mauda
  *
  */
-public class UniformResizableWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>>
+public class UniformResizableWorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>>
 	extends ResizableWorkloadGenerator<D, S> {
 
 	private Random random;

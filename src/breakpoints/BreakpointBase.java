@@ -17,7 +17,7 @@ public abstract class BreakpointBase implements IBreakpoint {
 	public BreakpointBase() {
 		addComponents();
 	}
-	
+
 	@Override
 	public void readXml(Element xmlElement) throws Exception {
 		NodeList activeNodes = xmlElement.getElementsByTagName("active");
@@ -29,7 +29,7 @@ public abstract class BreakpointBase implements IBreakpoint {
 			if (nodes.getLength() == 0) {
 				throw new RuntimeException("Couldn't find " + component.getPropertyName() + " tag under breakpoint");
 			}
-			
+
 			Method method = this.getClass().getMethod(component.getSetterName(), component.getParamType());
 			if (component.getParamType().equals(int.class)) {
 				method.invoke(this, Integer.parseInt(nodes.item(0).getTextContent()));
@@ -38,22 +38,22 @@ public abstract class BreakpointBase implements IBreakpoint {
 			}
 		}
 	}
-	
+
 	@Override
 	public List<BreakpointComponent> getComponents() {
 		return mComponents;
 	}
-	
+
 	@Override
 	public boolean isHit() {
 		return mIsHit;
 	}
-	
+
 	@Override
 	public void setIsHit(boolean value) {
 		mIsHit = value;
 	}
-	
+
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
 		return true;

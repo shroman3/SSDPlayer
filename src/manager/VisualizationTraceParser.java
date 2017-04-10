@@ -25,7 +25,7 @@ import java.io.IOException;
 
 import entities.reusable_visualization.VisualizationDevice;
 
-public class VisualizationTraceParser extends TraceParserGeneral<VisualizationDevice, ReusableVisualizationSSDManager> {
+public class VisualizationTraceParser extends FileTraceParser<VisualizationDevice, ReusableVisualizationSSDManager> {
 
 	public VisualizationTraceParser(ReusableVisualizationSSDManager manager) {
 		super(manager);

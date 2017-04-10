@@ -14,8 +14,8 @@ import entities.EntityInfo;
  * @author Or Mauda
  * 
  */
-public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>> extends Device<P,B,T,C> {
-	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>> extends Device.Builder<P,B,T,C> {
+public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>> extends Device<C> {
+	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>> extends Device.Builder<C> {
 		private RAIDBasicDevice<P,B,T,C> device;
 		
 		public abstract RAIDBasicDevice<P,B,T,C> build();
@@ -85,7 +85,7 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C>  invalidate(int stripe, int parityNumber) {
+	public RAIDBasicDevice<P,B,T,C>  invalidate(int stripe, int parityNumber) {
 		List<C> updatedChips = new ArrayList<C>();
 		for (C chip : getChips()) {
 			updatedChips.add((C) chip.invalidate(stripe, parityNumber));
@@ -141,12 +141,12 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated device.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet<Integer, List<P>, RAIDBasicDevice<P,B,T,C>> setHighlightByPhysicalP(boolean toHighlight,int chipIndex, int planeIndex, int blockIndex, int pageIndex) {
+	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P,B,T,C>> setHighlightByPhysicalP(boolean toHighlight,int chipIndex, int planeIndex, int blockIndex, int pageIndex) {
 		int stripe = getChip(chipIndex).getPlane(planeIndex).getBlock(blockIndex).getPage(pageIndex).getStripe();
 		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(-1, null, null);
 		List<P> stripePages = new ArrayList<P>(0);
 		List<C> deviceChips = new ArrayList<C>();
-		Triplet<Integer,List<P>,RAIDBasicChip<P,B,T>> chipDetails;
+		Triplet<Integer,List<P>,? extends RAIDBasicChip<P,B,T>> chipDetails;
 		for (C chip : getChips()) {
 			chipDetails = chip.setHighlightByPhysicalP(toHighlight, stripe);
 			if (chipDetails.getValue0() != -1) { // means we found a chip which includes a page on our stripe
@@ -171,12 +171,12 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated device.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet<Integer, List<P>, RAIDBasicDevice<P,B,T,C>> setHighlightByLogicalP(boolean toHighlight, int lp) {
+	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P,B,T,C>> setHighlightByLogicalP(boolean toHighlight, int lp) {
 		int stripe = -1; // means the stripe is still unknown
 		List<P> pages = new ArrayList<P>(0);
 		List<C> deviceChips = new ArrayList<C>();
-		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(stripe, null, null);
-		Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>> chipDetails;
+		Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(stripe, null, null);
+		Triplet<Integer, List<P>, ? extends RAIDBasicChip<P, B, T>> chipDetails;
 		for (C chip : getChips()) {
 			chipDetails = chip.setHighlightByLogicalP(toHighlight, lp, stripe);
 			if (chipDetails.getValue0() != -1) { // means we found a block which includes a chip on our stripe
@@ -206,8 +206,8 @@ public abstract class RAIDBasicDevice<P extends RAIDBasicPage, B extends RAIDBas
 	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P,B,T,C>> setHighlightByParityP(boolean toHighlight, int parityNumber, int stripe, boolean parityMatters) {
 		List<P> pages = new ArrayList<P>(0);
 		List<C> deviceChips = new ArrayList<C>();
-		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(-1, null, null);
-		Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>> chipDetails;
+		Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> details = new Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>>(-1, null, null);
+		Triplet<Integer, List<P>, ? extends RAIDBasicChip<P, B, T>> chipDetails;
 		for (C chip : getChips()) {
 			chipDetails = chip.setHighlightByParityP(toHighlight, parityNumber, stripe, parityMatters);
 			if (chipDetails.getValue0() == stripe) { // means we found a chip which includes a page on our stripe

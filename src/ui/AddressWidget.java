@@ -89,7 +89,7 @@ public abstract class AddressWidget <P extends RAIDBasicPage, B extends RAIDBasi
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setDevice(Device<?,?,?,?> device) {
+	public void setDevice(Device<?> device) {
 		this.device = (D) device;
 	}
 

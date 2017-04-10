@@ -7,28 +7,21 @@ public class WritePp extends BreakpointBase {
 	private int mBlockIndex;
 	private int mPlaneIndex;
 	private int mChipIndex;
-	
+
 	public WritePp() {
 		super();
-	} 
-	
+	}
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		boolean currentPageIsClean = currentDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex)
-				.getBlock(mBlockIndex)
-				.getPage(mPageIndex)
-				.isClean();
-		if(previousDevice == null){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		boolean currentPageIsClean = currentDevice.getChip(mChipIndex).getPlane(mPlaneIndex).getBlock(mBlockIndex)
+				.getPage(mPageIndex).isClean();
+		if (previousDevice == null) {
 			return !currentPageIsClean;
 		}
-		
-		boolean previousPageIsclean = previousDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex)
-				.getBlock(mBlockIndex)
-				.getPage(mPageIndex)
-				.isClean();
+
+		boolean previousPageIsclean = previousDevice.getChip(mChipIndex).getPlane(mPlaneIndex).getBlock(mBlockIndex)
+				.getPage(mPageIndex).isClean();
 		return previousPageIsclean && !currentPageIsClean;
 	}
 
@@ -40,22 +33,22 @@ public class WritePp extends BreakpointBase {
 		if (!BreakpointsConstraints.isPageIndexLegal(pageIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PAGE);
 		}
-		
+
 		mPageIndex = pageIndex;
 	}
-	
+
 	public int getBlockIndex() {
 		return mBlockIndex;
 	}
-	
+
 	public void setBlockIndex(int blockIndex) throws Exception {
 		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
 		}
-		
+
 		mBlockIndex = blockIndex;
 	}
-	
+
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
@@ -64,10 +57,10 @@ public class WritePp extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
-	
+
 	public int getChipIndex() {
 		return mChipIndex;
 	}
@@ -76,19 +69,14 @@ public class WritePp extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
 	@Override
 	public String getDescription() {
-		return "Write physical page (<chip,plane,block,page>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex + ","
-				+ mPageIndex 
-				+ ">";
+		return "Write physical page (<chip,plane,block,page>): " + "<" + mChipIndex + "," + mPlaneIndex + ","
+				+ mBlockIndex + "," + mPageIndex + ">";
 	}
 
 	@Override
@@ -106,23 +94,17 @@ public class WritePp extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof WritePp)) return false; 
+		if (!(other instanceof WritePp))
+			return false;
 		WritePp otherCasted = (WritePp) other;
-		
-		return mPageIndex == otherCasted.getPageIndex()
-				&& mBlockIndex == otherCasted.getBlockIndex()
-				&& mPlaneIndex == otherCasted.getPlaneIndex()
-				&& mChipIndex == otherCasted.getChipIndex();
+
+		return mPageIndex == otherCasted.getPageIndex() && mBlockIndex == otherCasted.getBlockIndex()
+				&& mPlaneIndex == otherCasted.getPlaneIndex() && mChipIndex == otherCasted.getChipIndex();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return "Physical page (<chip,plane,block,page>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex + ","
-				+ mPageIndex 
-				+ "> was written";
+		return "Physical page (<chip,plane,block,page>): " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex
+				+ "," + mPageIndex + "> was written";
 	}
 }

@@ -6,18 +6,16 @@ public class PagesWrittenDevice extends BreakpointBase {
 
 	private int mCount;
 
-	public PagesWrittenDevice(){
+	public PagesWrittenDevice() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(previousDevice == null){
-			return currentDevice.getTotalWritten() == mCount; 
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (previousDevice == null) {
+			return currentDevice.getTotalWritten() == mCount;
 		}
-		return currentDevice.getTotalWritten() == mCount 
-				&& previousDevice.getTotalWritten() != mCount;
+		return currentDevice.getTotalWritten() == mCount && previousDevice.getTotalWritten() != mCount;
 	}
 
 	@Override
@@ -43,15 +41,16 @@ public class PagesWrittenDevice extends BreakpointBase {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mCount = count;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof PagesWrittenDevice)) return false; 
+		if (!(other instanceof PagesWrittenDevice))
+			return false;
 		PagesWrittenDevice otherCasted = (PagesWrittenDevice) other;
-		
+
 		return mCount == otherCasted.getCount();
 	}
 

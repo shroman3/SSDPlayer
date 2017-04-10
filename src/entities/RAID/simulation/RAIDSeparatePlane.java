@@ -19,7 +19,7 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package entities.RAID.hot_cold;
+package entities.RAID.simulation;
 
 import java.util.List;
 
@@ -28,33 +28,31 @@ import org.javatuples.Triplet;
 
 import entities.BlockStatus;
 import entities.BlockStatusGeneral;
-import entities.RAID.RAIDBasicPlane;
-import entities.RAID.simulation.RAIDBlock;
-import entities.RAID.simulation.RAIDPage;
 
 /**
  * 
  * @author Or Mauda
  *
  */
-public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
-	public static class Builder extends RAIDBasicPlane.Builder<RAIDPage, RAIDBlock> {
-		private RAIDHotColdPlane plane;
+public class RAIDSeparatePlane extends RAIDPlane {
+	public static class Builder extends RAIDPlane.Builder {
+		private RAIDSeparatePlane plane;
 
 		public Builder() {
-			setPlane(new RAIDHotColdPlane());
+			setPlane(new RAIDSeparatePlane());
 		}
 
-		public Builder(RAIDHotColdPlane plane) {
-			setPlane(new RAIDHotColdPlane(plane));
+		public Builder(RAIDSeparatePlane plane) {
+			setPlane(new RAIDSeparatePlane(plane));
 		}
 
-		public RAIDHotColdPlane build() {
+		@Override
+		public RAIDSeparatePlane build() {
 			validate();
-			return new RAIDHotColdPlane(plane);
+			return new RAIDSeparatePlane(plane);
 		}
 
-		protected void setPlane(RAIDHotColdPlane plane) {
+		protected void setPlane(RAIDSeparatePlane plane) {
 			super.setPlane(plane);
 			this.plane = plane;
 		}
@@ -66,10 +64,10 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 
 	private int activeParityBlockIndex = -1;
 
-	protected RAIDHotColdPlane() {
+	protected RAIDSeparatePlane() {
 	}
 
-	protected RAIDHotColdPlane(RAIDHotColdPlane other) {
+	protected RAIDSeparatePlane(RAIDSeparatePlane other) {
 		super(other);
 		initValues();
 	}
@@ -79,7 +77,7 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return new Builder(this);
 	}
 
-	public RAIDHotColdPlane writeLP(int lp, int stripe) {
+	public RAIDSeparatePlane writeLP(int lp, int stripe) {
 		List<RAIDBlock> updatedBlocks = getNewBlocksList();
 		int active = getActiveBlockIndex();
 		if (active == -1) {
@@ -97,7 +95,7 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return builder.build();
 	}
 
-	public RAIDHotColdPlane writePP(int stripe, int parityNum) {
+	public RAIDSeparatePlane writePP(int stripe, int parityNum) {
 		List<RAIDBlock> updatedBlocks = getNewBlocksList();
 		RAIDBlock activeBlock;
 		int active = getActiveParityBlockIndex();
@@ -105,11 +103,11 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 			activeBlock = updatedBlocks.get(active);
 		} else {
 			active = getLowestEraseCleanBlockIndex();
-			activeBlock = (RAIDBlock) updatedBlocks.get(active).setStatus(RAIDHotColdBlockStatus.ACTIVE_PARITY);
+			activeBlock = (RAIDBlock) updatedBlocks.get(active).setStatus(RAIDSeparateBlockStatus.ACTIVE_PARITY);
 		}
 		activeBlock = activeBlock.writePP(stripe, parityNum);
 		if (!activeBlock.hasRoomForWrite()) {
-			activeBlock = (RAIDBlock) activeBlock.setStatus(RAIDHotColdBlockStatus.USED_PARITY);
+			activeBlock = (RAIDBlock) activeBlock.setStatus(RAIDSeparateBlockStatus.USED_PARITY);
 		}
 		updatedBlocks.set(active, activeBlock);
 
@@ -118,19 +116,14 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return builder.build();
 	}
 
-	public Triplet<RAIDHotColdPlane, Integer, Integer> cleanRAID() {
+	public Triplet<RAIDPlane, Integer, Integer> cleanRAID() {
 		if (!invokeCleaning()) {
 			return null;
 		}
 		return cleanRAIDPlane();
 	}
 
-	@Override
-	protected Pair<RAIDHotColdPlane, Integer> cleanPlane() {
-		throw new UnsupportedOperationException();
-	}
-
-	protected Triplet<RAIDHotColdPlane, Integer, Integer> cleanRAIDPlane() {
+	protected Triplet<RAIDPlane, Integer, Integer> cleanRAIDPlane() {
 		List<RAIDBlock> cleanBlocks = getNewBlocksList();
 		Pair<Integer, RAIDBlock> pickedToClean = pickBlockToClean();
 		int parityToMove = pickedToClean.getValue1().getParityValidCounter();
@@ -138,9 +131,9 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		int active = getActiveBlockIndex();
 
 		BlockStatus activeStatus = BlockStatusGeneral.ACTIVE;
-		if (pickedToClean.getValue1().getStatus() == RAIDHotColdBlockStatus.USED_PARITY) {
+		if (pickedToClean.getValue1().getStatus() == RAIDSeparateBlockStatus.USED_PARITY) {
 			active = getActiveParityBlockIndex();
-			activeStatus = RAIDHotColdBlockStatus.ACTIVE_PARITY;
+			activeStatus = RAIDSeparateBlockStatus.ACTIVE_PARITY;
 		}
 		
 		RAIDBlock activeBlock = null;
@@ -176,18 +169,10 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return activeParityBlockIndex;
 	}
 
-	RAIDHotColdPlane setBlock(RAIDBlock block, int index) {
-		List<RAIDBlock> newBlocksList = getNewBlocksList();
-		newBlocksList.set(index, block);
-		Builder builder = getSelfBuilder();
-		builder.setBlocks(newBlocksList);
-		return builder.build();
-	}
-
 	private void initValues() {
 		int i = 0;
 		for (RAIDBlock block : getBlocks()) {
-			if (block.getStatus() == RAIDHotColdBlockStatus.ACTIVE_PARITY) {
+			if (block.getStatus() == RAIDSeparateBlockStatus.ACTIVE_PARITY) {
 				activeParityBlockIndex = i;
 			}
 			++i;
@@ -196,6 +181,6 @@ public class RAIDHotColdPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 
 	@Override
 	protected boolean isUsed(RAIDBlock block) {
-		return (block.getStatus() == RAIDHotColdBlockStatus.USED_PARITY) || super.isUsed(block);
+		return (block.getStatus() == RAIDSeparateBlockStatus.USED_PARITY) || super.isUsed(block);
 	}
 }

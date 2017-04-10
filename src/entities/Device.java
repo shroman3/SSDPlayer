@@ -32,29 +32,29 @@ import utils.Utils;
 /**
  * November 2015: revised by Or Mauda for additional RAID functionality.
  */
-public abstract class Device<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>> {	
-	public abstract static class Builder<P extends Page, B extends Block<P>, T extends Plane<P,B>, D extends Chip<P,B,T>> {
-		private Device<P,B,T,D> device;
+public abstract class Device<C extends Chip<?>> {	
+	public abstract static class Builder<C extends Chip<?>> {
+		private Device<C> device;
 
-		abstract public Device<P,B,T,D> build();
+		abstract public Device<C> build();
 		
-		public Builder<P,B,T,D> setTotalMoved(int totalMoved) {
+		public Builder<C> setTotalMoved(int totalMoved) {
 			device.totalMoved = totalMoved;
 			return this;
 		}
 		
-		public Builder<P,B,T,D> setTotalWritten(int totalWritten) {
+		public Builder<C> setTotalWritten(int totalWritten) {
 			device.totalWritten = totalWritten;
 			return this;
 		}
 		
-		public Builder<P,B,T,D> setTotalGCInvocations(int number) {
+		public Builder<C> setTotalGCInvocations(int number) {
 			device.totalGCInvocations = number;
 			return this;
 		}
 		
-		public Builder<P,B,T,D> setChips(List<D> chipsList) {
-			device.chipsList = new ArrayList<D>(chipsList);
+		public Builder<C> setChips(List<C> chipsList) {
+			device.chipsList = new ArrayList<C>(chipsList);
 			return this;
 		}
 		
@@ -62,7 +62,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 			Utils.validateNotNull(device.chipsList, "Chips");
 		}
 		
-		protected void setDevice(Device<P,B,T,D> device) {
+		protected void setDevice(Device<C> device) {
 			this.device = device;
 		}
 	}
@@ -74,14 +74,14 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	
 	protected Device() {}	
 	
-	protected Device(Device<P,B,T,C> other) {
+	protected Device(Device<C> other) {
 		this.chipsList = new ArrayList<C>(other.chipsList);
 		this.totalMoved = other.totalMoved; 
 		this.totalWritten = other.totalWritten;
 		this.totalGCInvocations = other.totalGCInvocations;
 	}
 
-	abstract public Builder<P,B,T,C> getSelfBuilder();
+	abstract public Builder<C> getSelfBuilder();
 
 	public List<C> getChips() {
 		return chipsList;
@@ -108,13 +108,13 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> invokeCleaning() {
+	public Device<C> invokeCleaning() {
 		int moved = 0;
 		List<C> cleanChips = new ArrayList<C>(getChipsNum());
 		int i = 0; 
 		boolean cleaningInvoked = false;
 		for (C chip : getChips()) {
-			Pair<Chip<P,B,T>,Integer> clean = chip.clean(i);
+			Pair<? extends Chip<?>,Integer> clean = chip.clean(i);
 			if (clean == null) {
 				cleanChips.add(chip);
 			} else {
@@ -128,7 +128,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 			return this;
 		}
 		
-		Builder<P,B,T,C> builder = getSelfBuilder();
+		Builder<C> builder = getSelfBuilder();
 		builder.setChips(cleanChips)
 			   .setTotalMoved(totalMoved + moved)
 			   .setTotalGCInvocations(getTotalGCInvocations() + 1);
@@ -136,54 +136,46 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 	}
 
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C>  invalidate(int lp) {
+	public Device<C>  invalidate(int lp) {
 		List<C> updatedChips = getNewChipsList();
 		int chipIndex = getChipIndex(lp);
 		C chip = getChip(chipIndex);
 		updatedChips.set(chipIndex, (C) chip.invalidate(lp));
-		Builder<P,B,T,C>  builder = getSelfBuilder();
+		Builder<C>  builder = getSelfBuilder();
 		builder.setChips(updatedChips);
 		return builder.build();
 	}
 
 	@SuppressWarnings("unchecked")
-	public Device<P,B,T,C> writeLP(int lp, int arg) {
+	public Device<C> writeLP(int lp, int arg) {
 		int chipIndex = getChipIndex(lp);
 		List<C> updatedChips = getNewChipsList();
 		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
 		ActionLog.addAction(new WriteLpAction(lp));
-		Builder<P, B, T, C> builder = getSelfBuilder();
+		Builder<C> builder = getSelfBuilder();
 		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
 		return builder.build();
-	}
-	
-	protected int getChipsNum() {
-		return chipsList.size();
-	}
-	
-	protected int getChipIndex(int lp) {
-		return lp%getChipsNum();
 	}
 	
 	public C getChipByIndex(int chipIndex){
 		return chipsList.get(chipIndex);
 	}
 	
-	public T getPlaneByIndex(int planeIndex){
+	public Plane<?> getPlaneByIndex(int planeIndex){
 		int planesInChip = ConfigProperties.getPlanesInChip();
 		int chipIndex = planeIndex / planesInChip;
 		int planeRelativeToChipIndex = planeIndex - chipIndex * planesInChip;
 		return getChipByIndex(chipIndex).getPlane(planeRelativeToChipIndex);
 	}
 	
-	public B getBlockByIndex(int blockIndex){
+	public Block<?> getBlockByIndex(int blockIndex){
 		int blocksInPlain = ConfigProperties.getBlocksInPlane();
 		int planeIndex = blockIndex / blocksInPlain;
 		int blockRelativeToPlainIndex = blockIndex - planeIndex * blocksInPlain;
 		return getPlaneByIndex(planeIndex).getBlock(blockRelativeToPlainIndex);
 	}
 	
-	public P getPageByIndex(int pageIndex){
+	public Page getPageByIndex(int pageIndex){
 		int pagesInBlock = ConfigProperties.getPagesInBlock();
 		int blockIndex = pageIndex / pagesInBlock;
 		int pageRelativeToBlockIndex = pageIndex - blockIndex * pagesInBlock;
@@ -192,7 +184,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 
 	public int getNumOfClean() {
 		int cleanBlocks = 0;
-		for (Chip<?, ?, ?> chip : chipsList){
+		for (C chip : chipsList){
 			cleanBlocks += chip.getNumOfClean();
 		}
 		return cleanBlocks;
@@ -212,7 +204,7 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 
 	public int getNumOfBlockErasures() {
 		int numOfErasures = 0;
-		for (Chip<?, ?, ?> chip : getChips()) {
+		for (C chip : getChips()) {
 			numOfErasures += chip.getNumOfBlockErasures();
 		}
 		return numOfErasures;
@@ -220,5 +212,13 @@ public abstract class Device<P extends Page, B extends Block<P>, T extends Plane
 
 	public int getGCExecutions() {
 		return getTotalGCInvocations();
+	}
+	
+	protected int getChipsNum() {
+		return chipsList.size();
+	}
+	
+	protected int getChipIndex(int lp) {
+		return lp%getChipsNum();
 	}
 }

@@ -67,7 +67,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	}
 	
 	@Override
-	public HotColdTraceParser<HotColdDevice, HotColdSSDManager> getTraseParser() {
+	public HotColdTraceParser<HotColdDevice, HotColdSSDManager> getFileTraseParser() {
 		return new HotColdTraceParser<HotColdDevice, HotColdSSDManager>(this);
 	}
 
@@ -97,10 +97,10 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 	}
 
 	@Override
-	public List<WorkloadWidget<HotColdDevice, SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<HotColdDevice,SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice>>(this));
+	public List<WorkloadWidget<HotColdDevice, SSDManager<?, ?, ?, ?, HotColdDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<HotColdDevice,SSDManager<?, ?, ?, ?, HotColdDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<HotColdDevice,SSDManager<?, ?, ?, ?, HotColdDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<HotColdDevice,SSDManager<?, ?, ?, ?, HotColdDevice>>(this));
 		return creators;
 	}
 	

@@ -6,22 +6,19 @@ public class EraseBlock extends BreakpointBase {
 	private int mBlockIndex;
 	private int mPlaneIndex;
 	private int mChipIndex;
-	
+
 	public EraseBlock() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(previousDevice == null){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (previousDevice == null) {
 			return false;
 		}
-		int previousBlockEraseCount = previousDevice.getChipByIndex(mChipIndex)
-				.getPlane(mPlaneIndex)
+		int previousBlockEraseCount = previousDevice.getChipByIndex(mChipIndex).getPlane(mPlaneIndex)
 				.getBlock(mBlockIndex).getEraseCounter();
-		int currentBlockEraseCount = currentDevice.getChipByIndex(mChipIndex)
-				.getPlane(mPlaneIndex)
+		int currentBlockEraseCount = currentDevice.getChipByIndex(mChipIndex).getPlane(mPlaneIndex)
 				.getBlock(mBlockIndex).getEraseCounter();
 		return previousBlockEraseCount < currentBlockEraseCount;
 	}
@@ -34,10 +31,10 @@ public class EraseBlock extends BreakpointBase {
 		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
 		}
-		
+
 		mBlockIndex = blockIndex;
 	}
-	
+
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
@@ -46,10 +43,10 @@ public class EraseBlock extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
-	
+
 	public int getChipIndex() {
 		return mChipIndex;
 	}
@@ -58,7 +55,7 @@ public class EraseBlock extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
@@ -69,12 +66,7 @@ public class EraseBlock extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Erase block <chip,plane,block>: "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex
-				+ ">";
+		return "Erase block <chip,plane,block>: " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex + ">";
 	}
 
 	@Override
@@ -86,21 +78,16 @@ public class EraseBlock extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof EraseBlock)) return false; 
+		if (!(other instanceof EraseBlock))
+			return false;
 		EraseBlock otherCasted = (EraseBlock) other;
-		
-		return mBlockIndex == otherCasted.getBlockIndex()
-				&& mPlaneIndex == otherCasted.getPlaneIndex()
+
+		return mBlockIndex == otherCasted.getBlockIndex() && mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return "Block <chip,plane,block>: "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex
-				+ "> was erased";
+		return "Block <chip,plane,block>: " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex + "> was erased";
 	}
 }

@@ -30,8 +30,8 @@ import manager.HotColdPartition;
 import manager.HotColdSSDManager;
 
 
-public class HotColdDevice extends Device<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip> {
-	public static class Builder extends Device.Builder<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip> {
+public class HotColdDevice extends Device<HotColdChip> {
+	public static class Builder extends Device.Builder<HotColdChip> {
 		private HotColdDevice device;
 
 		public Builder() {

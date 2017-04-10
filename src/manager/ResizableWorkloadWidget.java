@@ -13,7 +13,7 @@ import javax.swing.JRadioButton;
 import entities.Device;
 import ui.WorkloadWidget;
 
-public abstract class ResizableWorkloadWidget<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>>
+public abstract class ResizableWorkloadWidget<D extends Device<?>, S extends SSDManager<?,?,?,?,D>>
 	extends WorkloadWidget<D,S>{
 	
 	private static final long serialVersionUID = 1L;

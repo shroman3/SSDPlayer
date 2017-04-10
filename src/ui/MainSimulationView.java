@@ -173,17 +173,17 @@ public class MainSimulationView extends JFrame {
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
 		
 		tracePlayer = new TracePlayer(visualConfig,
-                new TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>>() {
+                new TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>>() {
                         @Override
-                        public void message(Device<?, ?, ?, ?> device, Iterable<StatisticsGetter> statisticsGetters) {
+                        public void message(Device<?> device, Iterable<StatisticsGetter> statisticsGetters) {
                                 resetDevice(device, statisticsGetters);
                                 if (zoomLevelPanel != null) {
                                 	zoomLevelPanel.setZoomLevel(tracePlayer.getZoomLevel());
                                 }
                         }
-                }, new OneObjectCallback<Device<?, ?, ?, ?>>() {
+                }, new OneObjectCallback<Device<?>>() {
                         @Override
-                        public void message(Device<?, ?, ?, ?> device) {
+                        public void message(Device<?> device) {
                                 updateDevice(device);
                         }
                 }, new OneObjectCallback<Boolean>() {
@@ -241,7 +241,7 @@ public class MainSimulationView extends JFrame {
 		scrollableMessagesPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 
-	private void resetDevice(final Device<?, ?, ?, ?> device, final Iterable<StatisticsGetter> statisticsGetters) {
+	private void resetDevice(final Device<?> device, final Iterable<StatisticsGetter> statisticsGetters) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				devicePanel.removeAll();
@@ -258,7 +258,7 @@ public class MainSimulationView extends JFrame {
 		});
 	}
 
-	private void updateDevice(final Device<?, ?, ?, ?> device) {
+	private void updateDevice(final Device<?> device) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				deviceView.setDevice(device);

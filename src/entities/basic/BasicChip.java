@@ -23,8 +23,8 @@ package entities.basic;
 
 import entities.Chip;
 
-public class BasicChip extends Chip<BasicPage, BasicBlock, BasicPlane> {
-	public static class Builder extends Chip.Builder<BasicPage, BasicBlock, BasicPlane> {
+public class BasicChip extends Chip<BasicPlane> {
+	public static class Builder extends Chip.Builder<BasicPlane> {
 		private BasicChip chip;
 		
 		public Builder () {

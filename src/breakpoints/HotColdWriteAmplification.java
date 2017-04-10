@@ -14,15 +14,16 @@ public class HotColdWriteAmplification extends BreakpointBase {
 	public HotColdWriteAmplification() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
 		if ((!(currentDevice instanceof HotColdDevice)) || (!(currentDevice instanceof HotColdDevice))) {
 			return false;
 		}
-		double oldValue = previousDevice == null ? Double.MIN_VALUE : 
-			HotColdWriteAmplificationGetter.getHotColdWA((HotColdDevice) previousDevice)[mPartitionIndex];
-		double currentValue = HotColdWriteAmplificationGetter.getHotColdWA((HotColdDevice) currentDevice)[mPartitionIndex];
+		double oldValue = previousDevice == null ? Double.MIN_VALUE
+				: HotColdWriteAmplificationGetter.getHotColdWA((HotColdDevice) previousDevice)[mPartitionIndex];
+		double currentValue = HotColdWriteAmplificationGetter
+				.getHotColdWA((HotColdDevice) currentDevice)[mPartitionIndex];
 		return oldValue < mValue && currentValue >= mValue;
 	}
 
@@ -34,22 +35,22 @@ public class HotColdWriteAmplification extends BreakpointBase {
 		if (!BreakpointsConstraints.isWriteAmplificationValueLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_AMP);
 		}
-		
+
 		mValue = value;
 	}
-	
+
 	public int getPartitionIndex() {
 		return mPartitionIndex;
 	}
-	
+
 	public void setPartitionIndex(int partitionIndex) throws Exception {
 		if (!BreakpointsConstraints.isPartitionIndexLegal(partitionIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PARTITION);
 		}
-		
+
 		mPartitionIndex = partitionIndex;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Write Amplification of partition " + mPartitionIndex + " reaches " + mValue;
@@ -68,23 +69,23 @@ public class HotColdWriteAmplification extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof HotColdWriteAmplification)) return false; 
+		if (!(other instanceof HotColdWriteAmplification))
+			return false;
 		HotColdWriteAmplification otherCasted = (HotColdWriteAmplification) other;
-		
-		return Double.compare(mValue,otherCasted.getValue()) == 0
+
+		return Double.compare(mValue, otherCasted.getValue()) == 0
 				&& mPartitionIndex == otherCasted.getPartitionIndex();
 	}
-	
+
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof HotColdSSDManager 
-				|| manager instanceof HotColdReusableSSDManager) {
+		if (manager instanceof HotColdSSDManager || manager instanceof HotColdReusableSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return "Hot-Cold partition write amplification reached " + mValue;

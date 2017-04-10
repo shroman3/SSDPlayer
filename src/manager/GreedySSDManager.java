@@ -47,7 +47,7 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	}
 	
 	@Override
-	public TraceParserGeneral<BasicDevice, GreedySSDManager> getTraseParser() {
+	public FileTraceParser<BasicDevice, GreedySSDManager> getFileTraseParser() {
 		return new BasicTraceParser<BasicDevice, GreedySSDManager>(this);
 	}
 
@@ -62,10 +62,10 @@ public class GreedySSDManager extends SSDManager<BasicPage, BasicBlock, BasicPla
 	}
 	
 	@Override
-	public List<WorkloadWidget<BasicDevice,	SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<BasicDevice,SSDManager<BasicPage, BasicBlock, BasicPlane, BasicChip, BasicDevice>>(this));
+	public List<WorkloadWidget<BasicDevice,	SSDManager<?, ?, ?, ?, BasicDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<BasicDevice,SSDManager<?, ?, ?, ?, BasicDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<BasicDevice,SSDManager<?, ?, ?, ?, BasicDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<BasicDevice,SSDManager<?, ?, ?, ?, BasicDevice>>(this));
 		return creators;
 	}
 	

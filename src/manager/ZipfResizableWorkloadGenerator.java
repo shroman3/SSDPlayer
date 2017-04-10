@@ -12,7 +12,7 @@ import entities.Device;
  * @author Or Mauda
  *
  */
-public class ZipfResizableWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
+public class ZipfResizableWorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> 
 	extends ResizableWorkloadGenerator<D, S> {
 	
 	private ZipfDistribution zipf;

@@ -28,15 +28,15 @@ import java.io.IOException;
 
 import entities.Device;
 
-public abstract class TraceParserGeneral<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
+public abstract class FileTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	protected BufferedReader br = null;
 
 	private String operationLine;
 	private S manager;
-	protected D device; //  November 2015: revised by Or Mauda for additional RAID functionality. changed from private to protected, to enable setDevice in RAID. 
+	private D device; //  November 2015: revised by Or Mauda for additional RAID functionality. changed from private to protected, to enable setDevice in RAID. 
 	private int lineNo = 0;
 
-	public TraceParserGeneral(S manager) {
+	public FileTraceParser(S manager) {
 		this.manager = manager;
 		device = manager.getEmptyDevice();
 	}
@@ -44,7 +44,6 @@ public abstract class TraceParserGeneral<D extends Device<?,?,?,?>, S extends SS
 	protected abstract D parseCommand(String command, int lineNo, D device, S manager) throws IOException;
 	public abstract  String getFileExtensions();
 	
-	@Override
 	public void open(String fileName) throws FileNotFoundException {
 		br = new BufferedReader(new FileReader(fileName));
 	}
@@ -84,5 +83,9 @@ public abstract class TraceParserGeneral<D extends Device<?,?,?,?>, S extends SS
 	@Override
 	public D getCurrentDevice() {
 		return device;
+	}
+	
+	protected void setDevice(D device) {
+		this.device = device;
 	}
 }

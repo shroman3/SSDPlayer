@@ -30,7 +30,7 @@ import entities.RAID.visualization.RAIDVisualizationDevice;
  * @author Or Mauda
  *
  */
-public class RAIDVisualizationTraceParser extends TraceParserGeneral<RAIDVisualizationDevice, RAIDVisualizationSSDManager> 
+public class RAIDVisualizationTraceParser extends FileTraceParser<RAIDVisualizationDevice, RAIDVisualizationSSDManager> 
 		implements SettableTraceParser<RAIDVisualizationDevice, RAIDVisualizationSSDManager> {
 
 	public RAIDVisualizationTraceParser(RAIDVisualizationSSDManager manager) {
@@ -51,6 +51,6 @@ public class RAIDVisualizationTraceParser extends TraceParserGeneral<RAIDVisuali
 	
 	@Override
 	public void setDevice(RAIDVisualizationDevice device) {
-		this.device = device;
+		super.setDevice(device);
 	}
 }

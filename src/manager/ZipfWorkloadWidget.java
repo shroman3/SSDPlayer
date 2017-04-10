@@ -27,7 +27,7 @@ import javax.swing.JFormattedTextField;
 
 import entities.Device;
 
-public class ZipfWorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
+public class ZipfWorkloadWidget <D extends Device<?>, S extends SSDManager<?,?,?,?,D>> 
 			extends UniformWorkloadWidget<D,S> {
 	private static final long serialVersionUID = 1L;
 

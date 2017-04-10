@@ -37,12 +37,12 @@ import general.Consts;
 public class PlaneView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private List<BlockView> blocksList;
-	private Plane<?,?> plane;
+	private Plane<?> plane;
 	private VisualConfig visualConfig;
 	private int chipIndex;
 	private int planeIndex;
     
-    public PlaneView(Plane<?,?> plane, int chipIndex, int planeIndex, VisualConfig visualConfig) {
+    public PlaneView(Plane<?> plane, int chipIndex, int planeIndex, VisualConfig visualConfig) {
 		this.plane = plane;
 		this.planeIndex = planeIndex;
 		this.chipIndex = chipIndex;
@@ -55,7 +55,7 @@ public class PlaneView extends JPanel {
 		setBackground(Consts.Colors.BG);
 	}
 
-	public void setPlane(Plane<?,?> plane) {
+	public void setPlane(Plane<?> plane) {
 		if(this.plane == plane){
 			return;
 		}

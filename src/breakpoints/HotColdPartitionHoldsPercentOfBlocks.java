@@ -16,32 +16,31 @@ public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 	public HotColdPartitionHoldsPercentOfBlocks() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if (!(currentDevice instanceof HotColdDevice)){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (!(currentDevice instanceof HotColdDevice)) {
 			return false;
 		}
-		
+
 		int totalNumberOfBlocks = 0, numberOfBlocksInPartition = 0;
-		HotColdPartition partition = ((HotColdDevice)currentDevice).getPartitions().get(mPartition);
-		
-		for (int i=0; i<ConfigProperties.getBlocksInDevice(); i++){
-			HotColdBlock currentBlock = (HotColdBlock)currentDevice.getBlockByIndex(i);
-			if(currentBlock.getPartition() == null){
+		HotColdPartition partition = ((HotColdDevice) currentDevice).getPartitions().get(mPartition);
+
+		for (int i = 0; i < ConfigProperties.getBlocksInDevice(); i++) {
+			HotColdBlock currentBlock = (HotColdBlock) currentDevice.getBlockByIndex(i);
+			if (currentBlock.getPartition() == null) {
 				continue;
 			}
 			totalNumberOfBlocks++;
-			if(currentBlock.getPartition().getDsiplayName().equals(partition.getDsiplayName())){
+			if (currentBlock.getPartition().getDsiplayName().equals(partition.getDsiplayName())) {
 				numberOfBlocksInPartition++;
 			}
 		}
-		if(totalNumberOfBlocks == 0){
+		if (totalNumberOfBlocks == 0) {
 			return false;
 		}
-		double percent = (numberOfBlocksInPartition / (double)totalNumberOfBlocks) * 100;
-		return Math.abs(percent  - mPercent) < 1 ;
+		double percent = (numberOfBlocksInPartition / (double) totalNumberOfBlocks) * 100;
+		return Math.abs(percent - mPercent) < 1;
 	}
 
 	@Override
@@ -68,7 +67,7 @@ public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 		if (!BreakpointsConstraints.isPartitionIndexLegal(partition)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PARTITION);
 		}
-		
+
 		mPartition = partition;
 	}
 
@@ -80,29 +79,28 @@ public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {
 		if (!BreakpointsConstraints.isPercentValueLegal(percent)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PERCENT);
 		}
-		
+
 		mPercent = percent;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof HotColdPartitionHoldsPercentOfBlocks)) return false; 
+		if (!(other instanceof HotColdPartitionHoldsPercentOfBlocks))
+			return false;
 		HotColdPartitionHoldsPercentOfBlocks otherCasted = (HotColdPartitionHoldsPercentOfBlocks) other;
-		
-		return mPercent == otherCasted.getPercent()
-				&& mPartition == otherCasted.getPartition();
+
+		return mPercent == otherCasted.getPercent() && mPartition == otherCasted.getPartition();
 	}
 
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof HotColdSSDManager 
-				|| manager instanceof HotColdReusableSSDManager) {
+		if (manager instanceof HotColdSSDManager || manager instanceof HotColdReusableSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return "HotCold partition " + getPartition() + " now holds " + getPercent() + " percent of blocks";

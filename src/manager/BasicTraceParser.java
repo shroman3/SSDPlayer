@@ -26,8 +26,7 @@ import java.io.IOException;
 import log.Message.ErrorMessage;
 import entities.Device;
 
-public class BasicTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParserGeneral<D,S> {
-
+public class BasicTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends FileTraceParser<D,S> {
 	public BasicTraceParser(S manager) {
 		super(manager);
 	}

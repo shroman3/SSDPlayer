@@ -9,12 +9,13 @@ public class WriteAmplification extends BreakpointBase {
 	public WriteAmplification() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
-		double oldValue = previousDevice == null ? Double.MIN_VALUE : WriteAmplificationGetter.computeWA(previousDevice);
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		double oldValue = previousDevice == null ? Double.MIN_VALUE
+				: WriteAmplificationGetter.computeWA(previousDevice);
 		double currentValue = WriteAmplificationGetter.computeWA(currentDevice);
-		
+
 		return oldValue < mValue && currentValue >= mValue;
 	}
 
@@ -26,10 +27,10 @@ public class WriteAmplification extends BreakpointBase {
 		if (!BreakpointsConstraints.isWriteAmplificationValueLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_AMP);
 		}
-		
+
 		mValue = value;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Write Amplification reaches " + mValue;
@@ -47,12 +48,13 @@ public class WriteAmplification extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof WriteAmplification)) return false; 
+		if (!(other instanceof WriteAmplification))
+			return false;
 		WriteAmplification otherCasted = (WriteAmplification) other;
-		
-		return Double.compare(mValue,otherCasted.getValue()) == 0;
+
+		return Double.compare(mValue, otherCasted.getValue()) == 0;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return "Write amplification reached " + mValue;

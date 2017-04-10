@@ -50,12 +50,12 @@ public class BlockStateDistributionGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
+	public List<StatisticsColumn> getStatistics(Device<?> device) {
 		int[] generalCounters = new int[BlockStatusGeneral.values().length];
 		int[] secondWritesCounters = new int[ReusableBlockStatus.values().length];
 		
-		for (Chip<?,?,?> chip : device.getChips()) {
-			for (Plane<?,?> plane : chip.getPlanes()) {				
+		for (Chip<?> chip : device.getChips()) {
+			for (Plane<?> plane : chip.getPlanes()) {				
 				for (Block<?> block : plane.getBlocks()) {
 					if (block.getStatus() instanceof ReusableBlockStatus) {
 						ReusableBlockStatus secondWritesBlockStatus = (ReusableBlockStatus) block.getStatus();
@@ -89,7 +89,7 @@ public class BlockStateDistributionGetter implements StatisticsGetter {
 	}
 	
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return null;
 	}
 }

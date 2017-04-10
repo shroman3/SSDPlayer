@@ -6,7 +6,7 @@ import javax.swing.JFormattedTextField;
 
 import entities.Device;
 
-public class UniformResizableWorkloadWidget<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends ResizableWorkloadWidget<D, S> {
+public class UniformResizableWorkloadWidget<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends ResizableWorkloadWidget<D, S> {
 
 	private static final long serialVersionUID = 1L;
 	

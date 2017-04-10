@@ -23,6 +23,6 @@ package manager;
 
 import entities.Device;
 
-public interface SettableTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParser<D,S> {
+public interface SettableTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends TraceParser<D,S> {
 	public void setDevice(D device);
 }

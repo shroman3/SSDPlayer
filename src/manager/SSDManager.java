@@ -75,7 +75,7 @@ import zoom.SmallBlocksValidCountZoomLevel;
  * @param <C> - Chip
  * @param <D> - Device
  */
-public abstract class SSDManager<P extends Page, B extends Block<P>, T extends Plane<P,B>, C extends Chip<P,B,T>, D extends Device<P,B,T,C>> {
+public abstract class SSDManager<P extends Page, B extends Block<P>, T extends Plane<B>, C extends Chip<T>, D extends Device<C>> {
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static List<String> simulatorsList = new ArrayList<>();
 	private static List<String> visualizationsList = new ArrayList<>();
@@ -159,7 +159,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	/**
 	 * @return get trace parser for this manager
 	 */
-	abstract public TraceParserGeneral<D, ? extends SSDManager<P,B,T,C,D>> getTraseParser();
+	abstract public FileTraceParser<D, ? extends SSDManager<P,B,T,C,D>> getFileTraseParser();
 	/**
 	 * @return get list for statistic getters
 	 */
@@ -299,7 +299,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 * This is the method to overload in order to add workload generators of your liking. 
 	 * @return List of Workload Generators applicable with current SSDManager.
 	 */
-	public List<WorkloadWidget<D,SSDManager<P,B,T,C,D>>> getWorkLoadGeneratorWidgets() {
+	public List<WorkloadWidget<D,SSDManager<?,?,?,?,D>>> getWorkLoadGeneratorWidgets() {
 		return null;
 	}
 	

@@ -66,7 +66,7 @@ import log.Message.InfoMessage;
 import manager.RAIDBasicSSDManager;
 import manager.SSDManager;
 import manager.TraceParser;
-import manager.TraceParserGeneral;
+import manager.FileTraceParser;
 import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.InfoDialog;
@@ -97,7 +97,7 @@ public class TracePlayer extends JPanel {
 	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
 
 	private JProgressBar progressBar;
-	private TraceParser<?, ?> parser;
+	private TraceParser<? extends Device<?>, ?> parser;
 
 	private JFileChooser traceChooser;
 	private JLabel stopLabel;
@@ -114,17 +114,17 @@ public class TracePlayer extends JPanel {
 
 	private SeparatorComboBox managersList;
 
-	private static SSDManager<?, ?, ?, ?, ?> manager;
+	private static SSDManager<?, ?, ?, ?, ? extends Device<?>> manager;
 
 	private LoadGeneratorsCreatorsFrame creatorsFrame;
 
 	private StripesInfoFrame stripesFrame;
 
-	private OneObjectCallback<Device<?, ?, ?, ?>> updateDeviceView;
+	private OneObjectCallback<Device<?>> updateDeviceView;
 
-	private TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice;
+	private TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice;
 
-	private Device<?, ?, ?, ?> currentDevice;
+	private Device<?> currentDevice;
 
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
@@ -137,8 +137,8 @@ public class TracePlayer extends JPanel {
 	private boolean abortSignal = false;
 
 	public TracePlayer(VisualConfig visualConfig,
-			TwoObjectsCallback<Device<?, ?, ?, ?>, Iterable<StatisticsGetter>> resetDevice,
-			OneObjectCallback<Device<?, ?, ?, ?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView) {
+			TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice,
+			OneObjectCallback<Device<?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView) {
 		Utils.validateNotNull(updateDeviceView, "Update device callback");
 		Utils.validateNotNull(resetDevice, "Reset device callback");
 		this.resetDevice = resetDevice;
@@ -230,7 +230,7 @@ public class TracePlayer extends JPanel {
 
 	private void setManager(String managerName) {
 		manager = SSDManager.getManager(managerName);
-		TraceParserGeneral<?, ?> traseParser = manager.getTraseParser();
+		FileTraceParser<? extends Device<?>, ?> traseParser = manager.getFileTraseParser();
 		traceChooser = new JFileChooser();
 		File workingDirectory = new File(System.getProperty("user.dir"));
 		traceChooser.setCurrentDirectory(workingDirectory);
@@ -368,12 +368,13 @@ public class TracePlayer extends JPanel {
 		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
-		parser = manager.getTraseParser();
 		String fileName = traceChooser.getSelectedFile().getPath();
 		if (fileName != null) {
+			FileTraceParser<?, ?> fileTraceParser = manager.getFileTraseParser();
 			try {
 				resetProgressBar(fileName);
-				parser.open(fileName);
+				fileTraceParser.open(fileName);
+				parser = fileTraceParser;
 				reStartTimer();
 				if (stripesFrame != null) {
 					StripesInfoFrame.reset(stripesFrame);
@@ -501,14 +502,14 @@ public class TracePlayer extends JPanel {
 			return false;
 		}
 		try {
-			Device<?, ?, ?, ?> updatedDevice = parser.parseNextCommand();
+			Device<?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
 				updateDeviceView.message(updatedDevice);
 				// FrameCounter runs from 0 to numberOfLines-1, displayed from 1 to numberOfLines
 				setProgressBarFrame(currFrameCounter + 1);
 				++currFrameCounter;
 
-				Device<?, ?, ?, ?> previousDevice = currentDevice;
+				Device<?> previousDevice = currentDevice;
 				currentDevice = updatedDevice;
 				updateInfo(currentDevice, currFrameCounter);
 				checkBreakpoints(previousDevice, currentDevice);
@@ -525,11 +526,11 @@ public class TracePlayer extends JPanel {
 		return true;
 	}
 
-	private void updateInfo(Device<?, ?, ?, ?> currentDevice, int currFrameCounter) {
+	private void updateInfo(Device<?> currentDevice, int currFrameCounter) {
 		this.infoDialog.setDevice(currentDevice, currFrameCounter - 1);
 	}
 
-	private void checkBreakpoints(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+	private void checkBreakpoints(Device<?> previousDevice, Device<?> currentDevice) {
 		boolean anyHits = false;
 
 		for (IBreakpoint breakpoint : breakpoints) {

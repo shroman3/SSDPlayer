@@ -6,13 +6,13 @@ public class GCNthTimePlane extends BreakpointBase {
 	private int mChipIndex;
 	private int mPlaneIndex;
 	private int mValue;
-	
+
 	public GCNthTimePlane() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
 		if (previousDevice == null) {
 			return false;
 		}
@@ -22,7 +22,7 @@ public class GCNthTimePlane extends BreakpointBase {
 
 		return (prevGCCount != this.mValue) && (currGCCount == this.mValue);
 	}
-	
+
 	public int getValue() {
 		return mValue;
 	}
@@ -31,7 +31,7 @@ public class GCNthTimePlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isGCCountLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mValue = value;
 	}
 
@@ -43,10 +43,10 @@ public class GCNthTimePlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
-	
+
 	public int getChipIndex() {
 		return mChipIndex;
 	}
@@ -55,7 +55,7 @@ public class GCNthTimePlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
@@ -66,11 +66,8 @@ public class GCNthTimePlane extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Number of garbage collection invocations is " + getValue() + " in plane (<chip,plane>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex
-				+ ">";
+		return "Number of garbage collection invocations is " + getValue() + " in plane (<chip,plane>): " + "<"
+				+ mChipIndex + "," + mPlaneIndex + ">";
 	}
 
 	@Override
@@ -82,20 +79,17 @@ public class GCNthTimePlane extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof GCNthTimePlane)) return false; 
+		if (!(other instanceof GCNthTimePlane))
+			return false;
 		GCNthTimePlane otherCasted = (GCNthTimePlane) other;
-		
-		return mPlaneIndex == otherCasted.getPlaneIndex()
-				&& mValue == otherCasted.getValue()
+
+		return mPlaneIndex == otherCasted.getPlaneIndex() && mValue == otherCasted.getValue()
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return "Number of garbage collection invocations in plane (<chip,plane>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex
-				+ "> reached " + getValue();
+		return "Number of garbage collection invocations in plane (<chip,plane>): " + "<" + mChipIndex + ","
+				+ mPlaneIndex + "> reached " + getValue();
 	}
 }

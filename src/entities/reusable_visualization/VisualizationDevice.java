@@ -30,8 +30,8 @@ import entities.BlockStatus;
 import entities.Device;
 
 
-public class VisualizationDevice extends Device<VisualizationPage, VisualizationBlock, VisualizationPlane, VisualizationChip> {
-	public static class Builder extends Device.Builder<VisualizationPage, VisualizationBlock, VisualizationPlane, VisualizationChip> {
+public class VisualizationDevice extends Device<VisualizationChip> {
+	public static class Builder extends Device.Builder<VisualizationChip> {
 		private VisualizationDevice device;		
 
 		public Builder() {

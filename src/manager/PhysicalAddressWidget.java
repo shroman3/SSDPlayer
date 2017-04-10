@@ -41,8 +41,8 @@ import utils.Utils;;
  * @author Or Mauda
  *
  */
-public class PhysicalAddressWidget <P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>, C extends RAIDBasicChip<P,B,T>, D extends RAIDBasicDevice<P,B,T,C>, S extends RAIDBasicSSDManager<P, B, T, C, D>>
-	extends AddressWidget<P,B,T,C,D,S> {
+public class PhysicalAddressWidget<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P, B>, C extends RAIDBasicChip<P, B, T>, D extends RAIDBasicDevice<P, B, T, C>, S extends RAIDBasicSSDManager<P, B, T, C, D>>
+		extends AddressWidget<P, B, T, C, D, S> {
 	private static final long serialVersionUID = 1L;
 
 	private JFormattedTextField chipInput;
@@ -53,63 +53,63 @@ public class PhysicalAddressWidget <P extends RAIDBasicPage, B extends RAIDBasic
 	public PhysicalAddressWidget(S manager) {
 		this("Physical Page", manager);
 	}
-	
+
 	protected PhysicalAddressWidget(String name, S manager) {
 		super(name, manager);
 		chipInput = new JFormattedTextField(new DecimalFormat());
 		chipInput.setValue(0);
 		addField(chipInput, "chip");
-		
+
 		planeInput = new JFormattedTextField(new DecimalFormat());
 		planeInput.setValue(0);
 		addField(planeInput, "plane");
-		
+
 		blockInput = new JFormattedTextField(new DecimalFormat());
 		blockInput.setValue(0);
 		addField(blockInput, "block");
-		
+
 		pageInput = new JFormattedTextField(new DecimalFormat());
 		pageInput.setValue(0);
 		addField(pageInput, "page");
 	}
-	
+
 	@Override
-	public Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> getStripeInformation() throws Exception {
-		Triplet<Integer, List<P>, RAIDBasicDevice<P, B, T, C>> information = device.setHighlightByPhysicalP(true, getChip(), getPlane(), getBlock(), getPage());
+	public Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> getStripeInformation() throws Exception {
+		Triplet<Integer, List<P>, ? extends RAIDBasicDevice<P, B, T, C>> information = device
+				.setHighlightByPhysicalP(true, getChip(), getPlane(), getBlock(), getPage());
 		if (information.getValue0() == -1) { // means we didn't find this page
 			throw new Exception("This page doesn't exist.");
 		}
 		return information;
 	}
-	
-	
+
 	protected int getChip() {
-		return ((Number)chipInput.getValue()).intValue();
+		return ((Number) chipInput.getValue()).intValue();
 	}
-	
+
 	protected int getPlane() {
-		return ((Number)planeInput.getValue()).intValue();
+		return ((Number) planeInput.getValue()).intValue();
 	}
-	
+
 	protected int getBlock() {
-		return ((Number)blockInput.getValue()).intValue();
+		return ((Number) blockInput.getValue()).intValue();
 	}
-	
+
 	protected int getPage() {
-		return ((Number)pageInput.getValue()).intValue();
+		return ((Number) pageInput.getValue()).intValue();
 	}
-	
+
 	public void validateParms() {
-		double chip = ((Number)chipInput.getValue()).doubleValue();
-		double plane = ((Number)planeInput.getValue()).doubleValue();
-		double block = ((Number)blockInput.getValue()).doubleValue();
-		double page = ((Number)pageInput.getValue()).doubleValue();
-		
+		double chip = ((Number) chipInput.getValue()).doubleValue();
+		double plane = ((Number) planeInput.getValue()).doubleValue();
+		double block = ((Number) blockInput.getValue()).doubleValue();
+		double page = ((Number) pageInput.getValue()).doubleValue();
+
 		Utils.validateNotNegative(chip, "chip");
 		Utils.validateNotNegative(plane, "plane");
 		Utils.validateNotNegative(block, "block");
 		Utils.validateNotNegative(page, "page");
-		
+
 		Utils.validateInteger(chip, "chip");
 		Utils.validateInteger(plane, "plane");
 		Utils.validateInteger(block, "block");

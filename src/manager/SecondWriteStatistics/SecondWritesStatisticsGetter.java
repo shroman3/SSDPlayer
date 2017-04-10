@@ -37,7 +37,7 @@ public abstract class SecondWritesStatisticsGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> someDevice) {
+	public List<StatisticsColumn> getStatistics(Device<?> someDevice) {
 		if (!(someDevice instanceof ReusableDevice)) {
 			return null;
 		}

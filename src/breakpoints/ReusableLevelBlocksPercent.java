@@ -15,29 +15,28 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 	public ReusableLevelBlocksPercent() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if (!(currentDevice instanceof ReusableDevice)){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (!(currentDevice instanceof ReusableDevice)) {
 			return false;
 		}
-		
+
 		int totalNumberOfBlocks = 0, numberOfBlocksInLevel = 0;
-		
-		for (int i=0; i<ConfigProperties.getBlocksInDevice(); i++){
-			ReusableBlock currentBlock = (ReusableBlock)currentDevice.getBlockByIndex(i);
-			if(currentBlock.getWriteLevel() == mLevel){
+
+		for (int i = 0; i < ConfigProperties.getBlocksInDevice(); i++) {
+			ReusableBlock currentBlock = (ReusableBlock) currentDevice.getBlockByIndex(i);
+			if (currentBlock.getWriteLevel() == mLevel) {
 				numberOfBlocksInLevel++;
 			}
 			totalNumberOfBlocks++;
-		
+
 		}
-		if(totalNumberOfBlocks == 0){
+		if (totalNumberOfBlocks == 0) {
 			return false;
 		}
-		double percent = (numberOfBlocksInLevel / (double)totalNumberOfBlocks) * 100;
-		return Math.abs(percent  - mPercent) < 1 ;
+		double percent = (numberOfBlocksInLevel / (double) totalNumberOfBlocks) * 100;
+		return Math.abs(percent - mPercent) < 1;
 	}
 
 	@Override
@@ -64,7 +63,7 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 		if (!BreakpointsConstraints.isWriteLevelLegal(level)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_WRITE_LEVEL);
 		}
-		
+
 		mLevel = level;
 	}
 
@@ -76,29 +75,28 @@ public class ReusableLevelBlocksPercent extends BreakpointBase {
 		if (!BreakpointsConstraints.isPercentValueLegal(percent)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PERCENT);
 		}
-		
+
 		mPercent = percent;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof ReusableLevelBlocksPercent)) return false; 
+		if (!(other instanceof ReusableLevelBlocksPercent))
+			return false;
 		ReusableLevelBlocksPercent otherCasted = (ReusableLevelBlocksPercent) other;
-		
-		return mLevel == otherCasted.getLevel()
-				&& mPercent == otherCasted.getPercent();
+
+		return mLevel == otherCasted.getLevel() && mPercent == otherCasted.getPercent();
 	}
 
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof ReusableSSDManager 
-				|| manager instanceof ReusableVisualizationSSDManager) {
+		if (manager instanceof ReusableSSDManager || manager instanceof ReusableVisualizationSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return mPercent + " percent of reusable blocks in write level " + mLevel;

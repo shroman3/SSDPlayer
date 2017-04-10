@@ -28,7 +28,7 @@ import org.apache.commons.math3.random.JDKRandomGenerator;
 
 import entities.Device;
 
-public class ZipfWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadGenerator<D,S> {
+public class ZipfWorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadGenerator<D,S> {
 	private ZipfDistribution zipf;
 	private int seed;
 	private double exponent;

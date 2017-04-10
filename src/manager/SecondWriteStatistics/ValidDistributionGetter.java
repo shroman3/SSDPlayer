@@ -85,7 +85,7 @@ public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 	}
 
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		List<StatisticsColumn> statistics = getStatistics(device);
 		StringBuilder sb = new StringBuilder();
 		int colCount = 0;

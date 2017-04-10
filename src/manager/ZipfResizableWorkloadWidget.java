@@ -6,7 +6,7 @@ import javax.swing.JFormattedTextField;
 
 import entities.Device;
 
-public class ZipfResizableWorkloadWidget<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>>
+public class ZipfResizableWorkloadWidget<D extends Device<?>, S extends SSDManager<?,?,?,?,D>>
 	extends UniformResizableWorkloadWidget<D, S> {
 
 	private static final long serialVersionUID = 1L;

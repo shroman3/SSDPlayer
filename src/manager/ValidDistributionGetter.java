@@ -50,10 +50,10 @@ public class ValidDistributionGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
+	public List<StatisticsColumn> getStatistics(Device<?> device) {
 		int[] counters = new int[getNumberOfColumns()];
-		for (Chip<?,?,?> chip : device.getChips()) {
-			for (Plane<?,?> plane : chip.getPlanes()) {
+		for (Chip<?> chip : device.getChips()) {
+			for (Plane<?> plane : chip.getPlanes()) {
 				for (Block<?> block : plane.getBlocks()) {					
 					counters[block.getValidCounter()]++;
 				}
@@ -70,7 +70,7 @@ public class ValidDistributionGetter implements StatisticsGetter {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		List<StatisticsColumn> statistics = getStatistics(device);
 		StringBuilder sb = new StringBuilder();
 		int colCount = 0;

@@ -29,7 +29,6 @@ import java.util.Set;
 import org.javatuples.Triplet;
 
 import entities.ActionLog;
-import entities.Device;
 import entities.WriteInStripeAction;
 import entities.WriteLpAction;
 import entities.RAID.RAIDBasicDevice;
@@ -112,7 +111,7 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 	
 
 	@Override
-	public Device<RAIDPage,RAIDBlock,RAIDPlane,RAIDChip> writeLP(int lp, int size) {
+	public RAIDDevice writeLP(int lp, int size) {
 		/* write the data pages */
 		boolean isFirstWrite = true; // if size > 1, this field gets false after the first write 
 		RAIDDevice tempDevice = (RAIDDevice) getSelfBuilder().build();
@@ -224,25 +223,4 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 	 * @return the parity chip index
 	 */
 	protected abstract int getParityChipIndex(int lp, int parityNumber);
-	
-//	public RAIDDevice setChip(RAIDChip chip, int chipIndex) {
-//		Builder deviceBuilder = (Builder) getSelfBuilder();
-//		List<RAIDChip> newChipsList = getNewChipsList();
-//		newChipsList.set(chipIndex, chip);
-//		deviceBuilder.setChips(newChipsList);
-//		return (RAIDDevice) deviceBuilder.build();
-//	}
-//	
-//	public RAIDDevice changeGC(Triplet<Integer, Integer, Integer> blockIndex, boolean isInGC) {
-//		RAIDChip chip = getChip(blockIndex.getValue0());
-//		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
-//		return setChip(chip.changeGC(blockInChip, isInGC), blockIndex.getValue0());
-//	}
-//	
-//	public RAIDDevice eraseBlock(Triplet<Integer, Integer, Integer> blockIndex) {
-//		RAIDChip chip = getChip(blockIndex.getValue0());
-//		Pair<Integer, Integer> blockInChip = new Pair<Integer, Integer>(blockIndex.getValue1(), blockIndex.getValue2());
-//		return setChip(chip.eraseBlock(blockInChip), blockIndex.getValue0());
-//	}
-
 }

@@ -24,11 +24,7 @@ package manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.reusable.ReusableBlock;
-import entities.reusable.ReusableChip;
 import entities.reusable.ReusableDevice;
-import entities.reusable.ReusablePage;
-import entities.reusable.ReusablePlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import ui.WorkloadWidget;
@@ -43,15 +39,15 @@ public class HotColdReusableSSDManager extends ReusableSSDManager {
 	}
 	
 	@Override
-	public TraceParserGeneral<ReusableDevice, ReusableSSDManager> getTraseParser() {
+	public FileTraceParser<ReusableDevice, ReusableSSDManager> getFileTraseParser() {
 		return new HotColdTraceParser<ReusableDevice, ReusableSSDManager>(this);
 	}
 	
 	@Override
-	public List<WorkloadWidget<ReusableDevice, SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+	public List<WorkloadWidget<ReusableDevice, SSDManager<?, ?, ?, ?, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>(this));
 		return creators;
 	}
 	

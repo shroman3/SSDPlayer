@@ -93,7 +93,7 @@ public class WriteLevelDistributionGetter extends SimulationStatisticsGetter {
 	}
 
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return null;
 	}
 

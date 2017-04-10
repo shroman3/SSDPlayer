@@ -17,24 +17,21 @@ public class ReusableBlockRecycled extends BreakpointBase {
 	public ReusableBlockRecycled() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(!(currentDevice instanceof ReusableDevice)){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (!(currentDevice instanceof ReusableDevice)) {
 			return false;
 		}
-		if(previousDevice == null){
+		if (previousDevice == null) {
 			return false;
 		}
-		
-		ReusableBlock currentBlock = (ReusableBlock) currentDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex)
+
+		ReusableBlock currentBlock = (ReusableBlock) currentDevice.getChip(mChipIndex).getPlane(mPlaneIndex)
 				.getBlock(mBlockIndex);
-		ReusableBlock prevBlock = (ReusableBlock) previousDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex)
+		ReusableBlock prevBlock = (ReusableBlock) previousDevice.getChip(mChipIndex).getPlane(mPlaneIndex)
 				.getBlock(mBlockIndex);
-		return (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED 
+		return (currentBlock.getStatus() == ReusableBlockStatus.RECYCLED
 				&& prevBlock.getStatus() != ReusableBlockStatus.RECYCLED);
 	}
 
@@ -45,11 +42,7 @@ public class ReusableBlockRecycled extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return "Reusable block (<chip,plane,block>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex
+		return "Reusable block (<chip,plane,block>): " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex
 				+ "> is recycled";
 	}
 
@@ -68,10 +61,10 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		if (!BreakpointsConstraints.isBlockIndexLegal(blockIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_BLOCK);
 		}
-		
+
 		mBlockIndex = blockIndex;
 	}
-	
+
 	public int getPlaneIndex() {
 		return mPlaneIndex;
 	}
@@ -80,10 +73,10 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
-	
+
 	public int getChipIndex() {
 		return mChipIndex;
 	}
@@ -92,37 +85,32 @@ public class ReusableBlockRecycled extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof ReusableBlockRecycled)) return false; 
+		if (!(other instanceof ReusableBlockRecycled))
+			return false;
 		ReusableBlockRecycled otherCasted = (ReusableBlockRecycled) other;
-		
-		return mBlockIndex == otherCasted.getBlockIndex()
-				&& mPlaneIndex == otherCasted.getPlaneIndex()
+
+		return mBlockIndex == otherCasted.getBlockIndex() && mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
 
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof ReusableSSDManager 
-				|| manager instanceof ReusableVisualizationSSDManager) {
+		if (manager instanceof ReusableSSDManager || manager instanceof ReusableVisualizationSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return "Reusable block (<chip,plane,block>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex + ","
-				+ mBlockIndex
+		return "Reusable block (<chip,plane,block>): " + "<" + mChipIndex + "," + mPlaneIndex + "," + mBlockIndex
 				+ "> was recycled";
 	}
 }

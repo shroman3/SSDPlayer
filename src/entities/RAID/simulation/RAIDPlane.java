@@ -36,9 +36,6 @@ import entities.RAID.RAIDBasicPlane;
  *
  */
 public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
-	public int totalDataWritten;
-	public int totalParityWritten;
-
 	public static class Builder extends RAIDBasicPlane.Builder<RAIDPage, RAIDBlock> {
 		private RAIDPlane plane;
 		
@@ -74,7 +71,10 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 			return this;
 		}
 	}
-	
+
+	private int totalDataWritten;
+	private int totalParityWritten;
+
 	protected RAIDPlane() {}
 		
 	protected RAIDPlane(RAIDPlane other) {
@@ -86,14 +86,6 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
-	}
-	
-	RAIDPlane setBlock(RAIDBlock block, int index) {
-		List<RAIDBlock> newBlocksList = getNewBlocksList();
-		newBlocksList.set(index, block);
-		Builder builder = getSelfBuilder();
-		builder.setBlocks(newBlocksList).setTotalWritten(getTotalWritten());
-		return builder.build();
 	}
 
 	public RAIDPlane writeLP(int lp, int stripe) {
@@ -140,6 +132,22 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		}
 		return cleanRAIDPlane();
 	}
+
+	public int getTotalDataWritten() {
+		return this.totalDataWritten;
+	}
+
+	public int getTotalParityWritten() {
+		return this.totalParityWritten;
+	}
+
+	public EntityInfo getInfo() {
+		EntityInfo result = super.getInfo();
+
+		result.add("Total parity pages written", Integer.toString(getTotalParityWritten()), 2);
+		result.add("Total data pages written", Integer.toString(getTotalDataWritten()), 2);
+		return result;
+	}
 	
 	@Override
 	protected Pair<RAIDPlane, Integer> cleanPlane() {
@@ -180,19 +188,12 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 				.setTotalGCInvocations(getTotalGCInvocations() + 1);
 		return new Triplet<>(builder.build(), dataToMove, parityToMove);
 	}
-	public int getTotalDataWritten() {
-		return this.totalDataWritten;
-	}
-
-	public int getTotalParityWritten() {
-		return this.totalParityWritten;
-	}
-
-	public EntityInfo getInfo() {
-		EntityInfo result = super.getInfo();
-
-		result.add("Total parity pages written", Integer.toString(getTotalParityWritten()), 2);
-		result.add("Total data pages written", Integer.toString(getTotalDataWritten()), 2);
-		return result;
+	
+	RAIDPlane setBlock(RAIDBlock block, int index) {
+		List<RAIDBlock> newBlocksList = getNewBlocksList();
+		newBlocksList.set(index, block);
+		Builder builder = getSelfBuilder();
+		builder.setBlocks(newBlocksList).setTotalWritten(getTotalWritten());
+		return builder.build();
 	}
 }

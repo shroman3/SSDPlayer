@@ -30,8 +30,8 @@ import org.javatuples.Pair;
 import utils.Utils;
 import entities.Plane;
 
-public class VisualizationPlane extends Plane<VisualizationPage, VisualizationBlock> {
-	public static class Builder extends Plane.Builder<VisualizationPage, VisualizationBlock> {
+public class VisualizationPlane extends Plane<VisualizationBlock> {
+	public static class Builder extends Plane.Builder<VisualizationBlock> {
 		private VisualizationPlane plane;
 		
 		public Builder() {
@@ -88,13 +88,13 @@ public class VisualizationPlane extends Plane<VisualizationPage, VisualizationBl
 	}
 
 	@Override
-	public Plane<VisualizationPage, VisualizationBlock> writeLP(int lp, int arg) {
+	public Plane<VisualizationBlock> writeLP(int lp, int arg) {
 		return null;
 	}
 
 	
 	@Override
-	protected Pair<? extends Plane<VisualizationPage, VisualizationBlock>, Integer> cleanPlane() {
+	protected Pair<? extends Plane<VisualizationBlock>, Integer> cleanPlane() {
 		return null;
 	}
 }

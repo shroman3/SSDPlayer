@@ -50,7 +50,7 @@ public class StatisticsView extends JPanel {
 		return graphsList;
 	}
 
-	public void updateStatistics(Device<?,?,?,?> device) {
+	public void updateStatistics(Device<?> device) {
     	for (GeneralStatisticsGraph statisticsGraph : graphsList) {
 			statisticsGraph.updateStatistics(device);
 		}

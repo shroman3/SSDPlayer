@@ -51,17 +51,17 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
+	public List<StatisticsColumn> getStatistics(Device<?> device) {
 		double pagesToErase = getLogicalWritesPerErase(device);
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn("total writes to logical writes", pagesToErase, false));
 		return list;
 	}
 
-	public static double getLogicalWritesPerErase(Device<?, ?, ?, ?> device) {
+	public static double getLogicalWritesPerErase(Device<?> device) {
 		int erases = 0;
-		for (Chip<?,?,?> chip : device.getChips()) {
-			for (Plane<?,?> plane : chip.getPlanes()) {
+		for (Chip<?> chip : device.getChips()) {
+			for (Plane<?> plane : chip.getPlanes()) {
 				for (Block<?> block : plane.getBlocks()) {					
 					erases += block.getEraseCounter();
 				}
@@ -83,7 +83,7 @@ public class LogicalWritesPerEraseGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return new AbstractMap.SimpleEntry<>("Writes per erase", Double.toString(getLogicalWritesPerErase(device)));
 	}
 }

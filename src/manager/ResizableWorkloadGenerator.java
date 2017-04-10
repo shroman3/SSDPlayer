@@ -12,7 +12,7 @@ import entities.Device;
  * @author Or Mauda
  *
  */
-public abstract class ResizableWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
+public abstract class ResizableWorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> 
 	extends WorkloadGenerator<D, S> implements SettableTraceParser<D, S> {
 
 	private boolean isWriteSizeUniform; // true value indicates the write size

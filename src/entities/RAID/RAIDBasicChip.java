@@ -13,8 +13,8 @@ import entities.Chip;
  * @author Or Mauda
  * 
  */
-public abstract class RAIDBasicChip<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>> extends Chip<P,B,T> {
-	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>> extends Chip.Builder<P,B,T> {
+public abstract class RAIDBasicChip<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>> extends Chip<T> {
+	public static abstract class Builder<P extends RAIDBasicPage, B extends RAIDBasicBlock<P>, T extends RAIDBasicPlane<P,B>> extends Chip.Builder<T> {
 		public abstract RAIDBasicChip<P,B,T> build();
 	}
 	
@@ -27,7 +27,7 @@ public abstract class RAIDBasicChip<P extends RAIDBasicPage, B extends RAIDBasic
 	public abstract Builder<P,B,T> getSelfBuilder();
 	
 	@SuppressWarnings("unchecked")
-	public Chip<P, B, T> invalidate(int stripe, int parityNumber) {
+	public RAIDBasicChip<P, B, T> invalidate(int stripe, int parityNumber) {
 		List<T> updatedPlanes = new ArrayList<T>();
 		for (T plane : getPlanes()) {
 			updatedPlanes.add((T) plane.invalidate(stripe, parityNumber));
@@ -80,11 +80,11 @@ public abstract class RAIDBasicChip<P extends RAIDBasicPage, B extends RAIDBasic
 	 * @return a triplet, which first value is the stripe, second value is a list of the pages on the same stripe, third value is the updated chip.
 	 */
 	@SuppressWarnings("unchecked")
-	public Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>> setHighlightByPhysicalP(boolean toHighlight, int stripe) {
+	public Triplet<Integer, List<P>, ? extends RAIDBasicChip<P, B, T>> setHighlightByPhysicalP(boolean toHighlight, int stripe) {
 		List<P> pages = new ArrayList<P>(0);
 		List<T> chipPlanes = new ArrayList<T>();
-		Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>> details = new Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>>(-1, null, null);
-		Triplet<Integer, List<P>, RAIDBasicPlane<P, B>> planeDetails;
+		Triplet<Integer, List<P>, ? extends RAIDBasicChip<P, B, T>> details = new Triplet<Integer, List<P>, RAIDBasicChip<P, B, T>>(-1, null, null);
+		Triplet<Integer, List<P>, ? extends RAIDBasicPlane<P, B>> planeDetails;
 		for (T plane : getPlanes()) {
 			planeDetails = plane.setHighlightByPhysicalP(toHighlight, stripe);
 			if (planeDetails.getValue0() != -1) { // means we found a plane which includes a page on our stripe

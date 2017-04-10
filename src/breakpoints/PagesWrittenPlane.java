@@ -9,21 +9,17 @@ public class PagesWrittenPlane extends BreakpointBase {
 	private int mPlaneIndex;
 	private int mChipIndex;
 
-	public PagesWrittenPlane(){
+	public PagesWrittenPlane() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(previousDevice == null){
-			return ((Plane<?, ?>)currentDevice.getChip(mChipIndex)
-					.getPlane(mPlaneIndex)).getTotalWritten() == mCount; 
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (previousDevice == null) {
+			return ((Plane<?>) currentDevice.getChip(mChipIndex).getPlane(mPlaneIndex)).getTotalWritten() == mCount;
 		}
-		return ((Plane<?, ?>)currentDevice.getChip(mChipIndex)
-				.getPlane(mPlaneIndex)).getTotalWritten() == mCount 
-				&& ((Plane<?, ?>)previousDevice.getChip(mChipIndex)
-						.getPlane(mPlaneIndex)).getTotalWritten() != mCount;
+		return ((Plane<?>) currentDevice.getChip(mChipIndex).getPlane(mPlaneIndex)).getTotalWritten() == mCount
+				&& ((Plane<?>) previousDevice.getChip(mChipIndex).getPlane(mPlaneIndex)).getTotalWritten() != mCount;
 	}
 
 	@Override
@@ -33,11 +29,7 @@ public class PagesWrittenPlane extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return getCount() + " pages are written in plane (<chip,plane>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex
-				+ ">";
+		return getCount() + " pages are written in plane (<chip,plane>): " + "<" + mChipIndex + "," + mPlaneIndex + ">";
 	}
 
 	@Override
@@ -55,7 +47,7 @@ public class PagesWrittenPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mCount = count;
 	}
 
@@ -67,10 +59,10 @@ public class PagesWrittenPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
-	
+
 	public int getChipIndex() {
 		return mChipIndex;
 	}
@@ -79,26 +71,23 @@ public class PagesWrittenPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof PagesWrittenPlane)) return false; 
+		if (!(other instanceof PagesWrittenPlane))
+			return false;
 		PagesWrittenPlane otherCasted = (PagesWrittenPlane) other;
-		
-		return mCount == otherCasted.getCount()
-				&& mPlaneIndex == otherCasted.getPlaneIndex()
+
+		return mCount == otherCasted.getCount() && mPlaneIndex == otherCasted.getPlaneIndex()
 				&& mChipIndex == otherCasted.getChipIndex();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
-		return getCount() + " pages were written in plane (<chip,plane>): "
-				+ "<" 
-				+ mChipIndex + ","
-				+ mPlaneIndex
+		return getCount() + " pages were written in plane (<chip,plane>): " + "<" + mChipIndex + "," + mPlaneIndex
 				+ ">";
 	}
 }

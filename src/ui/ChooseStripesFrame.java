@@ -55,8 +55,8 @@ public class ChooseStripesFrame extends JDialog {
 
 	private AddressWidget<?,?,?,?,?,?> addressWidget;
 	private RAIDBasicSSDManager<?, ?, ?, ?, ?> manager;
-	private Device<?, ?, ?, ?> currentDevice;
-	private OneObjectCallback<Device<?, ?, ?, ?>> updateDevice;
+	private Device<?> currentDevice;
+	private OneObjectCallback<Device<?>> updateDevice;
 	
 	/** The information.
 	 * 	The format is: (stripe, stripePagesList, updatedDevice)
@@ -65,7 +65,7 @@ public class ChooseStripesFrame extends JDialog {
 
 	private ButtonGroup radioGroup;
 	
-	public ChooseStripesFrame(Window window, RAIDBasicSSDManager<?, ?, ?, ?, ?> manager, Device<?, ?, ?, ?> device, OneObjectCallback<Device<?, ?, ?, ?>> updateDevice) throws HeadlessException {
+	public ChooseStripesFrame(Window window, RAIDBasicSSDManager<?, ?, ?, ?, ?> manager, Device<?> device, OneObjectCallback<Device<?>> updateDevice) throws HeadlessException {
 		super(window, "Choose Stripe", ModalityType.APPLICATION_MODAL);
 		Utils.validateNotNull(manager, "manager");
 		setDefaultLookAndFeelDecorated(true);

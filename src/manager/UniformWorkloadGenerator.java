@@ -25,7 +25,7 @@ import java.util.Random;
 
 import entities.Device;
 
-public class UniformWorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadGenerator<D,S> {
+public class UniformWorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadGenerator<D,S> {
 	private Random random;
 	private int seed;
 

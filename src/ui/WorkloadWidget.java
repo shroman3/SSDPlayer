@@ -35,7 +35,7 @@ import entities.Device;
 import manager.SSDManager;
 import manager.WorkloadGenerator;
 
-public abstract class WorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> 
+public abstract class WorkloadWidget <D extends Device<?>, S extends SSDManager<?,?,?,?,D>> 
 	extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private String name;

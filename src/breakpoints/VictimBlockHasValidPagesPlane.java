@@ -11,20 +11,18 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 	private int mCount;
 	private int mChipIndex;
 	private int mPlaneIndex;
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
 		List<IDeviceAction> cleanActions = ActionLog.getActionsByType(CleanAction.class);
-		for(IDeviceAction action : cleanActions){
-			CleanAction cleanAction = (CleanAction)action;
-			if(cleanAction.getChipIndex() == mChipIndex 
-					&& cleanAction.getPlaneIndex() == mPlaneIndex 
-					&& cleanAction.getValidPAges() == mCount){
+		for (IDeviceAction action : cleanActions) {
+			CleanAction cleanAction = (CleanAction) action;
+			if (cleanAction.getChipIndex() == mChipIndex && cleanAction.getPlaneIndex() == mPlaneIndex
+					&& cleanAction.getValidPAges() == mCount) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -48,11 +46,11 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof VictimBlockHasValidPagesPlane)) return false; 
+		if (!(other instanceof VictimBlockHasValidPagesPlane))
+			return false;
 		VictimBlockHasValidPagesPlane otherCasted = (VictimBlockHasValidPagesPlane) other;
-		
-		return getChipIndex() == otherCasted.getChipIndex()
-				&& mCount == otherCasted.getCount()
+
+		return getChipIndex() == otherCasted.getChipIndex() && mCount == otherCasted.getCount()
 				&& mPlaneIndex == otherCasted.getPlaneIndex();
 	}
 
@@ -64,7 +62,7 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mCount = count;
 	}
 
@@ -76,7 +74,7 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
@@ -88,14 +86,13 @@ public class VictimBlockHasValidPagesPlane extends BreakpointBase {
 		if (!BreakpointsConstraints.isPlaneIndexLegal(planeIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PLANE);
 		}
-		
+
 		mPlaneIndex = planeIndex;
 	}
 
 	@Override
 	public String getHitDescription() {
-		return "Victim block in plane (<Chip,Plane>): "
-				+ "<" + mChipIndex + "," + mPlaneIndex + "> "
-				+ "reached " + mCount + " valid pages";
+		return "Victim block in plane (<Chip,Plane>): " + "<" + mChipIndex + "," + mPlaneIndex + "> " + "reached "
+				+ mCount + " valid pages";
 	}
 }

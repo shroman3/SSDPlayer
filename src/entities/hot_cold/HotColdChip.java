@@ -23,8 +23,8 @@ package entities.hot_cold;
 
 import entities.Chip;
 
-public class HotColdChip extends Chip<HotColdPage, HotColdBlock, HotColdPlane> {
-	public static class Builder extends Chip.Builder<HotColdPage, HotColdBlock, HotColdPlane> {
+public class HotColdChip extends Chip<HotColdPlane> {
+	public static class Builder extends Chip.Builder<HotColdPlane> {
 		private HotColdChip chip;
 		
 		public Builder () {

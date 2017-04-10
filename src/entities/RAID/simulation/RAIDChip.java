@@ -27,7 +27,6 @@ import java.util.List;
 import org.javatuples.Triplet;
 
 import entities.ActionLog;
-import entities.Chip;
 import entities.CleanAction;
 import entities.EntityInfo;
 import entities.RAID.RAIDBasicChip;
@@ -125,14 +124,14 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 		return new Triplet<RAIDChip, Integer, Integer>(builder.build(), dataMoved, parityMoved);
 	}
 
-	public Chip<RAIDPage,RAIDBlock,RAIDPlane> writePP(int stripe, int parityNum) {
+	public RAIDChip writePP(int stripe, int parityNum) {
 		int index = getMinValidCountPlaneIndex();
 
 		return setPlane(((RAIDPlane) getPlane(index)).writePP(stripe, parityNum), index, getTotalDataWritten(),
 				getTotalParityWritten() + 1, getTotalWritten() + 1);
 	}
 
-	public Chip<RAIDPage, RAIDBlock, RAIDPlane> writeLP(int lp, int arg) {
+	public RAIDChip writeLP(int lp, int arg) {
 		int index = getMinValidCountPlaneIndex();
 
 		RAIDPlane newPlane = ((RAIDPlane) getPlane(index)).writeLP(lp, arg);

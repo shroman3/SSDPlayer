@@ -39,7 +39,7 @@ public class WriteAmplificationGetter implements StatisticsGetter {
 	}
 
 	@Override
-	public List<StatisticsColumn> getStatistics(Device<?, ?, ?, ?> device) {
+	public List<StatisticsColumn> getStatistics(Device<?> device) {
 		double valueWA = computeWA(device);
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn("total writes to logical writes", 
@@ -52,14 +52,14 @@ public class WriteAmplificationGetter implements StatisticsGetter {
 		return new RegularHistoryGraph("Write Amplification", this, 1.5, 1);
 	}
 	
-	public static double computeWA(Device<?, ?, ?, ?> device) {
+	public static double computeWA(Device<?> device) {
 		int total = device.getTotalMoved() + device.getTotalWritten();
 		double valueWA = total==0 ? 1 : ((double)total)/device.getTotalWritten();
 		return valueWA;
 	}
 	
 	@Override
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return new AbstractMap.SimpleEntry<>("Write amplification", Double.toString(computeWA(device)));
 	}
 }

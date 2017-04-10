@@ -34,8 +34,8 @@ import entities.BlockStatusGeneral;
 import entities.EntityInfo;
 import entities.Plane;
 
-public class ReusablePlane extends Plane<ReusablePage, ReusableBlock> {
-	public static class Builder extends Plane.Builder<ReusablePage, ReusableBlock> {
+public class ReusablePlane extends Plane<ReusableBlock> {
+	public static class Builder extends Plane.Builder<ReusableBlock> {
 		private ReusablePlane plane;
 		
 		public Builder() {

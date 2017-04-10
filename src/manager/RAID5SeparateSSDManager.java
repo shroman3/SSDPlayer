@@ -23,41 +23,21 @@ package manager;
 
 import java.util.List;
 
-import entities.RAID.hot_cold.RAID5HotColdDevice;
-import entities.RAID.hot_cold.RAIDHotColdChip;
-import entities.RAID.hot_cold.RAIDHotColdDevice;
+import entities.RAID.simulation.RAIDBlock;
+import entities.RAID.simulation.RAIDPlane;
+import entities.RAID.simulation.RAIDSeparatePlane;
 
 /**
  * 
  * @author Or Mauda
  *
  */
-public class RAID5HotColdSSDManager extends RAIDHotColdSSDManager {
-	
-	protected void setParitiesNumber() {
-		this.paritiesNumber = 1;
-	}
-	
+public class RAID5SeparateSSDManager extends RAID5SSDManager {
 	@Override
-	protected void setStripeSize() {
-		this.stripeSize = getChipsNum() - paritiesNumber;
-	}
-	
-//	@Override
-//	protected RAIDDevice getEmptyDevice(List<RAIDChip> emptyChips) {
-//		RAID5Device.Builder builder = new RAID5Device.Builder();
-//		builder.setChips(emptyChips);
-//		builder.setStripeSize(getStripeSize());
-//		builder.setParitiesNumber(getParitiesNumber());
-//		return builder.build();
-//	}
-
-	@Override
-	protected RAIDHotColdDevice getEmptyDevice(List<RAIDHotColdChip> emptyChips) {
-		RAID5HotColdDevice.Builder builder = new RAID5HotColdDevice.Builder();
-		builder.setChips(emptyChips);
-		builder.setStripeSize(getStripeSize());
-		builder.setParitiesNumber(getParitiesNumber());
+	protected RAIDPlane getEmptyPlane(List<RAIDBlock> blocks) {
+		RAIDSeparatePlane.Builder builder = new RAIDSeparatePlane.Builder();
+		builder.setBlocks(blocks);
+		builder.setManager(this);
 		return builder.build();
 	}
 }

@@ -24,8 +24,8 @@ package entities.reusable;
 import entities.Chip;
 import entities.EntityInfo;
 
-public class ReusableChip extends Chip<ReusablePage, ReusableBlock, ReusablePlane> {
-	public static class Builder extends Chip.Builder<ReusablePage, ReusableBlock, ReusablePlane> {
+public class ReusableChip extends Chip<ReusablePlane> {
+	public static class Builder extends Chip.Builder<ReusablePlane> {
 		private ReusableChip chip;
 		
 		public Builder () {

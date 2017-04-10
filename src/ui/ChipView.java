@@ -37,11 +37,11 @@ import general.Consts;
 public class ChipView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private List<PlaneView> planeList;
-	private Chip<?,?,?> chip;
+	private Chip<?> chip;
 	private int chipIndex;
 	private VisualConfig visualConfig;
     
-    public ChipView(Chip<?,?,?> chip, int chipIndex, VisualConfig visualConfig) {
+    public ChipView(Chip<?> chip, int chipIndex, VisualConfig visualConfig) {
 		this.chip = chip;
 		this.visualConfig = visualConfig;
 		this.chipIndex = chipIndex;
@@ -53,13 +53,13 @@ public class ChipView extends JPanel {
 		setBackground(Consts.Colors.CONTROL_LIGHTER);
 	}
 
-	public void setChip(Chip<?,?,?> chip) {
+	public void setChip(Chip<?> chip) {
 		if(this.chip == chip){
 			return;
 		}
     	this.chip = chip;
 		int planeIndex = 0;
-		for (Plane<?,?> plane :  chip.getPlanes()) {
+		for (Plane<?> plane :  chip.getPlanes()) {
 			planeList.get(planeIndex++).setPlane(plane);
 		}
     }
@@ -69,7 +69,7 @@ public class ChipView extends JPanel {
 		planesPanel.setLayout(new GridLayout(0, visualConfig.getPlanesInRow()));
 		List<PlaneView> planesList = new ArrayList<PlaneView>();
 		int planeIndex = 0;
-		for (Plane<?,?> plane : chip.getPlanes()) {
+		for (Plane<?> plane : chip.getPlanes()) {
 			PlaneView planeView = new PlaneView(plane, chipIndex, planeIndex++, visualConfig);
 			planesList.add(planeView);
 			planesPanel.add(planeView);

@@ -65,7 +65,7 @@ public class StripesInfoFrame extends JDialog {
 	
 	private SettableTraceParser<?,?> parser;
 	
-	private OneObjectCallback<Device<?, ?, ?, ?>> updateDevice;
+	private OneObjectCallback<Device<?>> updateDevice;
 	
 	private Window parentWindow;
 	
@@ -87,7 +87,7 @@ public class StripesInfoFrame extends JDialog {
 	private final int stripesToShow = 10; // the number of possible stripes in StripesInfoFrame 
 	
 	@SuppressWarnings("rawtypes")
-	public StripesInfoFrame(Window window, RAIDBasicSSDManager<?, ?, ?, ?, ?> manager, TraceParser<?,?> parser, OneObjectCallback<Device<?, ?, ?, ?>> updateDevice) throws HeadlessException {
+	public StripesInfoFrame(Window window, RAIDBasicSSDManager<?, ?, ?, ?, ?> manager, TraceParser<?,?> parser, OneObjectCallback<Device<?>> updateDevice) throws HeadlessException {
 		super(window, "Stripes Info", ModalityType.APPLICATION_MODAL);
 		if (!(parser instanceof SettableTraceParser)) {
 			throw new IllegalArgumentException("Cannot create StripesInfoFrame with regular trace parser (SettableTraceParser needed)");
@@ -224,7 +224,7 @@ public class StripesInfoFrame extends JDialog {
 		if (information != null) {
 			RAIDBasicSSDManager.setDevice(manager, parser, information.getValue2());
 
-			updateDevice.message((Device<?, ?, ?, ?>) information.getValue2());
+			updateDevice.message((Device<?>) information.getValue2());
 		}
 		shiftDown(position);
 		stripesNumber--;
@@ -287,7 +287,7 @@ public class StripesInfoFrame extends JDialog {
 		}
 		RAIDBasicSSDManager.setDevice(manager, parser, deviceAfterRun);
 
-		updateDevice.message((Device<?, ?, ?, ?>) deviceAfterRun);
+		updateDevice.message((Device<?>) deviceAfterRun);
 	}
 	
 	/**

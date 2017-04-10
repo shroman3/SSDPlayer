@@ -28,7 +28,7 @@ import javax.swing.JFormattedTextField;
 import entities.Device;
 import ui.WorkloadWidget;
 
-public class UniformWorkloadWidget <D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadWidget<D,S> {
+public class UniformWorkloadWidget <D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends WorkloadWidget<D,S> {
 	private static final long serialVersionUID = 1L;
 
 	private JFormattedTextField seedInput;

@@ -21,12 +21,10 @@
  *******************************************************************************/
 package manager;
 
-import java.io.FileNotFoundException;
-
 import entities.Device;
 
 
-public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
+public abstract class WorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	private String name;
 	private int traceLength;
 	protected S manager; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
@@ -36,6 +34,10 @@ public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSD
 	protected int temp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
 	
 	protected abstract int getLP();
+
+	@Override
+	public void close() {
+	}
 
 	public WorkloadGenerator(String name, S manager, int traceLength) {
 		this.name = name;
@@ -51,14 +53,6 @@ public abstract class WorkloadGenerator<D extends Device<?,?,?,?>, S extends SSD
 	
 	public int getTraceLength() {
 		return traceLength;
-	}
-
-	@Override
-	public void open(String fileName) throws FileNotFoundException {
-	}
-
-	@Override
-	public void close() {
 	}
 
 	@Override

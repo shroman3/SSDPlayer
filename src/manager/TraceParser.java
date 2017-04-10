@@ -21,12 +21,10 @@
  *******************************************************************************/
 package manager;
 
-import java.io.FileNotFoundException;
 
 import entities.Device;
 
-public interface TraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> {
-	void open(String fileName) throws FileNotFoundException;
+public interface TraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> {
 	void close();
 
 	/**

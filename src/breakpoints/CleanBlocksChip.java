@@ -6,19 +6,18 @@ import entities.Device;
 public class CleanBlocksChip extends BreakpointBase {
 	private int mChipIndex;
 	private int mCount;
-	
+
 	public CleanBlocksChip() {
 		super();
 	}
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice,
-			Device<?, ?, ?, ?> currentDevice) {
-		if(previousDevice == null){
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		if (previousDevice == null) {
 			return false;
 		}
-		int prevClean = ((Chip<?, ?, ?>) previousDevice.getChipByIndex(mChipIndex)).getNumOfClean();
-		int currentClean = ((Chip<?, ?, ?>) currentDevice.getChipByIndex(mChipIndex)).getNumOfClean();
+		int prevClean = ((Chip<?>) previousDevice.getChipByIndex(mChipIndex)).getNumOfClean();
+		int currentClean = ((Chip<?>) currentDevice.getChipByIndex(mChipIndex)).getNumOfClean();
 		return prevClean != currentClean && currentClean == mCount;
 	}
 
@@ -29,7 +28,7 @@ public class CleanBlocksChip extends BreakpointBase {
 
 	@Override
 	public String getDescription() {
-		return  getCount() + " clean blocks in chip " + getChipIndex();
+		return getCount() + " clean blocks in chip " + getChipIndex();
 	}
 
 	@Override
@@ -46,7 +45,7 @@ public class CleanBlocksChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isChipIndexLegal(chipIndex)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_CHIP);
 		}
-		
+
 		mChipIndex = chipIndex;
 	}
 
@@ -58,19 +57,19 @@ public class CleanBlocksChip extends BreakpointBase {
 		if (!BreakpointsConstraints.isCountValueLegal(count)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_COUNT);
 		}
-		
+
 		mCount = count;
 	}
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof CleanBlocksChip)) return false; 
+		if (!(other instanceof CleanBlocksChip))
+			return false;
 		CleanBlocksChip otherCasted = (CleanBlocksChip) other;
-		
-		return mChipIndex == otherCasted.getChipIndex()
-				&& mCount == otherCasted.getCount();
+
+		return mChipIndex == otherCasted.getChipIndex() && mCount == otherCasted.getCount();
 	}
-	
+
 	@Override
 	public String getHitDescription() {
 		return "Number of clean blocks in chip " + getChipIndex() + " reached " + getCount();

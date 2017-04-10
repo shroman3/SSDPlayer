@@ -61,7 +61,7 @@ public abstract class GeneralStatisticsGraph extends Component {
 		initSizesAndSpacing();
 	}
     
-    public abstract void updateStatistics(Device<?, ?, ?, ?> device);
+    public abstract void updateStatistics(Device<?> device);
 
 	private void initSizesAndSpacing() {
 		graphWidth = calculateGraphWidth();

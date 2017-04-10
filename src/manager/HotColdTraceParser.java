@@ -28,7 +28,7 @@ import general.MessageLog;
 import log.Message.ErrorMessage;
 
 
-public class HotColdTraceParser<D extends Device<?,?,?,?>, S extends SSDManager<?,?,?,?,D>> extends TraceParserGeneral<D,S> {
+public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends FileTraceParser<D,S> {
 	public HotColdTraceParser(S manager) {
 		super(manager);
 	}

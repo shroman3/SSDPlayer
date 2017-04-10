@@ -19,7 +19,7 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  *******************************************************************************/
-package entities.RAID.hot_cold;
+package entities.RAID.simulation;
 
 import java.awt.Color;
 
@@ -27,7 +27,7 @@ import entities.BlockStatus;
 import general.Consts;
 
 
-public enum RAIDHotColdBlockStatus implements BlockStatus {
+public enum RAIDSeparateBlockStatus implements BlockStatus {
 	ACTIVE_PARITY("active2", "A2", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE),
 	USED_PARITY("used2", "U2", Consts.Colors.TEXT, null);
 	
@@ -51,7 +51,7 @@ public enum RAIDHotColdBlockStatus implements BlockStatus {
 		return color;
 	}
 	
-	private RAIDHotColdBlockStatus(String statusName, String displayName, Color color, Color frameColor) {
+	private RAIDSeparateBlockStatus(String statusName, String displayName, Color color, Color frameColor) {
 		this.statusName = statusName;
 		this.displayName = displayName;
 		this.color = color;

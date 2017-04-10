@@ -51,21 +51,21 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 
 	RAIDSSDManager() {
 	}
-	
+
 	public int getStripeSize() {
 		return stripeSize;
 	}
-	
+
 	public int getParitiesNumber() {
 		return paritiesNumber;
 	}
-	
+
 	protected abstract void setParitiesNumber();
-	
+
 	protected abstract void setStripeSize();
-	
+
 	@Override
-	public TraceParserGeneral<RAIDDevice, RAIDSSDManager> getTraseParser() {
+	public FileTraceParser<RAIDDevice, RAIDSSDManager> getFileTraseParser() {
 		return new RAIDSimulationTraceParser(this);
 	}
 
@@ -79,41 +79,43 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	public RAIDPage getEmptyPage() {
 		return new RAIDPage.Builder().setManager(this).build();
 	}
-	
+
 	@Override
-	public List<WorkloadWidget<RAIDDevice, SSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<RAIDDevice, SSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformResizableWorkloadWidget<RAIDDevice, SSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(this));
-		creators.add(new ZipfResizableWorkloadWidget<RAIDDevice, SSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(this));
+	public List<WorkloadWidget<RAIDDevice, SSDManager<?, ?, ?, ?, RAIDDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<RAIDDevice, SSDManager<?, ?, ?, ?, RAIDDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformResizableWorkloadWidget<RAIDDevice, SSDManager<?, ?, ?, ?, RAIDDevice>>(this));
+		creators.add(new ZipfResizableWorkloadWidget<RAIDDevice, SSDManager<?, ?, ?, ?, RAIDDevice>>(this));
 		return creators;
 	}
-	
+
 	@Override
 	public int getLpRange() {
 		int logicalChips = (int) (getChipsNum() * ((double) getStripeSize() / (getStripeSize() + getParitiesNumber())));
-		int logicalNumOfBlocks = (int) ((logicalChips * getPlanesNum() * getBlocksNum()) / (1 + (double) getOP() / 100));
+		int logicalNumOfBlocks = (int) ((logicalChips * getPlanesNum() * getBlocksNum())
+				/ (1 + (double) getOP() / 100));
 		return logicalNumOfBlocks * getPagesNum();
 	}
-	
+
 	@Override
-	public List<AddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, 
-		RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> getAddressGetterWidgets() {
-		
-		List<AddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, 
-		RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> addressGetters = new ArrayList<>();
-		
-		addressGetters.add(new PhysicalAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice,
-				RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(this));
-		
-		addressGetters.add(new LogicalAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice,
-				RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(this));
-		
-		addressGetters.add(new ParityAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice,
-				RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(this));
-		
+	public List<AddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> getAddressGetterWidgets() {
+
+		List<AddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>> addressGetters = new ArrayList<>();
+
+		addressGetters
+				.add(new PhysicalAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(
+						this));
+
+		addressGetters
+				.add(new LogicalAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(
+						this));
+
+		addressGetters
+				.add(new ParityAddressWidget<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice, RAIDBasicSSDManager<RAIDPage, RAIDBlock, RAIDPlane, RAIDChip, RAIDDevice>>(
+						this));
+
 		return addressGetters;
 	}
-	
+
 	@Override
 	protected List<StatisticsGetter> initStatisticsGetters() {
 		List<StatisticsGetter> statisticsGetters = new ArrayList<StatisticsGetter>();
@@ -123,7 +125,7 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 		statisticsGetters.add(new ValidDistributionGetter(this));
 		return statisticsGetters;
 	}
-	
+
 	@Override
 	protected abstract RAIDDevice getEmptyDevice(List<RAIDChip> emptyChips);
 
@@ -145,8 +147,8 @@ public abstract class RAIDSSDManager extends RAIDBasicSSDManager<RAIDPage, RAIDB
 	@Override
 	protected RAIDBlock getEmptyBlock(List<RAIDPage> pages) {
 		RAIDBlock.Builder builder = new RAIDBlock.Builder();
-		builder.setManager(this).setEraseCounter(0).setInGC(false)
-				.setStatus(BlockStatusGeneral.CLEAN).setPagesList(pages);
+		builder.setManager(this).setEraseCounter(0).setInGC(false).setStatus(BlockStatusGeneral.CLEAN)
+				.setPagesList(pages);
 		return builder.build();
 	}
 

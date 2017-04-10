@@ -29,8 +29,8 @@ import org.javatuples.Triplet;
 import entities.BlockStatus;
 import entities.Chip;
 
-public class VisualizationChip extends Chip<VisualizationPage, VisualizationBlock, VisualizationPlane> {
-	public static class Builder extends Chip.Builder<VisualizationPage, VisualizationBlock, VisualizationPlane> {
+public class VisualizationChip extends Chip<VisualizationPlane> {
+	public static class Builder extends Chip.Builder<VisualizationPlane> {
 		private VisualizationChip chip;
 		
 		public Builder () {

@@ -8,10 +8,11 @@ import manager.RAIDStatistics.ParityOverheadGetter;
 
 public class ParityOverhead extends BreakpointBase {
 	private double mValue = 1.0;
-	
+
 	@Override
-	public boolean breakpointHit(Device<?, ?, ?, ?> previousDevice, Device<?, ?, ?, ?> currentDevice) {
-		double oldValue = (previousDevice == null) ? Double.MIN_VALUE : ParityOverheadGetter.getParityOverhead(previousDevice);
+	public boolean breakpointHit(Device<?> previousDevice, Device<?> currentDevice) {
+		double oldValue = (previousDevice == null) ? Double.MIN_VALUE
+				: ParityOverheadGetter.getParityOverhead(previousDevice);
 		double currentValue = ParityOverheadGetter.getParityOverhead(currentDevice);
 		return oldValue < mValue && currentValue >= mValue;
 	}
@@ -24,10 +25,10 @@ public class ParityOverhead extends BreakpointBase {
 		if (!BreakpointsConstraints.isParityOverheadValueLegal(value)) {
 			throw BreakpointsConstraints.reportSetterException(SetterError.ILLEGAL_PARITY_OVERHEAD);
 		}
-		
+
 		mValue = value;
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "Parity overhead reaches " + mValue;
@@ -45,24 +46,24 @@ public class ParityOverhead extends BreakpointBase {
 
 	@Override
 	public boolean isEquals(IBreakpoint other) {
-		if (!(other instanceof ParityOverhead)) return false; 
+		if (!(other instanceof ParityOverhead))
+			return false;
 		ParityOverhead otherCasted = (ParityOverhead) other;
-		
-		return Double.compare(mValue,otherCasted.getValue()) == 0;
+
+		return Double.compare(mValue, otherCasted.getValue()) == 0;
 	}
 
 	@Override
 	public String getHitDescription() {
 		return "Parity overhead reached " + mValue;
 	}
-	
+
 	@Override
 	public boolean isManagerSupported(SSDManager<?, ?, ?, ?, ?> manager) {
-		if (manager instanceof RAIDSSDManager 
-				|| manager instanceof RAIDVisualizationSSDManager) {
+		if (manager instanceof RAIDSSDManager || manager instanceof RAIDVisualizationSSDManager) {
 			return true;
 		}
-		
+
 		return false;
 	}
 }

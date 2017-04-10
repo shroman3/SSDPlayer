@@ -53,7 +53,7 @@ public class InfoDialog extends JDialog {
 //	private static final String DIALOG_HEADER = "Information";
 	private SSDManager<?, ?, ?, ?, ?> mManager;
 	private JPanel mMainPanel;
-	private Device<?, ?, ?, ?> mCurrentDevice = null;
+	private Device<?> mCurrentDevice = null;
 	private JTree deviceInfoTree;
 	private TreeSelectionListener SelectionListener = new TreeSelectionListener() {
 		public void valueChanged(TreeSelectionEvent e) {
@@ -109,7 +109,7 @@ public class InfoDialog extends JDialog {
 		this.mMainPanel.add(buttonsBox);
 	}
 
-	public void setDevice(Device<?, ?, ?, ?> currentDevice, int currFrameCounter) {
+	public void setDevice(Device<?> currentDevice, int currFrameCounter) {
 		this.mCurrentDevice = currentDevice;
 		this.deviceInfoTree.clearSelection();
 		setEntityInfo(null);
@@ -134,13 +134,13 @@ public class InfoDialog extends JDialog {
 			entityInfo.add("Request number", Integer.toString(this.mComandNumber), 0);
 			addStatisticsToDeviceInfo(this.mManager.getStatisticsGetters(), entityInfo, this.mCurrentDevice);
 		} else {
-			Chip<?, ?, ?> chip = this.mCurrentDevice.getChip(
+			Chip<?> chip = this.mCurrentDevice.getChip(
 					((TreeEntity) ((DefaultMutableTreeNode) selectedNodePath.getPathComponent(1)).getUserObject())
 							.getIndex());
 			if (selectedNodePath.getPathCount() == 2) {
 				entityInfo = chip.getInfo();
 			} else {
-				Plane<?, ?> plane = chip.getPlane(
+				Plane<?> plane = chip.getPlane(
 						((TreeEntity) ((DefaultMutableTreeNode) selectedNodePath.getPathComponent(2)).getUserObject())
 								.getIndex());
 				if (selectedNodePath.getPathCount() == 3) {
@@ -166,7 +166,7 @@ public class InfoDialog extends JDialog {
 	}
 
 	private void addStatisticsToDeviceInfo(Iterable<StatisticsGetter> statisticsGetters, EntityInfo entityInfo,
-			Device<?, ?, ?, ?> device) {
+			Device<?> device) {
 		for (StatisticsGetter getter : statisticsGetters) {
 			Entry<String, String> infoEntry = getter.getInfoEntry(device);
 			if (infoEntry != null) {
@@ -261,7 +261,7 @@ public class InfoDialog extends JDialog {
 
 			doc.appendChild(rootElement);
 
-			for (Chip<?, ?, ?> chip : this.mCurrentDevice.getChips()) {
+			for (Chip<?> chip : this.mCurrentDevice.getChips()) {
 				addChipToXml(rootElement, chip, doc);
 			}
 
@@ -278,18 +278,18 @@ public class InfoDialog extends JDialog {
 		}
 	}
 
-	private void addChipToXml(Element rootElement, Chip<?, ?, ?> chip, Document doc) {
+	private void addChipToXml(Element rootElement, Chip<?> chip, Document doc) {
 		Element chipElement = doc.createElement("chip");
 		addComponentInfo(chipElement, chip.getInfo());
 
 		rootElement.appendChild(chipElement);
 
-		for (Plane<?, ?> plane : chip.getPlanes()) {
+		for (Plane<?> plane : chip.getPlanes()) {
 			addPlaneToXml(chipElement, plane, doc);
 		}
 	}
 
-	private void addPlaneToXml(Element chipElement, Plane<?, ?> plane, Document doc) {
+	private void addPlaneToXml(Element chipElement, Plane<?> plane, Document doc) {
 		Element planeElement = doc.createElement("plane");
 		addComponentInfo(planeElement, plane.getInfo());
 

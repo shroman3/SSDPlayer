@@ -75,7 +75,7 @@ public class PartitionDistributionGetter extends HotColdStatisticsGetter {
 		return new StatisticsGraph("Partition Dist.", this);
 	}
 
-	public Entry<String, String> getInfoEntry(Device<?, ?, ?, ?> device) {
+	public Entry<String, String> getInfoEntry(Device<?> device) {
 		return null;
 	}
 }

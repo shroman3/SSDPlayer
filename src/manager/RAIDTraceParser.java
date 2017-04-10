@@ -32,7 +32,7 @@ import log.Message.ErrorMessage;
  * @author Or Mauda
  *
  */
-public class RAIDTraceParser extends TraceParserGeneral<RAIDDevice, RAIDSSDManager> {
+public class RAIDTraceParser extends FileTraceParser<RAIDDevice, RAIDSSDManager> {
 	public RAIDTraceParser(RAIDSSDManager manager) {
 		super(manager);
 	}
@@ -59,7 +59,7 @@ public class RAIDTraceParser extends TraceParserGeneral<RAIDDevice, RAIDSSDManag
 	}
 	
 	public void setDevice(RAIDDevice device) {
-		this.device = device;
+		super.setDevice(device);
 	}
 
 }

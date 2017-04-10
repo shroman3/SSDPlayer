@@ -59,7 +59,7 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 
 
 	@Override
-	public TraceParserGeneral<ReusableDevice, ReusableSSDManager> getTraseParser() {
+	public FileTraceParser<ReusableDevice, ReusableSSDManager> getFileTraseParser() {
 		return new BasicTraceParser<ReusableDevice, ReusableSSDManager>(this);
 	}
 
@@ -69,10 +69,10 @@ public class ReusableSSDManager extends SSDManager<ReusablePage, ReusableBlock, 
 	}
 	
 	@Override
-	public List<WorkloadWidget<ReusableDevice, SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
-		List<WorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>> creators = new ArrayList<>();
-		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
-		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<ReusablePage, ReusableBlock, ReusablePlane, ReusableChip, ReusableDevice>>(this));
+	public List<WorkloadWidget<ReusableDevice, SSDManager<?, ?, ?, ?, ReusableDevice>>> getWorkLoadGeneratorWidgets() {
+		List<WorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>> creators = new ArrayList<>();
+		creators.add(new UniformWorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>(this));
+		creators.add(new ZipfWorkloadWidget<ReusableDevice,SSDManager<?, ?, ?, ?, ReusableDevice>>(this));
 		return creators;
 	}
 	
