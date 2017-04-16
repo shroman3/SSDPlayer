@@ -3,10 +3,10 @@ package breakpoints;
 import entities.Device;
 import entities.hot_cold.HotColdBlock;
 import entities.hot_cold.HotColdDevice;
-import entities.hot_cold.HotColdPartition;
 import general.ConfigProperties;
 import manager.HotColdReusableSSDManager;
 import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
 import manager.SSDManager;
 
 public class HotColdPartitionHoldsPercentOfBlocks extends BreakpointBase {

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import entities.Device;
 import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
 
 
 public class HotColdDevice extends Device<HotColdChip> {

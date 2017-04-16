@@ -74,30 +74,4 @@ public class BasicBlock extends Block<BasicPage> {
 	public Builder getSelfBuilder() {
 		return new Builder(this);
 	}
-	
-	public BasicBlock move(int lp) {
-		int index = 0;
-		for (BasicPage page : getPages()) {
-			if (page.isClean()) {
-				BasicPage.Builder builder = page.getSelfBuilder();
-				builder.setClean(false).setLp(lp).setGC(true).setValid(true);
-				return (BasicBlock) addValidPage(index, builder.build());
-			}
-			++index;
-		}
-		return null;
-	}
-	
-	public BasicBlock writeLP(int lp) {
-		int index = 0;
-		for (BasicPage page : getPages()) {
-			if (page.isClean()) {
-				BasicPage.Builder builder = page.getSelfBuilder();
-				builder.setClean(false).setLp(lp).setGC(false).setValid(true);
-				return (BasicBlock) addValidPage(index, builder.build());
-			}
-			++index;
-		}
-		return null;
-	}
 }

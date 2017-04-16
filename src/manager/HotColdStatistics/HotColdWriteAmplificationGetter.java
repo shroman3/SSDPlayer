@@ -29,9 +29,9 @@ import entities.Device;
 import entities.StatisticsColumn;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
-import entities.hot_cold.HotColdPartition;
 import entities.hot_cold.HotColdPlane;
 import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
 import ui.GeneralStatisticsGraph;
 import ui.RegularHistoryGraph;
 

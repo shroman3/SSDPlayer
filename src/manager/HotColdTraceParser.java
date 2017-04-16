@@ -21,37 +21,26 @@
  *******************************************************************************/
 package manager;
 
-import java.io.IOException;
-
 import entities.Device;
-import general.MessageLog;
-import log.Message.ErrorMessage;
 
 
-public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends FileTraceParser<D,S> {
+public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends BasicTraceParser<D,S> {
 	public HotColdTraceParser(S manager) {
 		super(manager);
 	}
 
 	@Override
-	protected D parseCommand(String command, int line, D device, S manager) throws IOException {
-		String[] operationParts = command.split("[ \t]+");
-		if ((operationParts.length == 6) && (operationParts[4].equals("W"))) {
-			try {
-				int lp = Integer.parseInt(operationParts[2]);
-				int temprature = Integer.parseInt(operationParts[5]);
-				return manager.writeLP(device, lp, temprature);
-			} catch (NumberFormatException e) {
-				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
-			}
-		}
-		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
-		return null;
+	protected int getLpArg(String[] operationParts) {
+		return Integer.parseInt(operationParts[5]);
 	}
 
+	@Override
+	protected int expectedNumberOfArguments() {
+		return 6;
+	}
+	
 	@Override
 	public String getFileExtensions() {
 		return "hotcold";
 	}
-
 }

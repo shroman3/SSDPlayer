@@ -30,6 +30,7 @@ import org.javatuples.Pair;
 import entities.BlockStatusGeneral;
 import entities.Plane;
 import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
 import utils.Utils;
 
 public class HotColdPlane extends Plane<HotColdBlock> {
@@ -93,7 +94,8 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 	public int getTotalMoved(HotColdPartition partition) {
 		return totalMovedMap.get(partition);
 	}
-
+	
+	@Override
 	public HotColdPlane writeLP(int lp, int temperature) {
 		List<HotColdBlock> updatedBlocks = getNewBlocksList();
 		HotColdPartition partition = manager.getPartition(temperature);
@@ -103,7 +105,7 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 			updatedBlocks.set(active, updatedBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE, partition));
 		}
 		HotColdBlock activeBlock = updatedBlocks.get(active);
-		activeBlock = activeBlock.writeLP(lp, temperature);
+		activeBlock = (HotColdBlock) activeBlock.writeLP(lp, temperature);
 		if(!activeBlock.hasRoomForWrite()) {
 			activeBlock = (HotColdBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 		}
@@ -127,7 +129,7 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 					cleanBlocks.set(active, cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE, partition));
 				}
 				HotColdBlock activeBlock = cleanBlocks.get(active);
-				activeBlock = activeBlock.move(page.getLp(), page.getTemperature());
+				activeBlock = (HotColdBlock) activeBlock.move(page.getLp(), page.getTemperature());
 				if(!activeBlock.hasRoomForWrite()) {
 					activeBlock = (HotColdBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 					cleanBlocks.set(active, activeBlock);

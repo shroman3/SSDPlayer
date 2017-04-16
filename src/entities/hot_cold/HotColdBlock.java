@@ -28,31 +28,32 @@ import entities.BlockStatus;
 import entities.BlockStatusGeneral;
 import entities.EntityInfo;
 import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
 import utils.Utils;
 
 public class HotColdBlock extends Block<HotColdPage> {
 	public static class Builder extends Block.Builder<HotColdPage> {
 		private HotColdBlock block;
-		
+
 		public Builder() {
 			setBlock(new HotColdBlock());
 		}
-		
+
 		protected Builder(HotColdBlock block) {
 			setBlock(new HotColdBlock(block));
 		}
-		
+
 		public Builder setManager(HotColdSSDManager manager) {
 			super.setManager(manager);
 			block.manager = manager;
 			return this;
 		}
-		
+
 		public Builder setPartition(HotColdPartition partition) {
 			block.partition = partition;
 			return this;
 		}
-		
+
 		@Override
 		public HotColdBlock build() {
 			validate();
@@ -63,28 +64,30 @@ public class HotColdBlock extends Block<HotColdPage> {
 			super.setBlock(block);
 			this.block = block;
 		}
-		
+
 		@Override
 		protected void validate() {
 			super.validate();
 			Utils.validateNotNull(block.manager, "manager");
 		}
 	}
-	
+
 	private HotColdSSDManager manager = null;
 	private HotColdPartition partition = null;
-	protected HotColdBlock() { }
-	
+
+	protected HotColdBlock() {
+	}
+
 	protected HotColdBlock(HotColdBlock other) {
 		super(other);
 		manager = other.manager;
 		partition = other.partition;
 	}
-	
+
 	public HotColdPartition getPartition() {
 		return partition;
 	}
-	
+
 	@Override
 	public Builder getSelfBuilder() {
 		return new Builder(this);
@@ -97,7 +100,7 @@ public class HotColdBlock extends Block<HotColdPage> {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String getStatusName() {
 		if ((getStatus() != BlockStatusGeneral.CLEAN) && (partition != null)) {
@@ -106,66 +109,17 @@ public class HotColdBlock extends Block<HotColdPage> {
 		return super.getStatusName();
 	}
 
-	public HotColdBlock move(int lp, int temperature) {
-		int index = 0;
-		for (HotColdPage page : getPages()) {
-			if (page.isClean()) {
-				HotColdPage.Builder builder = page.getSelfBuilder();
-				builder.setTemperature(temperature).setClean(false).setLp(lp).setGC(true).setValid(true);
-				return (HotColdBlock) addValidPage(index, builder.build());
-			}
-			++index;
-		}
-		return null;
-	}
-
 	public HotColdBlock setStatus(BlockStatus status, HotColdPartition partition) {
 		HotColdBlock.Builder builder = getSelfBuilder();
 		builder.setPartition(partition).setStatus(status);
 		return builder.build();
 	}
-	
-	public float getAveragePageTemperature(){
-		float temperatureSum = 0;
-		int count = 0;
-		for(HotColdPage page : this.getPages()){
-			if(page.getTemperature() >= 0){
-				count++;
-				temperatureSum += page.getTemperature();
-			}
-		}
-		if(count == 0){
-			return 0;
-		}
-		
-		return temperatureSum/count;
-	}
-	
-	public HotColdBlock writeLP(int lp, int temperature) {
-		int index = 0;
-		for (HotColdPage page : getPages()) {
-			if (page.isClean()) {
-				HotColdPage.Builder builder = page.getSelfBuilder();
-				builder.setTemperature(temperature).setClean(false).setLp(lp).setGC(false).setValid(true);
-				return (HotColdBlock) addValidPage(index, builder.build());
-			}
-			++index;
-		}
-		return null;
-	}
 
 	public float getBlockTemperatureToMaxTempRatio() {
 		int maxTemperature = manager.getMaxTemperature();
-		return getAveragePageTemperature()/maxTemperature;
+		return getAveragePageTemperature() / maxTemperature;
 	}
 
-	private String getDisplayStatusName() {
-		if ((getStatus() != BlockStatusGeneral.CLEAN) && (this.partition != null)) {
-			return getStatus().getStatusName() + " " + this.partition.getDsiplayName();
-		}
-		return getStatus().getStatusName();
-	}
-	
 	public EntityInfo getInfo() {
 		EntityInfo result = super.getInfo();
 
@@ -174,5 +128,34 @@ public class HotColdBlock extends Block<HotColdPage> {
 
 		result.add("Partition", getPartition() != null ? getPartition().getDsiplayName() : "None", 1);
 		return result;
+	}
+
+	@Override
+	protected entities.Page.Builder getWrittenPageBuilder(int lp, int temperature, HotColdPage page) {
+		HotColdPage.Builder builder = page.getSelfBuilder();
+		builder.setTemperature(temperature);
+		return builder;
+	}
+	
+	private float getAveragePageTemperature() {
+		float temperatureSum = 0;
+		int count = 0;
+		for (HotColdPage page : this.getPages()) {
+			if (page.getTemperature() >= 0) {
+				count++;
+				temperatureSum += page.getTemperature();
+			}
+		}
+		if (count == 0) {
+			return 0;
+		}
+
+		return temperatureSum / count;
+	}
+	private String getDisplayStatusName() {
+		if ((getStatus() != BlockStatusGeneral.CLEAN) && (this.partition != null)) {
+			return getStatus().getStatusName() + " " + this.partition.getDsiplayName();
+		}
+		return getStatus().getStatusName();
 	}
 }

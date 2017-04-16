@@ -127,7 +127,7 @@ public class ReusablePlane extends Plane<ReusableBlock> {
 						active = getLowestEraseCleanBlockIndex();
 						activeBlock = (ReusableBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
 					}
-					activeBlock = activeBlock.move(page.getLp(), page.getWriteLevel());
+					activeBlock = (ReusableBlock) activeBlock.move(page.getLp(), page.getWriteLevel());
 					lpMoved.add(page.getLp());
 					if(!activeBlock.hasRoomForWrite()) {
 						activeBlock = (ReusableBlock) activeBlock.setStatus(BlockStatusGeneral.USED);

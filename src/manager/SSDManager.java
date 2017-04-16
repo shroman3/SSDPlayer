@@ -104,6 +104,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 					try {
 						System.out.println("Initializing " + clazz.getSimpleName());
 						SSDManager<?,?,?,?,?> manager = clazz.newInstance();
+						manager.initBaseValues(xmlGetter);
 						manager.initValues(xmlGetter);
 						if (manager instanceof VisualizationSSDManager) {
 							visualizationsList.add(manager.getManagerName());
@@ -311,18 +312,11 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	}	
 
 	/**
-	 * IMPORTANT to call the super.initValues(xmlGetter) in the extending managers
 	 * Initializes SSD managers parameters from the XML config file
 	 * @param xmlGetter - XML config file getter
 	 * @throws XMLParsingException
 	 */
 	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
-		initPhysicalValues(xmlGetter);
-		managerName = getStringField(xmlGetter, "name");
-		cleanColor = getColorField(xmlGetter, "clean_color");
-		
-		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
-		gct = (int)(blocksInPlane * ((double)gct/(100)));
 	}
 	
 	protected String getStringField(XMLGetter xmlGetter, String field) throws XMLParsingException {
@@ -405,5 +399,14 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		planesNum = xmlGetter.getIntField("physical", "planes");
 		blocksInPlane = xmlGetter.getIntField("physical", "blocks");
 		pagesInBlock = xmlGetter.getIntField("physical", "pages");
+	}
+
+	private void initBaseValues(XMLGetter xmlGetter) throws XMLParsingException {
+		initPhysicalValues(xmlGetter);
+		managerName = getStringField(xmlGetter, "name");
+		cleanColor = getColorField(xmlGetter, "clean_color");
+		
+		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
+		gct = (int)(blocksInPlane * ((double)gct/(100)));
 	}
 }

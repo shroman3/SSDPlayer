@@ -66,6 +66,7 @@ public class BasicPlane extends Plane<BasicBlock> {
 		return new Builder(this);
 	}
 
+	@Override
 	public BasicPlane writeLP(int lp, int dummy) {
 		List<BasicBlock> updatedBlocks = getNewBlocksList();
 		int active = getActiveBlockIndex();
@@ -74,7 +75,7 @@ public class BasicPlane extends Plane<BasicBlock> {
 			updatedBlocks.set(active, (BasicBlock) updatedBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE));
 		}
 		BasicBlock activeBlock = updatedBlocks.get(active);
-		activeBlock = activeBlock.writeLP(lp);
+		activeBlock = (BasicBlock) activeBlock.writeLP(lp, 0);
 		if(!activeBlock.hasRoomForWrite()) {
 			activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 		}
@@ -100,7 +101,7 @@ public class BasicPlane extends Plane<BasicBlock> {
 					active = getLowestEraseCleanBlockIndex();
 					activeBlock = (BasicBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
 				}
-				activeBlock = activeBlock.move(page.getLp());
+				activeBlock = (BasicBlock) activeBlock.move(page.getLp(), 0);
 				if(!activeBlock.hasRoomForWrite()) {
 					activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 					cleanBlocks.set(active, activeBlock);

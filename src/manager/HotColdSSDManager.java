@@ -33,17 +33,60 @@ import entities.hot_cold.HotColdBlock;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPage;
-import entities.hot_cold.HotColdPartition;
 import entities.hot_cold.HotColdPlane;
 import general.XMLGetter;
 import general.XMLParsingException;
 import manager.HotColdStatistics.HotColdWriteAmplificationGetter;
 import manager.HotColdStatistics.PartitionDistributionGetter;
 import ui.WorkloadWidget;
+import utils.Utils;
 import zoom.BlocksAvgTempZoomLevel;
 import zoom.SmallBlocksAvgTempZoomLevel;
 
 public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, HotColdPlane, HotColdChip, HotColdDevice> {
+	public static class HotColdPartition {
+		private int start;
+		private int end;
+		private final String name;
+		private Color color;
+		
+		private HotColdPartition(int start, int end, Color color) {
+			Utils.validateNotNull(color, "color");
+			this.start = start;
+			this.end = end;
+			this.color = color;
+			name = start+"-"+end;
+		}
+
+		public String getDsiplayName() {
+			return name;
+		}
+
+		public String getName() {
+			return name;
+		}
+		public Color getColor() {
+			return color;
+		}
+
+		public boolean isIn(int temperature) {
+			return (temperature >= start) && (temperature <=end);
+		}
+
+		@Override
+		public boolean equals(Object arg0) {
+			if (arg0 instanceof HotColdPartition) {
+				return name.equals(((HotColdPartition) arg0).name);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+	}
+	
 	private int minTemperature;
 	private int maxTemperature;
 	private int deltaTemperature;
@@ -116,6 +159,7 @@ public class HotColdSSDManager extends SSDManager<HotColdPage, HotColdBlock, Hot
 		return statisticsGetters;
 	}
 
+	@Override
 	protected void initValues(XMLGetter xmlGetter) throws XMLParsingException {
 		super.initValues(xmlGetter);
 		minTemperature = getIntField(xmlGetter, "min_temperature");

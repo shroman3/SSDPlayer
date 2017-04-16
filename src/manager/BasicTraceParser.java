@@ -34,16 +34,24 @@ public class BasicTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,
 	@Override
 	protected D parseCommand(String command, int line, D device, S manager) throws IOException {
 		String[] operationParts = command.split("[ \t]+");
-		if ((operationParts.length == 5) && (operationParts[4].equals("W"))) {
+		if ((operationParts.length == expectedNumberOfArguments()) && (operationParts[4].equals("W"))) {
 			try {
 				int lp = Integer.parseInt(operationParts[2]);
-				return manager.writeLP(device, lp, 0/*dummy*/);
+				return manager.writeLP(device, lp, getLpArg(operationParts));
 			} catch (NumberFormatException e) {
 				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
 			}
 		}
 		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
 		return null;
+	}
+
+	protected int getLpArg(String[] operationParts) {
+		return 0/*dummy*/;
+	}
+
+	protected int expectedNumberOfArguments() {
+		return 5;
 	}
 
 	@Override

@@ -224,6 +224,63 @@ public abstract class Block<P extends Page> {
 		builder.setStatus(status);
 		return builder.build();
 	}
+
+	public Color getBlockValidColor() {
+		int colorRangeIndex = (int)((double)this.validCounter/this.getPagesNum() * (Consts.defaultColorRange.size()-1));
+		return Consts.defaultColorRange.get(colorRangeIndex);
+	}
+	
+	public EntityInfo getInfo() {
+		EntityInfo result = new EntityInfo();
+
+		result.add("Status", getStatus().getStatusName(), 1);
+		result.add("Number of pages", Integer.toString(getPagesNum()), 0);
+		result.add("Erase count", Integer.toString(getEraseCounter()), 1);
+		result.add("Valid count", Integer.toString(getValidCounter()), 1);
+
+		return result;
+	}
+
+	public Color getBlockEraseColor() {
+		if (this.eraseCounter > ConfigProperties.getMaxErasures()) {
+			MessageLog.logAndPause(
+					new ErrorMessage("Erase count is bigger than max erasures, please change zoom level."));
+		}
+		
+		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.defaultColorRange.size()-1));
+		return Consts.defaultColorRange.get(colorRangeIndex%Consts.defaultColorRange.size());
+	}
+
+	@SuppressWarnings("unchecked")
+	public Block<P> move(int lp, int lpArg) {
+		int index = 0;
+		for (P page : getPages()) {
+			if (page.isClean()) {
+				Page.Builder builder = getWrittenPageBuilder(lp, lpArg, page);
+				builder.setClean(false).setLp(lp).setGC(true).setValid(true);
+				return addValidPage(index, (P) builder.build());
+			}
+			++index;
+		}
+		return null;
+	}
+	@SuppressWarnings("unchecked")
+	public Block<P> writeLP(int lp, int lpArg) {
+		int index = 0;
+		for (P page : getPages()) {
+			if (page.isClean()) {
+				Page.Builder builder = getWrittenPageBuilder(lp, lpArg, page);
+				builder.setClean(false).setLp(lp).setGC(false).setValid(true);
+				return addValidPage(index, (P) builder.build());
+			}
+			++index;
+		}
+		return null;
+	}
+	
+	protected Page.Builder getWrittenPageBuilder(int lp, int lpArg, P page) {
+		return page.getSelfBuilder();
+	}
 	
 	/**
 	 * @param index - to set the page
@@ -254,31 +311,5 @@ public abstract class Block<P extends Page> {
 			pages.add(page);
 		}	
 		return pages;
-	}
-	
-	public Color getBlockValidColor() {
-		int colorRangeIndex = (int)((double)this.validCounter/this.getPagesNum() * (Consts.defaultColorRange.size()-1));
-		return Consts.defaultColorRange.get(colorRangeIndex);
-	}
-	
-	public EntityInfo getInfo() {
-		EntityInfo result = new EntityInfo();
-
-		result.add("Status", getStatus().getStatusName(), 1);
-		result.add("Number of pages", Integer.toString(getPagesNum()), 0);
-		result.add("Erase count", Integer.toString(getEraseCounter()), 1);
-		result.add("Valid count", Integer.toString(getValidCounter()), 1);
-
-		return result;
-	}
-
-	public Color getBlockEraseColor() {
-		if (this.eraseCounter > ConfigProperties.getMaxErasures()) {
-			MessageLog.logAndPause(
-					new ErrorMessage("Erase count is bigger than max erasures, please change zoom level."));
-		}
-		
-		int colorRangeIndex = (int)((double)this.eraseCounter/ConfigProperties.getMaxErasures() * (Consts.defaultColorRange.size()-1));
-		return Consts.defaultColorRange.get(colorRangeIndex%Consts.defaultColorRange.size());
 	}
 }

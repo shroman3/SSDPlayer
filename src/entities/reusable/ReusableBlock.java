@@ -104,19 +104,6 @@ public class ReusableBlock extends Block<ReusablePage> {
 		return null;
 	}
 
-	public ReusableBlock move(Integer lp, int writeLevel) {
-		int index = 0;
-		for (ReusablePage page : getPages()) {
-			if (page.isClean()) {
-				ReusablePage.Builder builder = page.getSelfBuilder();
-				builder.setWriteLevel(1).setGcWriteLevel(writeLevel).setClean(false).setLp(lp).setGC(true).setValid(true);
-				return (ReusableBlock) addValidPage(index, builder.build());
-			}
-			++index;
-		}
-		return null;
-	}
-
 	public ReusableBlock firstWriteLP(int lp) {
 		int index = 0;
 		for (ReusablePage page : getPages()) {
@@ -197,5 +184,12 @@ public class ReusableBlock extends Block<ReusablePage> {
 		result.add("Average page write level", Float.toString(getAveragePageWriteLevel()), 2);
 		result.add("Write level", Integer.toString(getWriteLevel()), 1);
 		return result;
+	}
+
+	@Override
+	protected ReusablePage.Builder getWrittenPageBuilder(int lp, int writeLevel, ReusablePage page) {
+		ReusablePage.Builder builder = page.getSelfBuilder();
+		builder.setWriteLevel(1).setGcWriteLevel(writeLevel);
+		return builder;
 	}
 }
