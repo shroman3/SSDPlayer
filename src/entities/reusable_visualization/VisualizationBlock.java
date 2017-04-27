@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.util.List;
 
 import entities.Block;
-import general.Consts;
 import manager.ReusableVisualizationSSDManager;
 import utils.Utils;
 
@@ -83,7 +82,7 @@ public class VisualizationBlock extends Block<VisualizationPage> {
 	@Override
 	public Color getFrameColor() {
 		if (isInGC()) {
-			return Consts.Colors.BLACK;
+			return Color.BLACK;
 		}
 		return super.getFrameColor();
 	}

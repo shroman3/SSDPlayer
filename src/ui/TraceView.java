@@ -66,16 +66,16 @@ public class TraceView extends Component {
     
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setFont(Consts.UI.FONT); 
+		g2d.setFont(Consts.getInstance().fonts.CAPTION); 
 
 		int x = SPACING;
 		int y = SPACING;
-		g2d.setColor(Consts.Colors.BORDER);
+		g2d.setColor(Consts.getInstance().colors.BORDER);
 		g2d.drawRoundRect(x, y, ROW_WIDTH, height, 6, 6);
 		String title = "Trace View";
 		drawTitle(g2d, title, x, y);
 		y+=ROW_HIEGHT;
-		g2d.setFont(Consts.UI.SMALL_FONT); 
+		g2d.setFont(Consts.getInstance().fonts.CONTROL_FONT); 
 		drawTrace(g2d, x, y);
 	}
 	
@@ -111,13 +111,13 @@ public class TraceView extends Component {
 	}
 
 	private void drawLine(Graphics2D g2d, String title, int x, int y) {
-		g2d.setColor(Consts.Colors.BORDER);
+		g2d.setColor(Consts.getInstance().colors.BORDER);
 		g2d.drawLine(x, y, x + ROW_WIDTH, y);
 		drawTitle(g2d, title, x, y);
 	}
 
 	private void drawTitle(Graphics2D g2d, String title, int x, int y) {
-		g2d.setColor(Consts.Colors.TEXT);
+		g2d.setColor(Consts.getInstance().colors.CONTROL_TEXT);
 		if(g2d.getFontMetrics().stringWidth(title) > ROW_WIDTH) {
 			title = title.substring(0,title.length()/2) + "...";
 		}
@@ -125,9 +125,9 @@ public class TraceView extends Component {
 	}
 	
 	private void drawSelectedLine(Graphics2D g2d, String title, int x, int y) {
-		g2d.setColor(Consts.Colors.BORDER);
+		g2d.setColor(Consts.getInstance().colors.BORDER);
 		g2d.fillRect(x, y, ROW_WIDTH, ROW_HIEGHT);
-		g2d.setColor(Consts.Colors.CLEAN);
+		g2d.setColor(Consts.getInstance().colors.ACTIVE);
 		drawLine(g2d, title, x, y);
 	}
 }

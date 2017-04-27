@@ -48,9 +48,10 @@ public class ChipView extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JLabel titleLabel = new JLabel("Chip " + chipIndex);
 		add(titleLabel);
+		titleLabel.setFont(Consts.getInstance().fonts.CAPTION);
 		planeList = initPlanes();
-		setBorder(new RoundedBorder(Consts.Colors.BORDER));
-		setBackground(Consts.Colors.CONTROL_LIGHTER);
+		setBorder(new RoundedBorder(Consts.getInstance().colors.BORDER));
+		setBackground(Consts.getInstance().colors.INTERMEDIATE_BG);
 	}
 
 	public void setChip(Chip<?> chip) {

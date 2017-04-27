@@ -27,9 +27,9 @@ import general.Consts;
 
 
 public enum BlockStatusGeneral implements BlockStatus {
-	CLEAN("clean", "C", Consts.Colors.TEXT, null),
-	USED("used", "U", Consts.Colors.TEXT, null),
-	ACTIVE("active1", "A", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE);
+	CLEAN("clean", "C", Consts.getInstance().colors.CONTROL_TEXT, null),
+	USED("used", "U", Consts.getInstance().colors.CONTROL_TEXT, null),
+	ACTIVE("active1", "A", Consts.getInstance().colors.ACTIVE, Consts.getInstance().colors.ACTIVE);
 	
 	private String statusName;
 	private String displayName;

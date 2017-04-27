@@ -49,10 +49,11 @@ public class PlaneView extends JPanel {
 		this.visualConfig = visualConfig;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JLabel titleLabel = new JLabel("Plane (" + chipIndex + "," + planeIndex + ")");
+		titleLabel.setFont(Consts.getInstance().fonts.CAPTION);
 		add(titleLabel);
 		blocksList = initBlocks();
-		setBorder(new RoundedBorder(Consts.Colors.BORDER));
-		setBackground(Consts.Colors.BG);
+		setBorder(new RoundedBorder(Consts.getInstance().colors.BORDER));
+		setBackground(Consts.getInstance().colors.INNER_BG);
 	}
 
 	public void setPlane(Plane<?> plane) {

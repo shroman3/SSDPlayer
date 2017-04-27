@@ -147,7 +147,7 @@ public class TracePlayer extends JPanel {
 		this.visualConfig = visualConfig;
 		ActionLog.resetLog();
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		setBorder(new RoundedBorder(Consts.Colors.BORDER));
+		setBorder(new RoundedBorder(Consts.getInstance().colors.BORDER));
 		initTraceParsing(visualConfig);
 		initManagerSelection();
 		initButtons();
@@ -306,7 +306,7 @@ public class TracePlayer extends JPanel {
 		});
 		addButton(breakpointsButton, ManageBreakpointsDialog.DIALOG_HEADER);
 		breakpointsButton.setEnabled(true);
-		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.Colors.ACTIVE));
+		breakpointsButton.setBorder(BorderFactory.createLineBorder(Consts.getInstance().colors.ACTIVE));
 
 		playPauseButton.addActionListener(new ActionListener() {
 			@Override
@@ -389,22 +389,22 @@ public class TracePlayer extends JPanel {
 
 	private void initProgressBar() {
 		JLabel startLabel = new JLabel("0");
-		startLabel.setFont(Consts.UI.BOLD);
+		startLabel.setFont(Consts.getInstance().fonts.CAPTION_BOLD);
 		add(startLabel);
 		add(Box.createRigidArea(new Dimension(5, 0)));
 
 		progressBar = new JProgressBar(0, 0);
 		add(progressBar);
-		progressBar.setFont(Consts.UI.BOLD);
-		progressBar.setBackground(Consts.Colors.BG);
-		progressBar.setForeground(Consts.Colors.TEXT);
+		progressBar.setFont(Consts.getInstance().fonts.CAPTION_BOLD);
+		progressBar.setBackground(Consts.getInstance().colors.INNER_BG);
+		progressBar.setForeground(Consts.getInstance().colors.CONTROL_TEXT);
 		progressBar.setUI(new BasicProgressBarUI() {
 			protected Color getSelectionBackground() {
-				return Consts.Colors.TEXT;
+				return Consts.getInstance().colors.CONTROL_TEXT;
 			}
 
 			protected Color getSelectionForeground() {
-				return Consts.Colors.BG;
+				return Consts.getInstance().colors.INNER_BG;
 			}
 		});
 		add(Box.createRigidArea(new Dimension(5, 0)));
@@ -412,12 +412,12 @@ public class TracePlayer extends JPanel {
 		stopLabel = new JLabel("0");
 		stopLabel.setMinimumSize(new Dimension(50, 25));
 		stopLabel.setPreferredSize(new Dimension(50, 25));
-		stopLabel.setFont(Consts.UI.BOLD);
+		stopLabel.setFont(Consts.getInstance().fonts.CAPTION_BOLD);
 		add(stopLabel);
 		progressBar.setBorderPainted(true);
 		progressBar.setStringPainted(true);
 		progressBar.setMaximumSize(new Dimension(2000, 25));
-		progressBar.setBorder(BorderFactory.createLineBorder(Consts.Colors.BORDER));
+		progressBar.setBorder(BorderFactory.createLineBorder(Consts.getInstance().colors.BORDER));
 		setProgressBarFrame(0);
 	}
 

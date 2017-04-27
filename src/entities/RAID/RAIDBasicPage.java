@@ -115,7 +115,7 @@ public abstract class RAIDBasicPage extends Page {
 	}
 	
 	public Color getStripeFrameColor() {
-		return Consts.Colors.PAGE_TEXT;
+		return Consts.getInstance().colors.PAGE_TEXT;
 	}
 	
 	public boolean isParity() {

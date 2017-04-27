@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import manager.SSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.Block;
 import entities.BlockStatusGeneral;
 import entities.Chip;
@@ -36,6 +33,9 @@ import entities.Plane;
 import entities.StatisticsColumn;
 import entities.StatisticsGetter;
 import entities.reusable.ReusableBlockStatus;
+import manager.SSDManager;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class BlockStateDistributionGetter implements StatisticsGetter {
 	private SSDManager<?, ?, ?, ?, ?> manager;
@@ -85,7 +85,7 @@ public class BlockStateDistributionGetter implements StatisticsGetter {
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("Block State Dist.", this);
+		return new HistogramGraph("Bl. State Dist.", this);
 	}
 	
 	@Override

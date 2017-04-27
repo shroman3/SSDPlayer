@@ -26,22 +26,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.Block;
 import entities.Chip;
 import entities.Device;
 import entities.Plane;
 import entities.StatisticsColumn;
 import entities.StatisticsGetter;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class ValidDistributionGetter implements StatisticsGetter {
 
 
+	private static int columnDisplayFreq = 2;
 	private SSDManager<?, ?, ?, ?, ?> manager;
 
 	public ValidDistributionGetter(SSDManager<?,?,?,?,?> manager) {
 		this.manager = manager;
+		if (manager.getPagesNum() > 20) {			
+			columnDisplayFreq = ((manager.getPagesNum() + 1)/10); 
+		}
 	}
 
 	@Override
@@ -63,7 +67,7 @@ public class ValidDistributionGetter implements StatisticsGetter {
 		int overallBlocks = manager.getBlocksNum()*manager.getPlanesNum()*manager.getChipsNum();
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		for (int i = 0; i < counters.length; i++) {
-			list.add(new StatisticsColumn(i+"", ((double)counters[i]*100)/overallBlocks,i%2==0));
+			list.add(new StatisticsColumn(i+"", ((double)counters[i]*100)/overallBlocks,i%columnDisplayFreq==0));
 		}
 		return list;
 	}
@@ -93,6 +97,6 @@ public class ValidDistributionGetter implements StatisticsGetter {
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("Valid Histogram", this);
+		return new HistogramGraph("Valid Histogram", this);
 	}
 }

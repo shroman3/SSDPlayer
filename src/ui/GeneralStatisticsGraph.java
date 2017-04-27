@@ -38,26 +38,23 @@ public abstract class GeneralStatisticsGraph extends Component {
 	private static final long serialVersionUID = 1L;
 
 	protected static final int VER_ASIX = 30;
-	protected static final int HOR_ASIX = 24;
+	protected static final int HOR_ASIX = 27;
 	protected static final int HEIGHT = 85;
-	protected static final int SPACING = 8;
-	protected static final int TITLE_HIEGHT = 17;
-	protected static final int COL_WIDTH = 8;
+	protected static final int SPACING = 5;
+	protected static final int TITLE_HIEGHT = 15;
 	
 	protected int graphWidth;
 	
 	private Dimension dimension;
 	protected StatisticsGetter statisticsGetter;
 	private String statisticsTitle;
-	protected int colSpace;
 	protected int width;
     
-    public GeneralStatisticsGraph(String statisticsTitle, StatisticsGetter statisticsGetter, int colSpace) {
+    public GeneralStatisticsGraph(String statisticsTitle, StatisticsGetter statisticsGetter) {
     	Utils.validateNotNull(statisticsTitle, "Statistics Title");
     	Utils.validateNotNull(statisticsGetter, "Statistics Getter");
 		this.statisticsTitle = statisticsTitle;
 		this.statisticsGetter = statisticsGetter;
-		this.colSpace = colSpace;
 		initSizesAndSpacing();
 	}
     
@@ -80,9 +77,9 @@ public abstract class GeneralStatisticsGraph extends Component {
     }
     	
 	private void doDrawing(Graphics2D g2d) {
-		g2d.setColor(Consts.Colors.BG);
+		g2d.setColor(Consts.getInstance().colors.INNER_BG);
 		g2d.fillRoundRect(VER_ASIX, TITLE_HIEGHT , graphWidth, HEIGHT+1, 6,6);
-		g2d.setColor(Consts.Colors.BORDER);
+		g2d.setColor(Consts.getInstance().colors.BORDER);
 		g2d.drawRoundRect(VER_ASIX, TITLE_HIEGHT, graphWidth, HEIGHT+1, 6,6);
 //		Graphics2D g2d2 = (Graphics2D) g2d.create();
 		Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
@@ -99,8 +96,8 @@ public abstract class GeneralStatisticsGraph extends Component {
 		//gets rid of the copy
 //        g2d.dispose();
 
-		g2d.setFont(Consts.UI.SMALLER_FONT); 
-		g2d.setColor(Consts.Colors.TEXT);
+		g2d.setFont(Consts.getInstance().fonts.CAPTION); 
+		g2d.setColor(Consts.getInstance().colors.CONTROL_TEXT);
 		g2d.drawString(statisticsTitle, (width/2) - (g2d.getFontMetrics().stringWidth(statisticsTitle)/2), TITLE_HIEGHT - SPACING/2);
 		completeDrawing(g2d);
 	}

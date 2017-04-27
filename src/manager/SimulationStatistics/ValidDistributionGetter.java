@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import manager.ReusableVisualizationSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.Device;
 import entities.StatisticsColumn;
 import entities.reusable_visualization.VisualizationBlock;
@@ -37,6 +34,9 @@ import entities.reusable_visualization.VisualizationChip;
 import entities.reusable_visualization.VisualizationDevice;
 import entities.reusable_visualization.VisualizationPage;
 import entities.reusable_visualization.VisualizationPlane;
+import manager.ReusableVisualizationSSDManager;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class ValidDistributionGetter extends SimulationStatisticsGetter {
 
@@ -80,7 +80,7 @@ public class ValidDistributionGetter extends SimulationStatisticsGetter {
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("Valid "+writeLevel+" Histogram", this);
+		return new HistogramGraph("Valid "+writeLevel+" Histogram", this);
 	}
 
 	@Override

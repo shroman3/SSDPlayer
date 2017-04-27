@@ -111,7 +111,6 @@ public class BlockView extends Component {
     	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;	
-		g2d.setFont(Consts.UI.FONT); 
 
 		drawBG(g2d);
 		drawCounters(g2d);
@@ -121,9 +120,9 @@ public class BlockView extends Component {
 		int x = spacing;
 		int y = spacing;
 		if (visualConfig.isShowCounters()) {
-			g2d.setFont(Consts.UI.TINY_FONT);
+			g2d.setFont(Consts.getInstance().fonts.PAGE_FONT);
 		} else {
-			g2d.setFont(Consts.UI.INVISIBLE_FONT);
+			g2d.setFont(Consts.getInstance().fonts.INVISIBLE_FONT);
 		}
 		if(visualConfig.isShowPages()){
 			int pageIndex = 0;
@@ -232,7 +231,7 @@ public class BlockView extends Component {
 	
 	private void drawCounters(Graphics2D g2d) {
 		if (visualConfig.isShowCounters()) {						
-			g2d.setFont(Consts.UI.SMALL_FONT);			
+			g2d.setFont(Consts.getInstance().fonts.CONTROL_FONT);			
 			String index = "(" + chipIndex + "," + planeIndex + "," + blockIndex + ")";
 			String blockCounters = "v=" + block.getValidCounter() + ",e=" + block.getEraseCounter();
 			String counters = index + " " + blockCounters + " " + block.getStatusName();
@@ -264,7 +263,7 @@ public class BlockView extends Component {
 			UIUtils.drawInvalidPage(g2d, x, y, pageWidth, pageHeight, visualConfig);
 		}
 		
-		g2d.setColor(Consts.Colors.PAGE_TEXT);
+		g2d.setColor(Consts.getInstance().colors.PAGE_TEXT);
 		if (page.isHighlighted()) {
 			g2d.setColor(page.getStripeFrameColor());
 			BasicStroke bs3 = new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
@@ -273,8 +272,8 @@ public class BlockView extends Component {
 		g2d.drawRect(x, y, pageWidth, pageHeight);
 		BasicStroke bs3 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 		g2d.setStroke(bs3);
-		g2d.setColor(Consts.Colors.PAGE_TEXT);
+		g2d.setColor(Consts.getInstance().colors.PAGE_TEXT);
 		
-		g2d.drawString(title, x+1, y+10);
+		g2d.drawString(title, x+1, y+Consts.getInstance().fonts.PAGE_FONT.getSize());
 	}
 }

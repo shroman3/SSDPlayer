@@ -23,8 +23,7 @@ package manager;
 
 import entities.Device;
 
-
-public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends BasicTraceParser<D,S> {
+public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?, ?, ?, ?, D>> extends BasicTraceParser<D, S> {
 	public HotColdTraceParser(S manager) {
 		super(manager);
 	}
@@ -38,7 +37,7 @@ public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,
 	protected int expectedNumberOfArguments() {
 		return 6;
 	}
-	
+
 	@Override
 	public String getFileExtensions() {
 		return "hotcold";

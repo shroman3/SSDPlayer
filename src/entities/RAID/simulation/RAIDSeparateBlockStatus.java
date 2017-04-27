@@ -28,8 +28,8 @@ import general.Consts;
 
 
 public enum RAIDSeparateBlockStatus implements BlockStatus {
-	ACTIVE_PARITY("active2", "A2", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE),
-	USED_PARITY("used2", "U2", Consts.Colors.TEXT, null);
+	ACTIVE_PARITY("active2", "A2", Consts.getInstance().colors.ACTIVE, Consts.getInstance().colors.ACTIVE),
+	USED_PARITY("used2", "U2", Consts.getInstance().colors.CONTROL_TEXT, null);
 	
 	private String statusName;
 	private String displayName;

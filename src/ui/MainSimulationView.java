@@ -55,14 +55,13 @@ import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import general.XMLGetter;
 import general.XMLParsingException;
-import log.Message.ErrorMessage;
 import manager.SSDManager;
 import manager.VisualConfig;
 import ui.zoom.ZoomLevelPanel;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
-	private static final String VERSION = "1.2";
+	private static final String VERSION = "1.2.1";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private VisualConfig visualConfig;
@@ -74,15 +73,12 @@ public class MainSimulationView extends JFrame {
 	private TracePlayer tracePlayer;
 	private JPanel southInnerPanel;
 	private ZoomLevelPanel zoomLevelPanel;
-	private static LogView logView;
 
 	public static void main(String[] args) {
-		initLookAndFeel();
-		logView = new LogView();
-		MessageLog.initialize(logView);
 		try {
 			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-			
+			Consts.initialize(xmlGetter);
+			initLookAndFeel();
 			ConfigProperties.initialize(xmlGetter);
 			BreakpointsConstraints.initialize(xmlGetter);
 			SSDManager.initializeManager(xmlGetter);
@@ -106,9 +102,10 @@ public class MainSimulationView extends JFrame {
 				}
 			});
 		} catch (Exception e) {
-			MessageLog.log(
-					new ErrorMessage("Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage()));
-			displayErrorFrame("Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage());
+			String error = "Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage();
+			System.out.println(error);
+			displayErrorFrame(error);
+
 		}
 	}
 
@@ -207,9 +204,9 @@ public class MainSimulationView extends JFrame {
 		tracePlayer.setInitialBreakpoints(initialBreakpoints);
 		
 		JPanel logPanel = new JPanel(new FlowLayout());
-		logPanel.setMinimumSize(new Dimension(320, 150));
-		logPanel.setPreferredSize(new Dimension(320, 150));
-		logPanel.setMaximumSize(new Dimension(320, 150));
+		logPanel.setMinimumSize(new Dimension(320, 162));
+		logPanel.setPreferredSize(new Dimension(320, 162));
+		logPanel.setMaximumSize(new Dimension(320, 162));
 		logPanel.add(logView);
 		
 		JScrollPane scrollableMessagesPane = new JScrollPane(logPanel);
@@ -222,9 +219,8 @@ public class MainSimulationView extends JFrame {
 		setEdgesPaneSize(scrollableZoomPane);
 		
 		JScrollPane scrollableStatisticsPane = new JScrollPane(statisticsPanel);
-		scrollableStatisticsPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollableStatisticsPane.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Consts.getInstance().colors.BORDER));
 		
-		statisticsPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Consts.Colors.BORDER));
 		southInnerPanel.add(scrollableZoomPane);
 		southInnerPanel.add(scrollableStatisticsPane);
 		southInnerPanel.add(scrollableMessagesPane);
@@ -235,9 +231,9 @@ public class MainSimulationView extends JFrame {
 
 
 	private void setEdgesPaneSize(JScrollPane scrollableMessagesPane) {
-		scrollableMessagesPane.setMinimumSize(new Dimension(320, 150));
-		scrollableMessagesPane.setPreferredSize(new Dimension(320, 150));
-		scrollableMessagesPane.setMaximumSize(new Dimension(320, 150));
+		scrollableMessagesPane.setMinimumSize(new Dimension(320, 162));
+		scrollableMessagesPane.setPreferredSize(new Dimension(320, 162));
+		scrollableMessagesPane.setMaximumSize(new Dimension(320, 162));
 		scrollableMessagesPane.setBorder(BorderFactory.createEmptyBorder());
 	}
 
@@ -269,22 +265,55 @@ public class MainSimulationView extends JFrame {
 	}
 
 	private static void initLookAndFeel() {
-		UIManager.put("nimbusBase", Consts.Colors.CONTROL);
-		UIManager.put("nimbusFocus", Consts.Colors.HIGHLIGHT);
-		UIManager.put("nimbusBlueGrey", Consts.Colors.HIGHLIGHT);
-		UIManager.put("control", Consts.Colors.CONTROL);
-		UIManager.put("text", Consts.Colors.TEXT);
-		UIManager.put("nimbusDisabledText", Consts.Colors.BG);
-		UIManager.put("nimbusLightBackground", Consts.Colors.HIGHLIGHT);
-		UIManager.put("nimbusSelectedText", Consts.Colors.BG);
-		UIManager.put("nimbusSelectionBackground", Consts.Colors.TEXT);
-		UIManager.put("info", Consts.Colors.CONTROL);
-		UIManager.put("nimbusBorder", Consts.Colors.BORDER);
-		UIManager.put("nimbusLightBackground", Consts.Colors.HIGHLIGHT);
-		UIManager.put("controlLHighlight", Consts.Colors.HIGHLIGHT);
-		UIManager.put("ComboBox.background", Consts.Colors.CONTROL);
-		UIManager.put("Button.background", Consts.Colors.CONTROL);
+		UIManager.put("nimbusBase", Consts.getInstance().colors.OUTER_BG);
+		UIManager.put("nimbusFocus", Consts.getInstance().colors.HIGHLIGHT);
+		UIManager.put("nimbusBlueGrey", Consts.getInstance().colors.HIGHLIGHT);
+		UIManager.put("control", Consts.getInstance().colors.OUTER_BG);
+		UIManager.put("text", Consts.getInstance().colors.CONTROL_TEXT);
+		UIManager.put("nimbusDisabledText", Consts.getInstance().colors.INNER_BG);
+		UIManager.put("nimbusLightBackground", Consts.getInstance().colors.HIGHLIGHT);
+		UIManager.put("nimbusSelectedText", Consts.getInstance().colors.INNER_BG);
+		UIManager.put("nimbusSelectionBackground", Consts.getInstance().colors.CONTROL_TEXT);
+		UIManager.put("info", Consts.getInstance().colors.OUTER_BG);
+		UIManager.put("nimbusBorder", Consts.getInstance().colors.BORDER);
+		UIManager.put("nimbusLightBackground", Consts.getInstance().colors.HIGHLIGHT);
+		UIManager.put("controlLHighlight", Consts.getInstance().colors.HIGHLIGHT);
+		UIManager.put("ComboBox.background", Consts.getInstance().colors.OUTER_BG);
+		UIManager.put("Button.background", Consts.getInstance().colors.OUTER_BG);
 		UIManager.put("ScrollBar.minimumThumbSize", new Dimension(32, 32));
+		
+		UIManager.put("defaultFont", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Button.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ToggleButton.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("RadioButton.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("CheckBox.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ColorChooser.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ComboBox.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Label.font", Consts.getInstance().fonts.CAPTION_BOLD);
+		UIManager.put("List.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("MenuBar.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("MenuItem.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("RadioButtonMenuItem.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("CheckBoxMenuItem.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Menu.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("PopupMenu.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("OptionPane.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Panel.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ProgressBar.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ScrollPane.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Viewport.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TabbedPane.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Table.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TableHeader.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TextField.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("PasswordField.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TextArea.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TextPane.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("EditorPane.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("TitledBorder.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ToolBar.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("ToolTip.font", Consts.getInstance().fonts.CAPTION);
+		UIManager.put("Tree.font", Consts.getInstance().fonts.CAPTION);
 		
 		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 		    if ("Nimbus".equals(info.getName())) {

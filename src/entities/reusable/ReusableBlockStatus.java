@@ -28,9 +28,9 @@ import general.Consts;
 
 
 public enum ReusableBlockStatus implements BlockStatus {
-	RECYCLED("recycled", "RC", Consts.Colors.TEXT, null),
-	REUSED("reused", "RU", Consts.Colors.TEXT, null),
-	ACTIVE_RECYCLED("active2", "A2", Consts.Colors.ACTIVE, Consts.Colors.ACTIVE);
+	RECYCLED("recycled", "RC", Consts.getInstance().colors.CONTROL_TEXT, null),
+	REUSED("reused", "RU", Consts.getInstance().colors.CONTROL_TEXT, null),
+	ACTIVE_RECYCLED("active2", "A2", Consts.getInstance().colors.ACTIVE, Consts.getInstance().colors.ACTIVE);
 	
 	private String statusName;
 	private String displayName;

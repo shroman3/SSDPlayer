@@ -26,7 +26,6 @@ import java.util.List;
 
 import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
-import general.Consts;
 import manager.RAIDVisualizationSSDManager;
 import utils.Utils;
 
@@ -88,7 +87,7 @@ public class RAIDVisualizationBlock extends RAIDBasicBlock<RAIDVisualizationPage
 	@Override
 	public Color getFrameColor() {
 		if (isInGC()) {
-			return Consts.Colors.BLACK;
+			return Color.BLACK;
 		}
 		return super.getFrameColor();
 	}

@@ -26,27 +26,64 @@ import java.awt.Font;
 import java.util.ArrayList;
 
 public class Consts {
-	public static class UI {
-		public static final Font FONT = new Font("Segoe UI", Font.PLAIN, 16);
-		public static final Font BOLD = new Font("Segoe UI", Font.BOLD, 16);
-		public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
-		public static final Font SMALLER_FONT = new Font("Segoe UI", Font.PLAIN, 12);
-		public static final Font TINY_FONT = new Font("Segoe UI", Font.PLAIN, 10);
-		public static final Font INVISIBLE_FONT = new Font("Segoe UI", Font.PLAIN, 0);
+	public static class Fonts {
+		public final Font CAPTION;// = new Font("Segoe UI", Font.PLAIN, 16);
+		public final Font CAPTION_BOLD;// = new Font("Segoe UI", Font.BOLD, 16);
+		public final Font CONTROL_FONT;// = new Font("Segoe UI", Font.PLAIN, 12);
+		public final Font CONTROL_ITALIC_FONT;// = new Font("Segoe UI", Font.ITALIC, 12);
+		public final Font PAGE_FONT;// = new Font("Segoe UI", Font.PLAIN, 10);
+		public final Font INVISIBLE_FONT = new Font("Segoe UI", Font.PLAIN, 0);
+		
+		private Fonts(XMLGetter xmlGetter) throws XMLParsingException {
+			String fontname = xmlGetter.getStringField("visual", "font_type");
+			int captionFontSize = xmlGetter.getIntField("visual", "caption_font_size");
+			CAPTION = new Font(fontname, Font.PLAIN, captionFontSize);
+			CAPTION_BOLD = new Font(fontname, Font.BOLD, captionFontSize);
+			int controlFontSize = xmlGetter.getIntField("visual", "control_font_size");
+			CONTROL_FONT = new Font(fontname, Font.PLAIN, controlFontSize);
+			CONTROL_ITALIC_FONT = new Font(fontname, Font.ITALIC, controlFontSize);
+			PAGE_FONT = new Font(fontname, Font.PLAIN, xmlGetter.getIntField("visual", "page_font_size"));
+		}
+
 	}
 	
 	public static class Colors {
-		public static final Color ACTIVE = Color.red;
-		public static final Color BG = Color.darkGray;
-		public static final Color SELECTED_BG = Color.gray;
-		public static final Color BORDER = Color.gray;
-		public static final Color TEXT = Color.lightGray;
-		public static final Color PAGE_TEXT = Color.black;
-		public static final Color BLACK = Color.black;
-		public static final Color CLEAN = Color.white;
-		public static final Color CONTROL = new Color(40,40,40);
-		public static final Color CONTROL_LIGHTER = new Color(50,50,50);
-		public static final Color HIGHLIGHT = new Color(85,85,85);
+		public final Color ACTIVE;// = Color.red;
+		public final Color OUTER_BG;// = new Color(40,40,40);
+		public final Color INTERMEDIATE_BG;// = new Color(50,50,50);
+		public final Color INNER_BG;// = Color.darkGray;
+		public final Color BORDER;// = Color.gray;
+		public final Color CONTROL_TEXT;// = Color.lightGray;
+		public final Color PAGE_TEXT;// = Color.black;
+		public final Color HIGHLIGHT;// = new Color(85,85,85);
+
+		private Colors(XMLGetter xmlGetter) throws XMLParsingException {
+			ACTIVE = xmlGetter.getColorField("visual", "active_color");
+			OUTER_BG = xmlGetter.getColorField("visual", "outer_bg_color");
+			INTERMEDIATE_BG = xmlGetter.getColorField("visual", "intermediate_bg_color");
+			INNER_BG = xmlGetter.getColorField("visual", "inner_bg_color");
+			BORDER = xmlGetter.getColorField("visual", "border_color");
+			CONTROL_TEXT = xmlGetter.getColorField("visual", "control_text_color");
+			PAGE_TEXT = xmlGetter.getColorField("visual", "page_text_color");
+			HIGHLIGHT = xmlGetter.getColorField("visual", "highlight_color");
+		}
+	}
+
+	public final Fonts fonts;
+	public final Colors colors;
+	
+	public Consts(XMLGetter xmlGetter) throws XMLParsingException {
+		fonts = new Fonts(xmlGetter);
+		colors = new Colors(xmlGetter);
+	}
+
+	private static Consts instance;
+	public static void initialize(XMLGetter xmlGetter) throws XMLParsingException {
+		instance = new Consts(xmlGetter);
+	}
+	
+	public static Consts getInstance() {
+		return instance;
 	}
 	
 	@SuppressWarnings("serial")

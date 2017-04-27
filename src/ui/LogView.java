@@ -1,16 +1,17 @@
 package ui;
 
-import general.Consts.UI;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+
+import general.Consts;
 import log.Message.Message;
 
 public class LogView extends JPanel {
@@ -30,7 +31,7 @@ public class LogView extends JPanel {
 		JLabel header = new JLabel("Messages Log", 0);
 		header.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		header.setVerticalAlignment(1);
-		header.setFont(UI.SMALL_FONT);
+		header.setFont(Consts.getInstance().fonts.CAPTION);
 		header.setMinimumSize(new Dimension(320, 25));
 		header.setPreferredSize(new Dimension(320, 25));
 		header.setMaximumSize(new Dimension(320, 25));
@@ -38,9 +39,9 @@ public class LogView extends JPanel {
 		add(header);
 		add(this.mScrollPanel);
 
-		setMinimumSize(new Dimension(320, 140));
-		setPreferredSize(new Dimension(320, 140));
-		setMaximumSize(new Dimension(320, 140));
+		setMinimumSize(new Dimension(320, 154));
+		setPreferredSize(new Dimension(320, 154));
+		setMaximumSize(new Dimension(320, 154));
 	}
 
 	public void log(Message message) {
@@ -52,8 +53,8 @@ public class LogView extends JPanel {
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
 		JLabel timeLabel = new JLabel(sdf.format(cal.getTime()) + " ");
-		Font timeFont = new Font(UI.SMALLER_FONT.getFontName(), 2, UI.SMALLER_FONT.getSize());
-		timeLabel.setFont(timeFont);
+//		Font timeFont = new Font(Consts.getInstance().fonts.CONTROL_ITALIC_FONT.getFontName(), 2, Consts.getInstance().fonts.CONTROL_FONT.getSize());
+		timeLabel.setFont(Consts.getInstance().fonts.CONTROL_ITALIC_FONT);
 		timeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 
 		JLabel messageLabel = new JLabel(message.getText());

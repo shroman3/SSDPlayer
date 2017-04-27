@@ -30,7 +30,6 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import general.Consts;
 import manager.VisualConfig;
 
 public class UIUtils {
@@ -42,14 +41,14 @@ public class UIUtils {
 		BufferedImage bi = new BufferedImage(4, 4, BufferedImage.TYPE_INT_RGB);
 	    Graphics2D big = bi.createGraphics();
 	    
-	    big.setColor(Consts.Colors.CLEAN);
+	    big.setColor(Color.white);
 	    big.fillRect(0, 0, 2, 2);
 	    big.fillRect(2, 2, 2, 2);	 
 	    big.setColor(color);
 	    big.fillRect(2, 0, 2, 2);
 	    big.fillRect(0, 2, 2, 2);
 
-		Rectangle r = new Rectangle(0, 0, 10, 10);
+		Rectangle r = new Rectangle(0, 0, 12, 12);
 	    return new TexturePaint(bi, r);
 	}
 	
@@ -57,7 +56,7 @@ public class UIUtils {
 		BufferedImage bi = new BufferedImage(4, 4, BufferedImage.TYPE_INT_RGB);
 	    Graphics2D big = bi.createGraphics();
 	    
-	    big.setColor(Consts.Colors.CLEAN);
+	    big.setColor(Color.white);
 	    big.fillRect(0, 0, 4, 2);
 	    big.setColor(color);
 	    big.fillRect(0, 2, 4, 4);
@@ -67,7 +66,7 @@ public class UIUtils {
 	}
 	
 	public static void drawInvalidPage(Graphics2D g2d, int x, int y, int width, int height, VisualConfig visualConfig) {
-		g2d.setColor(Consts.Colors.BLACK);
+		g2d.setColor(Color.black);
 		Stroke oldStroke = g2d.getStroke(); 
 		if(visualConfig.isThinCross()){
 			g2d.setStroke(THIN_STROKE);

@@ -29,9 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import manager.ReusableSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.Device;
 import entities.StatisticsColumn;
 import entities.reusable.ReusableBlock;
@@ -39,6 +36,9 @@ import entities.reusable.ReusableChip;
 import entities.reusable.ReusableDevice;
 import entities.reusable.ReusablePage;
 import entities.reusable.ReusablePlane;
+import manager.ReusableSSDManager;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class WriteLevelDistributionGetter extends SecondWritesStatisticsGetter {
 
@@ -94,7 +94,7 @@ public class WriteLevelDistributionGetter extends SecondWritesStatisticsGetter {
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("W.L.Dist.", this);
+		return new HistogramGraph("W.L.Dist.", this);
 	}
 	
 	@Override

@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import manager.HotColdSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.BlockStatusGeneral;
 import entities.Device;
 import entities.StatisticsColumn;
@@ -35,6 +32,10 @@ import entities.hot_cold.HotColdBlock;
 import entities.hot_cold.HotColdChip;
 import entities.hot_cold.HotColdDevice;
 import entities.hot_cold.HotColdPlane;
+import manager.HotColdSSDManager;
+import manager.HotColdSSDManager.HotColdPartition;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class PartitionDistributionGetter extends HotColdStatisticsGetter {
 	public PartitionDistributionGetter(HotColdSSDManager manager) {
@@ -65,14 +66,15 @@ public class PartitionDistributionGetter extends HotColdStatisticsGetter {
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		list.add(new StatisticsColumn(BlockStatusGeneral.CLEAN.getDsiplayName(), ((double)counters[0]*100)/overallBlocks));
 		for (int i = 1; i < counters.length; i++) {
-			list.add(new StatisticsColumn(manager.getPartitionbyIndex(i-1).getDsiplayName(), ((double)counters[i]*100)/overallBlocks));
+			HotColdPartition partition = manager.getPartitionbyIndex(i-1);
+			list.add(new StatisticsColumn(partition.getDsiplayName(), ((double)counters[i]*100)/overallBlocks, true, partition.getColor()));
 		}
 		return list;
 	}
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("Partition Dist.", this);
+		return new HistogramGraph("Partition Dist.", this);
 	}
 
 	public Entry<String, String> getInfoEntry(Device<?> device) {

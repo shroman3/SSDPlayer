@@ -36,7 +36,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
 
 	private static final double EPSILON = 0;
 
-	private final static int POINTS_NUM = 1000;
+	private final static int POINTS_NUM = 800;
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,7 +48,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
 	private DecimalFormat numFormat;
 
     public RegularHistoryGraph(String statisticsTitle, StatisticsGetter statisticsGetter, double maxValue, double minValue) {
-    	super(statisticsTitle, statisticsGetter, 0);
+    	super(statisticsTitle, statisticsGetter);
     	this.minValue = minValue;
     	this.maxValue = maxValue;
 		numFormat = new DecimalFormat("###.##");
@@ -80,7 +80,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
      
 	@Override
 	protected void completeDrawing(Graphics2D g2d) {
-		g2d.setFont(Consts.UI.SMALLER_FONT); 
+		g2d.setFont(Consts.getInstance().fonts.CONTROL_FONT); 
 		
 		String format = numFormat.format(maxValue);
 		g2d.drawString(numFormat.format(maxValue), VER_ASIX - g2d.getFontMetrics().stringWidth(format)-3, TITLE_HIEGHT + SPACING);
@@ -115,7 +115,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
 			}
 		}
 		
-		g2d.setFont(Consts.UI.SMALL_FONT); 
+//		g2d.setFont(Consts.getInstance().fonts.NORMAL_FONT); 
 		int i = 0;
 		for (StatisticsColumn statisticsColumn : columnsList.get(0)) {
 			drawLegend(g2d, statisticsColumn, i);
@@ -140,7 +140,7 @@ public class RegularHistoryGraph extends GeneralStatisticsGraph {
 			int y = TITLE_HIEGHT +  HEIGHT + HOR_ASIX - 10;
 			g2d.setColor(column.getColor());
 			g2d.fillRect(x, y-5, 5, 3);
-			g2d.setColor(Consts.Colors.TEXT);
+			g2d.setColor(Consts.getInstance().colors.CONTROL_TEXT);
 			g2d.drawString(column.getColumnName(), x+6, y);
 		}
 	}

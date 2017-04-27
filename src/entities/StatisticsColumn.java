@@ -39,11 +39,11 @@ public class StatisticsColumn {
 	private boolean isColTitleShown;
 	
 	public StatisticsColumn(String columnName, double percentage) {
-		this(columnName, percentage, true, Consts.Colors.TEXT);
+		this(columnName, percentage, true, Consts.getInstance().colors.CONTROL_TEXT);
 	}
 	
 	public StatisticsColumn(String columnName, double percentage, boolean isColTitleShown) {
-		this(columnName, percentage, isColTitleShown, Consts.Colors.TEXT);
+		this(columnName, percentage, isColTitleShown, Consts.getInstance().colors.CONTROL_TEXT);
 	}
 	
 	public StatisticsColumn(String columnName, double percentage, boolean isColTitleShown, Color color) {

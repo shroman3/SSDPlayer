@@ -3,7 +3,6 @@ package ui.zoom;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -44,11 +43,12 @@ public class ZoomLevelPanel extends JPanel {
 
 		JLabel zoomLabel = new JLabel("Zoom Level:");
 		zoomLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
+		zoomLabel.setFont(Consts.getInstance().fonts.CAPTION);
 		selectedZoomPanel.add(zoomLabel);
 		
 		String displayedZoomName = getDisplayedZoomName(mInitialZoomLevel);
 		mCurrentZoomLevelLabel = new JLabel(displayedZoomName);
-		mCurrentZoomLevelLabel.setFont(new Font(Consts.UI.SMALL_FONT.getFontName(), Font.BOLD, Consts.UI.SMALL_FONT.getSize()));
+		mCurrentZoomLevelLabel.setFont(Consts.getInstance().fonts.CAPTION_BOLD);
 		
 		selectedZoomPanel.add(mCurrentZoomLevelLabel);
 		

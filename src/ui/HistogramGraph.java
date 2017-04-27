@@ -31,64 +31,76 @@ import entities.StatisticsColumn;
 import entities.StatisticsGetter;
 import general.Consts;
 
-public class StatisticsGraph extends GeneralStatisticsGraph {
+public class HistogramGraph extends GeneralStatisticsGraph {
 	private static final long serialVersionUID = 1L;
-	protected static final int COL_SPACE = 2;
+	protected static final int MAX_WIDTH = 270;
 
 	protected List<StatisticsColumn> columnsList = new ArrayList<StatisticsColumn>();
+	protected int colSpace;
+	protected int colWidth;
 
-	public StatisticsGraph(String statisticsTitle, StatisticsGetter statisticsGetter) {
-	    this(statisticsTitle, statisticsGetter, COL_SPACE);
-	}
-	 
-    protected StatisticsGraph(String statisticsTitle, StatisticsGetter statisticsGetter, int colSpace) {
-    	super(statisticsTitle, statisticsGetter, colSpace);
+	public HistogramGraph(String statisticsTitle, StatisticsGetter statisticsGetter) {
+		super(statisticsTitle, statisticsGetter);
 	}
 
-    @Override
-    public void updateStatistics(Device<?> device) {
+	@Override
+	public void updateStatistics(Device<?> device) {
 		columnsList = statisticsGetter.getStatistics(device);
-    }
+	}
 
 	@Override
 	protected int calculateGraphWidth() {
-		return (COL_WIDTH + colSpace)*statisticsGetter.getNumberOfColumns() + SPACING;
+		int width = Integer.MAX_VALUE;
+		colSpace = 1;
+		for (colWidth = 8; colWidth > 2; --colWidth) {
+			width = (colWidth + colSpace) * statisticsGetter.getNumberOfColumns() + SPACING*2;
+			if (width <= MAX_WIDTH) {
+				break;
+			}
+		}
+		if (width > MAX_WIDTH) {
+			colSpace = 0;
+			width = colWidth * statisticsGetter.getNumberOfColumns() + SPACING*2;
+
+		}
+		return width;
 	}
-     
+
 	@Override
 	protected void completeDrawing(Graphics2D g2d) {
-		g2d.setFont(Consts.UI.SMALLER_FONT); 
-		g2d.drawString("100%", VER_ASIX - g2d.getFontMetrics().stringWidth("100%")-3, TITLE_HIEGHT + SPACING);
-		g2d.drawString("75%", VER_ASIX - g2d.getFontMetrics().stringWidth("75%")-3, TITLE_HIEGHT + HEIGHT/4 + SPACING/2);
-		g2d.drawString("50%", VER_ASIX - g2d.getFontMetrics().stringWidth("50%")-3, TITLE_HIEGHT + HEIGHT/2 + SPACING/2);
-		g2d.drawString("25%", VER_ASIX - g2d.getFontMetrics().stringWidth("25%")-3, TITLE_HIEGHT + HEIGHT*3/4 + SPACING/2);
-		g2d.drawString("0%", VER_ASIX - g2d.getFontMetrics().stringWidth("0%")-3, TITLE_HIEGHT + HEIGHT);
-		
+		g2d.setFont(Consts.getInstance().fonts.CONTROL_FONT);
+		g2d.drawString("100%", VER_ASIX - g2d.getFontMetrics().stringWidth("100%") - 3, TITLE_HIEGHT + SPACING);
+		g2d.drawString("75%", VER_ASIX - g2d.getFontMetrics().stringWidth("75%") - 3,
+				TITLE_HIEGHT + HEIGHT / 4 + SPACING / 2);
+		g2d.drawString("50%", VER_ASIX - g2d.getFontMetrics().stringWidth("50%") - 3,
+				TITLE_HIEGHT + HEIGHT / 2 + SPACING / 2);
+		g2d.drawString("25%", VER_ASIX - g2d.getFontMetrics().stringWidth("25%") - 3,
+				TITLE_HIEGHT + HEIGHT * 3 / 4 + SPACING / 2);
+		g2d.drawString("0%", VER_ASIX - g2d.getFontMetrics().stringWidth("0%") - 3, TITLE_HIEGHT + HEIGHT);
+		g2d.setFont(Consts.getInstance().fonts.PAGE_FONT);
+
 		int i = 0;
 		for (StatisticsColumn column : columnsList) {
+			g2d.setColor(column.getColor());
 			drawColumn(g2d, column, i++);
 		}
 	}
-	
-	private void drawColumn(Graphics2D g2d, StatisticsColumn column, int colIndex) {
-		int x = VER_ASIX + SPACING + colIndex*(COL_WIDTH + colSpace);
-		int columnHeight = (int) ((column.getValue() * HEIGHT)/100);
-		int y = TITLE_HIEGHT +  HEIGHT - columnHeight;
 
-		g2d.fillRect(x, y, COL_WIDTH, columnHeight);
+	private void drawColumn(Graphics2D g2d, StatisticsColumn column, int colIndex) {
+		int x = VER_ASIX + SPACING + colIndex * (colWidth + colSpace);
+		int columnHeight = (int) Math.round((column.getValue() * HEIGHT) / 100);
+		int y = TITLE_HIEGHT + HEIGHT - columnHeight;
+
+		g2d.fillRect(x, y, colWidth, columnHeight);
 		if (column.isColTitleDrawn()) {
-			if(column.getColumnName().length() > 2) {
+			if (column.getColumnName().length() > 2) {
 				AffineTransform orig = g2d.getTransform();
-				g2d.rotate(Math.PI/2);
-				g2d.drawString(column.getColumnName(), (TITLE_HIEGHT+ HEIGHT + SPACING)-4, -x);
+				g2d.rotate(Math.PI / 2);
+				g2d.drawString(column.getColumnName(), (TITLE_HIEGHT + HEIGHT + SPACING) - 4, -x);
 				g2d.setTransform(orig);
 			} else {
-				g2d.drawString(column.getColumnName(), x, TITLE_HIEGHT+ HEIGHT + 13);
+				g2d.drawString(column.getColumnName(), x, TITLE_HIEGHT + HEIGHT + 13);
 			}
 		}
-	}
-
-	protected boolean isColTitleDrawn(int colIndex) {
-		return true;
 	}
 }

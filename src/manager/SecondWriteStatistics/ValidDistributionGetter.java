@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import manager.ReusableSSDManager;
-import ui.GeneralStatisticsGraph;
-import ui.StatisticsGraph;
 import entities.Device;
 import entities.StatisticsColumn;
 import entities.reusable.ReusableBlock;
@@ -38,14 +35,21 @@ import entities.reusable.ReusableChip;
 import entities.reusable.ReusableDevice;
 import entities.reusable.ReusablePage;
 import entities.reusable.ReusablePlane;
+import manager.ReusableSSDManager;
+import ui.GeneralStatisticsGraph;
+import ui.HistogramGraph;
 
 public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 
+	private static int columnDisplayFreq = 2;
 	private int writeLevel;
 
 	public ValidDistributionGetter(ReusableSSDManager manager, int writeLevel) {
 		super(manager);
 		this.writeLevel = writeLevel;
+		if (manager.getPagesNum() > 20) {			
+			columnDisplayFreq = ((manager.getPagesNum() + 1)/10); 
+		}
 	}
 
 	@Override
@@ -74,14 +78,14 @@ public class ValidDistributionGetter extends SecondWritesStatisticsGetter {
 		int overallBlocks = manager.getBlocksNum()*manager.getPlanesNum()*manager.getChipsNum();
 		List<StatisticsColumn> list = new ArrayList<StatisticsColumn>();
 		for (int i = 0; i < counters.length; i++) {
-			list.add(new StatisticsColumn(i+"", ((double)counters[i]*100)/overallBlocks, i%2==0));
+			list.add(new StatisticsColumn(i+"", ((double)counters[i]*100)/overallBlocks, i%columnDisplayFreq==0));
 		}
 		return list;
 	}
 
 	@Override
 	public GeneralStatisticsGraph getStatisticsGraph() {
-		return new StatisticsGraph("Valid "+writeLevel+" Histogram", this);
+		return new HistogramGraph("Valid "+writeLevel+" Histogram", this);
 	}
 
 	@Override

@@ -153,7 +153,7 @@ public abstract class Block<P extends Page> {
 	}
 
 	public Color getBGColor() {
-		return Consts.Colors.BG;
+		return Consts.getInstance().colors.INNER_BG;
 	}
 
 	public String getStatusName() {
