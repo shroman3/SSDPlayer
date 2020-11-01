@@ -5,7 +5,8 @@
 		<!-- OP as percents -->
 		<overprovisioning>30</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
-		<gc_threshold>7</gc_threshold>
+		<gc_threshold></gc_threshold>
+		<gc_threshold_blocks_clocks>1</gc_threshold_blocks_clocks>
 		<chips>5</chips>
 		<planes>1</planes>
 		<blocks>32</blocks>

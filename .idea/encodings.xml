@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/general/XMLGetter.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/RAIDSSDManager.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/ReusableSSDManager.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/SSDManager.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/VisualizationSSDManager.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/ui/TracePlayer.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/utils/UIUtils.java" charset="windows-1255" />
+  </component>
+</project>

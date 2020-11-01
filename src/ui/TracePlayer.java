@@ -340,7 +340,7 @@ public class TracePlayer extends JPanel {
 				showZoomDialog();
 			}
 		});
-		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER); //BUG: Should replace "ManageBreakpointsDialog" with "ZoomLevelDialog"
 		zoomButton.setEnabled(true);
 
 		this.infoButton.addActionListener(new ActionListener() {

@@ -51,6 +51,12 @@ import zoom.SmallBlocksEraseCountZoomLevel;
 import zoom.SmallBlocksValidCountZoomLevel;
 
 
+enum GctType {
+	PERCENTAGE,
+	BLOCKS
+}
+
+
 /**
  * @author Roman
  * 
@@ -149,6 +155,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int op = -1;
 	private int reserved = -1;
 	private int gct = -1;
+	private GctType gctType;
 	private int chipsNum = -1;
 	private int planesNum = -1;
 	private int blocksInPlane = -1;
