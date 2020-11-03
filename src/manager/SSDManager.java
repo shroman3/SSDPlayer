@@ -49,12 +49,7 @@ import zoom.IZoomLevel;
 import zoom.PagesZoomLevel;
 import zoom.SmallBlocksEraseCountZoomLevel;
 import zoom.SmallBlocksValidCountZoomLevel;
-
-
-enum GctType {
-	PERCENTAGE,
-	BLOCKS
-}
+import utils.Utils;
 
 
 /**
@@ -150,12 +145,11 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	}
 	
 	private List<StatisticsGetter> statisticsGetters;
-
 	private String managerName;
 	private int op = -1;
 	private int reserved = -1;
 	private int gct = -1;
-	private GctType gctType;
+	private Utils.GctType gctType;
 	private int chipsNum = -1;
 	private int planesNum = -1;
 	private int blocksInPlane = -1;
@@ -401,11 +395,28 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	
 	private void initPhysicalValues(XMLGetter xmlGetter) throws XMLParsingException {
 		op = xmlGetter.getIntField("physical", "overprovisioning");
-		gct = xmlGetter.getIntField("physical", "gc_threshold");
 		chipsNum = xmlGetter.getIntField("physical", "chips");
 		planesNum = xmlGetter.getIntField("physical", "planes");
 		blocksInPlane = xmlGetter.getIntField("physical", "blocks");
 		pagesInBlock = xmlGetter.getIntField("physical", "pages");
+		try{
+			gct = xmlGetter.getIntField("physical", "gc_threshold");
+			try {
+				gct = xmlGetter.getIntField("physical", "gc_threshold_blocks");
+				throw new Error("You should specify EXACTLY ONE of the followings: gc_threshold, gh_threshold_blocks\nThe other should be blank");
+			} catch (XMLParsingException | java.lang.NumberFormatException e1){
+				//In this scenario, gc_threshold was selected (e.g. in percents)
+				gctType = Utils.GctType.PERCENT;
+			}
+		} catch (XMLParsingException | java.lang.NumberFormatException e){
+			try {
+				gct = xmlGetter.getIntField("physical", "gc_threshold_blocks");
+				//In this scenario, gc_threshold_blocks was selected (e.g. in total numbers)
+				gctType = Utils.GctType.BLOCKS;
+			} catch (XMLParsingException | java.lang.NumberFormatException e1){
+				throw new Error("You should specify EXACTLY ONE of the followings: gc_threshold, gh_threshold_blocks\nThe other should be blank");
+			}
+		}
 	}
 
 	private void initBaseValues(XMLGetter xmlGetter) throws XMLParsingException {
@@ -414,6 +425,9 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		cleanColor = getColorField(xmlGetter, "clean_color");
 		
 		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
-		gct = (int)(blocksInPlane * ((double)gct/(100)));
+		if(gctType == Utils.GctType.PERCENT) {
+			gct = (int) (blocksInPlane * ((double) gct / (100)));
+		}
+		//If gctType is GctType.BLOCKS, then there's no need to change it's value
 	}
 }

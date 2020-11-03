@@ -22,6 +22,11 @@
 package utils;
 
 public class Utils {
+	public enum GctType {
+		PERCENT,
+		BLOCKS
+	}
+
 	public static void validateNotNull(Object param, String paramName) {
 		if (param == null) {
 			throw new IllegalArgumentException(paramName + " parameter is null (It shouldn't be)");

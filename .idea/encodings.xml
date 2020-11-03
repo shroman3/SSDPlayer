@@ -8,5 +8,6 @@
     <file url="file://$PROJECT_DIR$/src/manager/VisualizationSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/TracePlayer.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/utils/UIUtils.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/utils/Utils.java" charset="windows-1255" />
   </component>
 </project>
