@@ -42,7 +42,7 @@ import ui.AddressWidget;
  * @author Or Mauda
  *
  */
-public class RAIDVisualizationSSDManager extends RAIDBasicSSDManager<RAIDVisualizationPage, RAIDVisualizationBlock, RAIDVisualizationPlane, RAIDVisualizationChip, RAIDVisualizationDevice>  
+public class RAIDVisualizationSSDManager extends RAIDBasicSSDManager<RAIDVisualizationPage, RAIDVisualizationBlock, RAIDVisualizationPlane, RAIDVisualizationChip, RAIDVisualizationDevice>
 		implements  VisualizationSSDManager {
 	private Color dataPageColor;
 	private List<Color> paritiesColors;

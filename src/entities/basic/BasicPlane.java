@@ -94,7 +94,7 @@ public class BasicPlane extends Plane<BasicBlock> {
 		BasicBlock activeBlock = null;
 		if (active != -1) {			
 			activeBlock = cleanBlocks.get(active);
-		} 
+		}
 		for (BasicPage page : pickedToClean.getValue1().getPages()) {
 			if (page.isValid()) {
 				if (active == -1) {

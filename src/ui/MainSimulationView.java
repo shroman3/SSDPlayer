@@ -111,12 +111,63 @@ public class MainSimulationView extends JFrame {
 
 	// Check xml values are legal.   
 	private static String checkXmlValues(XMLGetter xmlGetter) {
-		try {
-			if(xmlGetter.getIntField("physical","max_erasures") < 0){
-				return "max erasures is negative";
+		try{
+			int value = xmlGetter.getIntField("physical","overprovisioning");
+			if(value < 0 || value > 100){
+				return "overposishioning has illegal value";
 			}
-		} catch (XMLParsingException e) {
-			return "max erasures is not specified in config";
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "overprovisioning is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","gc_threshold");
+			if(value < 0 || value > 100){
+				return "gc_threshold has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) { }
+
+		try{
+			int value = xmlGetter.getIntField("physical","gc_threshold_blocks");
+			if(value < 0){
+				return "gc_threshold_blocks has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) { }
+
+		try{
+			int value = xmlGetter.getIntField("physical","chips");
+			if(value < 0){
+				return "chips has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "chips is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","planes");
+			if(value < 0){
+				return "planes has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "planes is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","blocks");
+			if(value < 0){
+				return "blocks has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "blocks is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","pages");
+			if(value < 0){
+				return "pages has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "pages is not specified in config";
 		}
 		return null;
 	}
