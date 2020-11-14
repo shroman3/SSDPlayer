@@ -35,6 +35,7 @@ public class VisualConfig {
 	}
 	
 	private int xmlSpeed = -1;
+	private int xmlViewSample = 1;
 	private boolean xmlShowCounters = true;
 	private int xmlPageWidth = -1;
 	private int xmlPageHeight = -1;
@@ -49,6 +50,7 @@ public class VisualConfig {
 	private boolean xmlDrawFrame = true;
 
 	private int speed = -1;
+	private int viewSample = 1;
 	private boolean showCounters = true;
 	private int pageWidth = -1;
 	private int pageHeight = -1;
@@ -76,7 +78,7 @@ public class VisualConfig {
 		this.xmlPagesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "pages_in_row");
 		this.xmlBlocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
 		this.xmlPlanesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
-		
+		this.xmlViewSample = xmlGetter.getIntField(VISUAL_CONFIG, "view_sample");
 		restoreXmlValues();
 	}
 	
@@ -89,12 +91,21 @@ public class VisualConfig {
 		setPagesInRow(xmlPagesInRow);
 		setBlocksInRow(xmlBlocksInRow);
 		setPlanesInRow(xmlPlanesInRow);
+		setViewSample(xmlViewSample);
 		setThinCross(xmlThinCross);
 		setMovedPattern(xmlMovedPattern);
 		setShowPages(xmlShowPages);
 		setBlocksColorMeaning(xmlBlocksColorMeaning);
 		setDrawFrame(xmlDrawFrame);
 		
+	}
+
+	public int getViewSample(){
+		return viewSample;
+	}
+
+	public void setViewSample(int viewSample){
+		this.viewSample = viewSample;
 	}
 
 	public int getSpeed() {

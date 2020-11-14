@@ -155,7 +155,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private int blocksInPlane = -1;
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
-	
+
 	protected Set<IZoomLevel> supportedZoomLevels = new LinkedHashSet<>();
 	
 	/**

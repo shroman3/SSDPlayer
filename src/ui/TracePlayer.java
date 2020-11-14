@@ -71,6 +71,7 @@ import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.InfoDialog;
 import ui.breakpoints.ManageBreakpointsDialog;
+import ui.sampling.SamplingRateDialog;
 import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
 import zoom.IZoomLevel;
@@ -95,6 +96,7 @@ public class TracePlayer extends JPanel {
 	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
 	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
 	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
+	private JButton samplingRateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/filter.png")));
 
 	private JProgressBar progressBar;
 	private TraceParser<? extends Device<?>, ?> parser;
@@ -131,6 +133,7 @@ public class TracePlayer extends JPanel {
 	private ZoomLevelDialog zoomDialog;
 	private InfoDialog infoDialog;
 	private VisualConfig visualConfig;
+	private SamplingRateDialog samplingRateDialog;
 
 	private OneObjectCallback<Boolean> resetDeviceView;
 
@@ -241,8 +244,13 @@ public class TracePlayer extends JPanel {
 		setStripeInformation(manager);
 		setZoomLevelOptions(manager);
 		setInfoDialog(manager);
+		setSamplingRateDialog(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		ActionLog.resetLog();
+	}
+
+	private void setSamplingRateDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
+		this.samplingRateDialog = new SamplingRateDialog(SwingUtilities.windowForComponent(this), manager, this.visualConfig);
 	}
 
 	private void setInfoDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
@@ -340,17 +348,28 @@ public class TracePlayer extends JPanel {
 				showZoomDialog();
 			}
 		});
-		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER); //BUG: Should replace "ManageBreakpointsDialog" with "ZoomLevelDialog"
+		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER); //BUG FIXED: Should replace "ManageBreakpointsDialog" with "ZoomLevelDialog"
 		zoomButton.setEnabled(true);
 
-		this.infoButton.addActionListener(new ActionListener() {
+		infoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TracePlayer.this.showInfoDialog();
 			}
 		});
-		addButton(this.infoButton, "Info");
-		this.infoButton.setEnabled(true);
+		addButton(infoButton, "Info");
+		infoButton.setEnabled(true);
+
+
+		samplingRateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showSamplingRateDialog();
+			}
+		});
+		addButton(samplingRateButton, "Sample View");
+		samplingRateButton.setEnabled(true);
+
 
 		add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -494,6 +513,7 @@ public class TracePlayer extends JPanel {
 
 	private boolean parseNextCommand() {
 		if (currFrameCounter >= numberOfLines) {
+			updateDeviceView.message(currentDevice);
 			MessageLog.log(new InfoMessage("Simulation Ended"));
 			return false;
 		}
@@ -504,7 +524,10 @@ public class TracePlayer extends JPanel {
 		try {
 			Device<?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
-				updateDeviceView.message(updatedDevice);
+				if(currFrameCounter % visualConfig.getViewSample() == 0
+						|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))) {
+					updateDeviceView.message(updatedDevice);
+				}
 				// FrameCounter runs from 0 to numberOfLines-1, displayed from 1 to numberOfLines
 				setProgressBarFrame(currFrameCounter + 1);
 				++currFrameCounter;
@@ -606,5 +629,11 @@ public class TracePlayer extends JPanel {
 	private void showInfoDialog() {
 		pauseTrace();
 		this.infoDialog.setVisible(true);
+	}
+
+	private void showSamplingRateDialog(){
+		pauseTrace();
+		this.samplingRateDialog.resetSmaplingRate();
+		this.samplingRateDialog.setVisible(true);
 	}
 }

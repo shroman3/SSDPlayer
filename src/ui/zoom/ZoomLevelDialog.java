@@ -28,7 +28,7 @@ import zoom.IZoomLevel;
 
 public class ZoomLevelDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
-	public static final String DIALOG_HEADER = "Zoom Level"; //need to change private to public
+	public static final String DIALOG_HEADER = "Zoom Level";
 	
 	private SSDManager<?, ?, ?, ?, ?> mManager;
 	private JPanel mMainPanel;

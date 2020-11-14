@@ -14,6 +14,7 @@
 		<max_erasures>100000</max_erasures>
 	</physical>
 	<visual>
+		<view_sample>1</view_sample>
 		<show_counters>yes</show_counters>
 		<speed>60000</speed><!-- Number of frames per minute -->
 		<page_width>18</page_width>
