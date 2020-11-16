@@ -127,6 +127,7 @@ public class TracePlayer extends JPanel {
 	private TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice;
 
 	private Device<?> currentDevice;
+	private Device<?> updatedDevice;
 
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
@@ -164,6 +165,7 @@ public class TracePlayer extends JPanel {
 	public void stopTrace() {
 		isPaused = true;
 		if (traceReadTimer != null) {
+			updateDeviceView.message(updatedDevice);
 			traceReadTimer.cancel();
 			traceReadTimer = null;
 			parser.close();
@@ -348,7 +350,7 @@ public class TracePlayer extends JPanel {
 				showZoomDialog();
 			}
 		});
-		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER); //BUG FIXED: Should replace "ManageBreakpointsDialog" with "ZoomLevelDialog"
+		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER);
 		zoomButton.setEnabled(true);
 
 		infoButton.addActionListener(new ActionListener() {
@@ -522,10 +524,14 @@ public class TracePlayer extends JPanel {
 			return false;
 		}
 		try {
-			Device<?> updatedDevice = parser.parseNextCommand();
+			updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
+				//The first condition is to check whether this frame should be displayed according to the sampling rate.
+				//The second one is to make sure each GC execution is displayed.
+				//The third is to make sure that when people press the "next" button, the next frame will be displayed.
 				if(currFrameCounter % visualConfig.getViewSample() == 0
-						|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))) {
+						|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))
+						|| isPaused) {
 					updateDeviceView.message(updatedDevice);
 				}
 				// FrameCounter runs from 0 to numberOfLines-1, displayed from 1 to numberOfLines
@@ -586,6 +592,7 @@ public class TracePlayer extends JPanel {
 	}
 
 	public void pauseTrace() {
+		updateDeviceView.message(updatedDevice);
 		isPaused = true;
 		playPauseButton.setIcon(iconPlay);
 		playPauseButton.setToolTipText("Play");
