@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -109,6 +112,7 @@ public class TracePlayer extends JPanel {
 
 	private boolean isPaused = true;
 
+	private ScheduledExecutorService schedular;
 	private Timer traceReadTimer;
 	private int currFrameCounter = 0;
 
@@ -127,7 +131,6 @@ public class TracePlayer extends JPanel {
 	private TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice;
 
 	private Device<?> currentDevice;
-	private Device<?> updatedDevice;
 
 	private List<BreakpointBase> breakpoints;
 	private ManageBreakpointsDialog breakpointsDialog;
@@ -164,10 +167,10 @@ public class TracePlayer extends JPanel {
 
 	public void stopTrace() {
 		isPaused = true;
-		if (traceReadTimer != null) {
-			updateDeviceView.message(updatedDevice);
-			traceReadTimer.cancel();
-			traceReadTimer = null;
+		if (schedular != null) {
+			updateDeviceView.message(currentDevice);
+			schedular.shutdown();
+			schedular = null;
 			parser.close();
 			playPauseButton.setEnabled(false);
 			playPauseButton.setIcon(iconPlay);
@@ -329,7 +332,7 @@ public class TracePlayer extends JPanel {
 		nextButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if ((traceReadTimer != null) && isPaused) {
+				if ((schedular != null) && isPaused) {
 					parseNextCommand();
 				}
 			}
@@ -468,23 +471,20 @@ public class TracePlayer extends JPanel {
 
 	private void reStartTimer() {
 		resetDevice.message(parser.getCurrentDevice(), manager.getStatisticsGetters());
-		traceReadTimer = new Timer();
-		traceReadTimer.schedule(new TimerTask() {
-			@Override
-			public boolean cancel() {
+		schedular = Executors.newScheduledThreadPool(1);
+		schedular.scheduleWithFixedDelay(new Runnable() {
+			public void cancel() {
 				stopTrace();
-				return super.cancel();
 			}
-
-			@Override
-			public void run() {
-				if (isPaused)
-					return;
-				if (!parseNextCommand()) {
-					cancel();
-				}
-			}
-		}, 0, readingSpeed);
+			 @Override
+			 public void run() {
+				 if (isPaused)
+					 return;
+				 if (!parseNextCommand()) {
+					 cancel();
+				 }
+			 }
+		}, 0, visualConfig.getDelay(), TimeUnit.NANOSECONDS);
 
 		playPauseButton.setEnabled(true);
 		stopButton.setEnabled(true);
@@ -524,7 +524,7 @@ public class TracePlayer extends JPanel {
 			return false;
 		}
 		try {
-			updatedDevice = parser.parseNextCommand();
+			Device<?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
 				//The first condition is to check whether this frame should be displayed according to the sampling rate.
 				//The second one is to make sure each GC execution is displayed.
@@ -592,11 +592,13 @@ public class TracePlayer extends JPanel {
 	}
 
 	public void pauseTrace() {
-		updateDeviceView.message(updatedDevice);
-		isPaused = true;
-		playPauseButton.setIcon(iconPlay);
-		playPauseButton.setToolTipText("Play");
-		showStripeButton.setEnabled(true);
+		if(!isPaused) {
+			updateDeviceView.message(currentDevice);
+			isPaused = true;
+			playPauseButton.setIcon(iconPlay);
+			playPauseButton.setToolTipText("Play");
+			showStripeButton.setEnabled(true);
+		}
 	}
 
 	private void showGeneratorCreatorsTrace() {

@@ -33,7 +33,8 @@ public class VisualConfig {
 	public enum BlockColorMeaning {
 		PARITY_COUNT, VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
 	}
-	
+
+	private long xmlDelay = -1;
 	private int xmlSpeed = -1;
 	private int xmlViewSample = 1;
 	private boolean xmlShowCounters = true;
@@ -49,6 +50,7 @@ public class VisualConfig {
 	private BlockColorMeaning xmlBlocksColorMeaning = BlockColorMeaning.NONE;
 	private boolean xmlDrawFrame = true;
 
+	private long delay = -1;
 	private int speed = -1;
 	private int viewSample = 1;
 	private boolean showCounters = true;
@@ -79,10 +81,12 @@ public class VisualConfig {
 		this.xmlBlocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
 		this.xmlPlanesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
 		this.xmlViewSample = xmlGetter.getIntField(VISUAL_CONFIG, "view_sample");
+		this.xmlDelay = xmlGetter.getLongField(VISUAL_CONFIG, "delay");
 		restoreXmlValues();
 	}
 	
 	public void restoreXmlValues(){
+		setDelay(xmlDelay);
 		setSpeed(xmlSpeed);
 		setShowCounters(xmlShowCounters);
 		setPageWidth(xmlPageWidth);
@@ -97,7 +101,15 @@ public class VisualConfig {
 		setShowPages(xmlShowPages);
 		setBlocksColorMeaning(xmlBlocksColorMeaning);
 		setDrawFrame(xmlDrawFrame);
-		
+
+	}
+
+	public long getDelay(){
+		return delay;
+	}
+
+	public void setDelay(long delay){
+		this.delay = delay;
 	}
 
 	public int getViewSample(){

@@ -58,7 +58,12 @@ public class XMLGetter {
 		Element element = getElement(manager, field);
 		return element.getTextContent();
 	}
-	
+
+	public long getLongField(String manager, String field) throws XMLParsingException {
+		Element element = getElement(manager, field);
+		return Long.parseLong(element.getTextContent());
+	}
+
 	public int getIntField(String manager, String field) throws XMLParsingException {
 		Element element = getElement(manager, field);
 		return Integer.parseInt(element.getTextContent());
