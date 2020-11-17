@@ -34,8 +34,7 @@ public class VisualConfig {
 		PARITY_COUNT, VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
 	}
 
-	private long xmlDelay = -1;
-	private int xmlSpeed = -1;
+	private long xmlSpeed = -1;
 	private int xmlViewSample = 1;
 	private boolean xmlShowCounters = true;
 	private int xmlPageWidth = -1;
@@ -50,8 +49,7 @@ public class VisualConfig {
 	private BlockColorMeaning xmlBlocksColorMeaning = BlockColorMeaning.NONE;
 	private boolean xmlDrawFrame = true;
 
-	private long delay = -1;
-	private int speed = -1;
+	private long speed = -1;
 	private int viewSample = 1;
 	private boolean showCounters = true;
 	private int pageWidth = -1;
@@ -73,7 +71,7 @@ public class VisualConfig {
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
 		this.xmlShowCounters = xmlGetter.getBooleanField(VISUAL_CONFIG, "show_counters");
-		this.xmlSpeed = xmlGetter.getIntField(VISUAL_CONFIG, "speed");
+		this.xmlSpeed = xmlGetter.getLongField(VISUAL_CONFIG, "speed");
 		this.xmlPageWidth =xmlGetter.getIntField(VISUAL_CONFIG, "page_width");
 		this.xmlPageHeight = xmlGetter.getIntField(VISUAL_CONFIG, "page_height");
 		this.xmlBlockSpace = xmlGetter.getIntField(VISUAL_CONFIG, "block_space");
@@ -81,12 +79,10 @@ public class VisualConfig {
 		this.xmlBlocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
 		this.xmlPlanesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
 		this.xmlViewSample = xmlGetter.getIntField(VISUAL_CONFIG, "view_sample");
-		this.xmlDelay = xmlGetter.getLongField(VISUAL_CONFIG, "delay");
 		restoreXmlValues();
 	}
 	
 	public void restoreXmlValues(){
-		setDelay(xmlDelay);
 		setSpeed(xmlSpeed);
 		setShowCounters(xmlShowCounters);
 		setPageWidth(xmlPageWidth);
@@ -104,14 +100,6 @@ public class VisualConfig {
 
 	}
 
-	public long getDelay(){
-		return delay;
-	}
-
-	public void setDelay(long delay){
-		this.delay = delay;
-	}
-
 	public int getViewSample(){
 		return viewSample;
 	}
@@ -120,11 +108,11 @@ public class VisualConfig {
 		this.viewSample = viewSample;
 	}
 
-	public int getSpeed() {
+	public long getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(long speed) {
 		this.speed = speed;
 	}
 

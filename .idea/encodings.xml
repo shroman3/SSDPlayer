@@ -37,7 +37,9 @@
     <file url="file://$PROJECT_DIR$/src/manager/ZipfWorkloadWidget.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/AddressWidget.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/BlockView.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/ui/ChipView.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/ChooseStripesFrame.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/ui/DeviceView.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/LoadGeneratorsCreatorsFrame.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/RegularHistoryGraph.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/TracePlayer.java" charset="windows-1255" />

@@ -116,7 +116,7 @@ public class TracePlayer extends JPanel {
 	private Timer traceReadTimer;
 	private int currFrameCounter = 0;
 
-	private int readingSpeed;
+	private long readingSpeed;
 
 	private SeparatorComboBox managersList;
 
@@ -466,7 +466,7 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void initTraceParsing(VisualConfig visualConfig) {
-		readingSpeed = 60000 / visualConfig.getSpeed();
+		readingSpeed = 1000000000 / visualConfig.getSpeed();
 	}
 
 	private void reStartTimer() {
@@ -484,7 +484,7 @@ public class TracePlayer extends JPanel {
 					 cancel();
 				 }
 			 }
-		}, 0, visualConfig.getDelay(), TimeUnit.NANOSECONDS);
+		}, 0, readingSpeed, TimeUnit.NANOSECONDS);
 
 		playPauseButton.setEnabled(true);
 		stopButton.setEnabled(true);
@@ -527,10 +527,10 @@ public class TracePlayer extends JPanel {
 			Device<?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
 				//The first condition is to check whether this frame should be displayed according to the sampling rate.
-				//The second one is to make sure each GC execution is displayed.
+				//The second one is to make sure each GC execution is displayed - currently disabled to make heavy GUI traces faster
 				//The third is to make sure that when people press the "next" button, the next frame will be displayed.
 				if(currFrameCounter % visualConfig.getViewSample() == 0
-						|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))
+						//|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))
 						|| isPaused) {
 					updateDeviceView.message(updatedDevice);
 				}
