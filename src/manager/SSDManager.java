@@ -80,7 +80,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static List<String> simulatorsList = new ArrayList<>();
 	private static List<String> visualizationsList = new ArrayList<>();
-	
 	/**
 	 * Initialize SSD manager using given configuration.
 	 * First loads all of the subclasses of the SSDManager.
@@ -89,23 +88,23 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 *   
 	 * @param xmlGetter - configuration getter 
 	 */
-	public static void initializeManager(XMLGetter xmlGetter) {
-		if (managersMap == null) {		
+	public static void initializeManager(XMLGetter xmlGetter, boolean withUI) {
+		if (managersMap == null) {
 			Reflections reflections = new Reflections(SSDManager.class.getPackage().getName());
 			// We use here raw type and do the casting in order for the code to compile.
 			@SuppressWarnings("rawtypes")
 			Set<Class<? extends SSDManager>> subTypesAux = reflections.getSubTypesOf(SSDManager.class);
 			Object auxObj = subTypesAux;
 			@SuppressWarnings("unchecked")
-			Set<Class<? extends SSDManager<?,?,?,?,?>>> subTypes = (Set<Class<? extends SSDManager<?,?,?,?,?>>>)auxObj;
-			
-			Map<String, SSDManager<?,?,?,?,?>> managers = new HashMap<String, SSDManager<?,?,?,?,?>>();
-			for (Class<? extends SSDManager<?,?,?,?,?>> clazz : subTypes) {
+			Set<Class<? extends SSDManager<?, ?, ?, ?, ?>>> subTypes = (Set<Class<? extends SSDManager<?, ?, ?, ?, ?>>>) auxObj;
+
+			Map<String, SSDManager<?, ?, ?, ?, ?>> managers = new HashMap<String, SSDManager<?, ?, ?, ?, ?>>();
+			for (Class<? extends SSDManager<?, ?, ?, ?, ?>> clazz : subTypes) {
 				if (!Modifier.isAbstract(clazz.getModifiers())) {
 					try {
 						System.out.println("Initializing " + clazz.getSimpleName());
-						SSDManager<?,?,?,?,?> manager = clazz.newInstance();
-						manager.initBaseValues(xmlGetter);
+						SSDManager<?, ?, ?, ?, ?> manager = clazz.newInstance();
+						manager.initBaseValues(xmlGetter, withUI);
 						manager.initValues(xmlGetter);
 						if (manager instanceof VisualizationSSDManager) {
 							visualizationsList.add(manager.getManagerName());
@@ -113,7 +112,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 							simulatorsList.add(manager.getManagerName());
 						}
 						managers.put(manager.getManagerName(), manager);
-						manager.statisticsGetters  = manager.initStatisticsGetters();
+						manager.statisticsGetters = manager.initStatisticsGetters();
 						System.out.println("Finished initializing " + clazz.getSimpleName() + " - " + manager.getManagerName());
 					} catch (Throwable e) {
 						e.printStackTrace();
@@ -419,10 +418,12 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 		}
 	}
 
-	private void initBaseValues(XMLGetter xmlGetter) throws XMLParsingException {
+	private void initBaseValues(XMLGetter xmlGetter, boolean withUI) throws XMLParsingException {
 		initPhysicalValues(xmlGetter);
 		managerName = getStringField(xmlGetter, "name");
-		cleanColor = getColorField(xmlGetter, "clean_color");
+		if(withUI) {
+			cleanColor = getColorField(xmlGetter, "clean_color");
+		}
 		
 		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
 		if(gctType == Utils.GctType.PERCENT) {

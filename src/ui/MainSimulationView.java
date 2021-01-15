@@ -31,7 +31,11 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -71,42 +75,116 @@ public class MainSimulationView extends JFrame {
 	private DeviceView deviceView;
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
+	private TracePlayerCLI tracePlayerCLI;
 	private JPanel southInnerPanel;
 	private ZoomLevelPanel zoomLevelPanel;
 
-	public static void main(String[] args) {
-		try {
-			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-			Consts.initialize(xmlGetter);
-			initLookAndFeel();
-			ConfigProperties.initialize(xmlGetter);
-			BreakpointsConstraints.initialize(xmlGetter);
-			SSDManager.initializeManager(xmlGetter);
-			String checkResult = checkXmlValues(xmlGetter);
-			if(checkResult != null){
-				displayErrorFrame(checkResult);
-				return;
-			}
-			
-			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
-
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					try {
-						MainSimulationView window = new MainSimulationView(visualConfig);
-						window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));;
-						window.setVisible(true);
-					} catch (Exception e) {
-						displayErrorFrame("Unable to load Simulation \n" + e.toString());
-					} 
-				}
-			});
-		} catch (Exception e) {
-			String error = "Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage();
-			System.out.println(error);
-			displayErrorFrame(error);
-
+	private static List<String> getValueForFlag(List<String> arguments, String flag){
+		List<String> value = new ArrayList<>();
+		int flag_index = arguments.indexOf(flag);
+		if(flag_index == -1){
+			return null;
 		}
+		ListIterator<String> iterator = arguments.listIterator(flag_index);
+		iterator.next();
+		String str = iterator.next();
+		while(str != null && str.charAt(0) != '-'){
+			value.add(str);
+			str = iterator.next();
+		}
+		return value;
+	}
+
+	//-C resources/my_ssd_config.xml -F
+	public static void main(String[] args) {
+		if (args.length > 0) {
+			try {
+				List<String> arguments = Arrays.asList(args);
+				List<String> config_xml = getValueForFlag(arguments, "-C");
+				if(config_xml == null || config_xml.size() != 1){
+					throw new Exception("There should be exactly one config file");
+				}
+				//XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
+				XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+				Consts.initialize(xmlGetter);
+				ConfigProperties.initialize(xmlGetter);
+				BreakpointsConstraints.initialize(xmlGetter);
+				SSDManager.initializeManager(xmlGetter, false);
+				String checkResult = checkXmlValues(xmlGetter);
+				if (checkResult != null) {
+					throw new Exception("Bad XML values");
+
+				}
+
+				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
+				MainSimulationView window = new MainSimulationView(visualConfig, false);
+
+
+			} catch(Exception e){
+				String error = "Unable to load config XML file\n" + e.getMessage();
+				System.out.println(e.getMessage());
+				displayErrorFrame(e.getMessage());
+
+			}
+		} else {
+			try {
+				XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+				Consts.initialize(xmlGetter);
+				initLookAndFeel();
+				ConfigProperties.initialize(xmlGetter);
+				BreakpointsConstraints.initialize(xmlGetter);
+				SSDManager.initializeManager(xmlGetter, true);
+				String checkResult = checkXmlValues(xmlGetter);
+				if (checkResult != null) {
+					displayErrorFrame(checkResult);
+					return;
+				}
+
+				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
+
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							MainSimulationView window = new MainSimulationView(visualConfig, true);
+							window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));
+							window.setVisible(true);
+						} catch (Exception e) {
+							displayErrorFrame("Unable to load Simulation \n" + e.toString());
+						}
+					}
+				});
+			} catch(Exception e){
+				String error = "Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage();
+				System.out.println(error);
+				displayErrorFrame(error);
+
+			}
+		}
+	}
+
+	private void initializeForCLI(){
+
+		tracePlayerCLI = new TracePlayerCLI(visualConfig,
+				new TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>>() {
+					@Override
+					public void message(Device<?> device, Iterable<StatisticsGetter> statisticsGetters) {
+						resetDeviceCLI(device, statisticsGetters);
+
+					}
+				}, new OneObjectCallback<Device<?>>() {
+			@Override
+			public void message(Device<?> device) {
+				updateDeviceCLI(device);
+			}
+		}, new OneObjectCallback<Boolean>() {
+			@Override
+			public void message(Boolean repaintDevice) {
+				deviceView.repaintDevice();
+			}
+		}, "Greedy",
+				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\Small_Uniform.trace",
+				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform");
+
 	}
 
 	// Check xml values are legal.   
@@ -192,16 +270,22 @@ public class MainSimulationView extends JFrame {
 		errorFrame.setVisible(true);
 	}
 
-	public MainSimulationView(VisualConfig visualConfig) {
+	public MainSimulationView(VisualConfig visualConfig, boolean withUI) {
 		super("SSDPlayer " + VERSION);
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				tracePlayer.stopTrace();
-			}
-		});
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.visualConfig = visualConfig;
-		initialize();
+		if (withUI) {
+			addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					tracePlayer.stopTrace();
+				}
+			});
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.visualConfig = visualConfig;
+			initialize();
+		} else {
+			this.visualConfig = visualConfig;
+			initializeForCLI();
+			//continue here to use the trace functions (which will be public)
+		}
 	}
 
 	/**
@@ -305,12 +389,33 @@ public class MainSimulationView extends JFrame {
 		});
 	}
 
+	private void resetDeviceCLI(final Device<?> device, final Iterable<StatisticsGetter> statisticsGetters) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				deviceView = new DeviceView(visualConfig, device);
+
+				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
+				statisticsView.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+			}
+		});
+	}
+
 	private void updateDevice(final Device<?> device) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				deviceView.setDevice(device);
 				statisticsView.updateStatistics(device);
 				statisticsPanel.updateUI();
+			}
+		});
+	}
+
+	private void updateDeviceCLI(final Device<?> device) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				deviceView.setDevice(device);
+				statisticsView.updateStatistics(device);
 			}
 		});
 	}

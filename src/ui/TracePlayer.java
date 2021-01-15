@@ -87,19 +87,19 @@ import zoom.IZoomLevel;
 public class TracePlayer extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private ImageIcon iconPlay = new ImageIcon(getClass().getResource("/ui/images/play.png"));
-	private ImageIcon iconPause = new ImageIcon(getClass().getResource("/ui/images/pause.png"));
+	private final ImageIcon iconPlay = new ImageIcon(getClass().getResource("/ui/images/play.png"));
+	private final ImageIcon iconPause = new ImageIcon(getClass().getResource("/ui/images/pause.png"));
 
-	private JButton playPauseButton = new JButton(iconPlay);
-	private JButton stopButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/stop.png")));
-	private JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
-	private JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
-	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
-	private JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
-	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
-	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
-	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
-	private JButton samplingRateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/filter.png")));
+	private final JButton playPauseButton = new JButton(iconPlay);
+	private final JButton stopButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/stop.png")));
+	private final JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
+	private final JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
+	private final JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
+	private final JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
+	private final JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
+	private final JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
+	private final JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
+	private final JButton samplingRateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/filter.png")));
 
 	private JProgressBar progressBar;
 	private TraceParser<? extends Device<?>, ?> parser;
@@ -113,7 +113,6 @@ public class TracePlayer extends JPanel {
 	private boolean isPaused = true;
 
 	private ScheduledExecutorService schedular;
-	private Timer traceReadTimer;
 	private int currFrameCounter = 0;
 
 	private long readingSpeed;

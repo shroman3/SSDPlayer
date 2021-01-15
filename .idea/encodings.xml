@@ -15,10 +15,12 @@
     <file url="file://$PROJECT_DIR$/src/general/OneObjectCallback.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/general/XMLGetter.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/BasicTraceParser.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/FileTraceParser.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/manager/GreedySSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/HotColdSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/HotColdStatistics/HotColdStatisticsGetter.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/HotColdStatistics/HotColdWriteAmplificationGetter.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/LogicalWritesPerEraseGetter.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/manager/RAID1SSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/RAID5SSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/RAID5SeparateSSDManager.java" charset="windows-1255" />
@@ -34,6 +36,7 @@
     <file url="file://$PROJECT_DIR$/src/manager/VisualizationSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/WorkloadGenerator.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/WriteAmplificationGetter.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/ZipfWorkloadGenerator.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/manager/ZipfWorkloadWidget.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/AddressWidget.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/BlockView.java" charset="windows-1255" />
@@ -41,6 +44,7 @@
     <file url="file://$PROJECT_DIR$/src/ui/ChooseStripesFrame.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/DeviceView.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/LoadGeneratorsCreatorsFrame.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/ui/PlaneView.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/ui/RegularHistoryGraph.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/TracePlayer.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/ui/WorkloadWidget.java" charset="windows-1255" />
