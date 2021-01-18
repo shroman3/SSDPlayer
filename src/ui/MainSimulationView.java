@@ -68,6 +68,9 @@ public class MainSimulationView extends JFrame {
 	private static final String VERSION = "1.2.1";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
+	private static String managerName;
+	private static String inputTrace;
+	private static String outputFile;
 	private VisualConfig visualConfig;
 	private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
@@ -90,12 +93,16 @@ public class MainSimulationView extends JFrame {
 		String str = iterator.next();
 		while(str != null && str.charAt(0) != '-'){
 			value.add(str);
-			str = iterator.next();
+			if(iterator.hasNext()) {
+				str = iterator.next();
+			} else {
+				break;
+			}
 		}
 		return value;
 	}
 
-	//-C resources/my_ssd_config.xml -F
+	//-C resources/ssd_config.xml -F
 	public static void main(String[] args) {
 		if (args.length > 0) {
 			try {
@@ -104,8 +111,19 @@ public class MainSimulationView extends JFrame {
 				if(config_xml == null || config_xml.size() != 1){
 					throw new Exception("There should be exactly one config file");
 				}
-				//XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
-				XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+				List<String> inputFiles = getValueForFlag(arguments, "-F");
+				if(inputFiles == null || inputFiles.size() != 2){
+					throw new Exception("wrong input files format");
+				}
+				List<String> outputFiles = getValueForFlag(arguments, "-O");
+				if(outputFiles == null || outputFiles.size() != 1){
+					throw new Exception("there should be exactly one output file");
+				}
+				XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
+				managerName = inputFiles.get(0);
+				inputTrace = inputFiles.get(1);
+				outputFile = outputFiles.get(0);
+
 				Consts.initialize(xmlGetter);
 				ConfigProperties.initialize(xmlGetter);
 				BreakpointsConstraints.initialize(xmlGetter);
@@ -181,9 +199,13 @@ public class MainSimulationView extends JFrame {
 			public void message(Boolean repaintDevice) {
 				deviceView.repaintDevice();
 			}
-		}, "Greedy",
+		},
+				managerName,
+				inputTrace,
+				outputFile
+				);/* "Greedy",
 				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\Small_Uniform.trace",
-				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform");
+				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform");*/
 
 	}
 
