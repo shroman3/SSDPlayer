@@ -61,6 +61,7 @@ public class TracePlayerCLI {
             fileTraceParser.open(traceFileName);
             parser = fileTraceParser;
         } else { //useWorkloadGenerator
+            numberOfLines = workloadLength;
             List<? extends WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>> workloadWidgets = manager.getWorkLoadGeneratorWidgets();
             if(isResizable){
                 if(!workloadWidgets.stream().allMatch(widget -> (widget instanceof UniformResizableWorkloadWidget))){
@@ -122,6 +123,9 @@ public class TracePlayerCLI {
         }
     }
 
+
+    //-C resources/ssd_config.xml -G -U "Greedy" 10000 2 -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generatorUniform"
+    //-C resources/ssd_config.xml -F "Greedy" "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\1200_1200_seq.trace" -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generatorUniform"
     private void setManagerAndTrace(String managerName, String traceFileName, String outputFileName, boolean useWorkloadGenerator, boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean i) {
         manager = SSDManager.getManager(managerName);
 

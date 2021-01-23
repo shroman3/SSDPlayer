@@ -133,36 +133,40 @@ public class MainSimulationView extends JFrame {
 					if(inputFiles == null || inputFiles.size() != 2){
 						throw new Exception("wrong input files format");
 					}
+					managerName = inputFiles.get(0);
+					inputTrace = inputFiles.get(1);
 				} else if(doesFlagExist(arguments, "-G")){
 					useBuiltInGenerator = true;
 					if(doesFlagExist(arguments, "-U")){
 						isGeneratorUniform = true;
 						inputFiles = getValueForFlag(arguments, "-U");
-						if(inputFiles == null || (inputFiles.size() != 2 && inputFiles.size() != 4)){
+						if(inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)){
 							throw new Exception("wrong input files format");
 						}
-						workloadLength = Integer.valueOf(inputFiles.get(0));
-						seed = Integer.valueOf(inputFiles.get(1));
-						if(inputFiles.size() == 4){
+						managerName = inputFiles.get(0);
+						workloadLength = Integer.valueOf(inputFiles.get(1));
+						seed = Integer.valueOf(inputFiles.get(2));
+						if(inputFiles.size() == 5){
 							isResizable = true;
-							maxWriteSize = Integer.valueOf(inputFiles.get(2));
-							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(3));
+							maxWriteSize = Integer.valueOf(inputFiles.get(3));
+							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(4));
 						} else {
 							isResizable = false;
 						}
 					} else if(doesFlagExist(arguments, "-Z")){
 						isGeneratorUniform = false;
 						inputFiles = getValueForFlag(arguments, "-Z");
-						if(inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)){
+						if(inputFiles == null || (inputFiles.size() != 4 && inputFiles.size() != 6)){
 							throw new Exception("wrong input files format");
 						}
-						workloadLength = Integer.valueOf(inputFiles.get(0));
-						seed = Integer.valueOf(inputFiles.get(1));
-						exponent = Double.valueOf(inputFiles.get(2));
-						if(inputFiles.size() == 5){
+						managerName = inputFiles.get(0);
+						workloadLength = Integer.valueOf(inputFiles.get(1));
+						seed = Integer.valueOf(inputFiles.get(2));
+						exponent = Double.valueOf(inputFiles.get(3));
+						if(inputFiles.size() == 6){
 							isResizable = true;
-							maxWriteSize = Integer.valueOf(inputFiles.get(3));
-							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(4));
+							maxWriteSize = Integer.valueOf(inputFiles.get(6));
+							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(7));
 						} else {
 							isResizable = false;
 						}
@@ -178,8 +182,7 @@ public class MainSimulationView extends JFrame {
 					throw new Exception("there should be exactly one output file");
 				}
 				XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
-				managerName = inputFiles.get(0);
-				inputTrace = inputFiles.get(1);
+
 				outputFile = outputFiles.get(0);
 
 				Consts.initialize(xmlGetter);
