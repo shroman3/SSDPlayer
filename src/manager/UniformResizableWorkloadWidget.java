@@ -27,7 +27,11 @@ public class UniformResizableWorkloadWidget<D extends Device<?>, S extends SSDMa
 	public WorkloadGenerator<D, S> createWorkloadGenerator() {
 		return new UniformResizableWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getMaxWriteSize(), isWriteSizeUniform());
 	}
-	
+
+	public WorkloadGenerator<D, S> createWorkloadGenerator(Integer workloadLength, Integer seed, Integer maxWriteSize, boolean isWriteSizeUniform) {
+		return new UniformResizableWorkloadGenerator<D,S>(manager, workloadLength, seed, maxWriteSize, isWriteSizeUniform);
+	}
+
 	protected int getSeed() {
 		return ((Number)seedInput.getValue()).intValue();
 	}

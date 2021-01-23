@@ -190,7 +190,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
  	 */
 	abstract public P getEmptyPage();
 
-
 	SSDManager() {
 		setSupportedZoomLevels();
 	}

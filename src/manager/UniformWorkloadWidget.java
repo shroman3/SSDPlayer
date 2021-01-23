@@ -48,6 +48,10 @@ public class UniformWorkloadWidget <D extends Device<?>, S extends SSDManager<?,
 	public WorkloadGenerator<D,S> createWorkloadGenerator() {
 		return new UniformWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed());
 	}
+
+	public WorkloadGenerator<D, S> createWorkloadGenerator(Integer workloadLength, Integer seed) {
+		return new UniformWorkloadGenerator<D,S>(manager, workloadLength, seed);
+	}
 	
 	protected int getSeed() {
 		return ((Number)seedInput.getValue()).intValue();

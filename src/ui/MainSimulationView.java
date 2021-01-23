@@ -71,6 +71,14 @@ public class MainSimulationView extends JFrame {
 	private static String managerName;
 	private static String inputTrace;
 	private static String outputFile;
+	private static boolean useBuiltInGenerator;
+	private static Integer workloadLength;
+	private static Integer seed;
+	private static Double exponent;
+	private static Integer maxWriteSize;
+	private static boolean isGeneratorUniform;
+	private static boolean isResizable;
+	private static boolean isWriteSizeUniform;
 	private VisualConfig visualConfig;
 	private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
@@ -81,6 +89,10 @@ public class MainSimulationView extends JFrame {
 	private TracePlayerCLI tracePlayerCLI;
 	private JPanel southInnerPanel;
 	private ZoomLevelPanel zoomLevelPanel;
+
+	private static boolean doesFlagExist(List<String> arguments, String flag){
+		return arguments.contains(flag);
+	}
 
 	private static List<String> getValueForFlag(List<String> arguments, String flag){
 		List<String> value = new ArrayList<>();
@@ -108,13 +120,59 @@ public class MainSimulationView extends JFrame {
 			try {
 				List<String> arguments = Arrays.asList(args);
 				List<String> config_xml = getValueForFlag(arguments, "-C");
+				List<String> inputFiles = null;
 				if(config_xml == null || config_xml.size() != 1){
 					throw new Exception("There should be exactly one config file");
 				}
-				List<String> inputFiles = getValueForFlag(arguments, "-F");
-				if(inputFiles == null || inputFiles.size() != 2){
-					throw new Exception("wrong input files format");
+				if(doesFlagExist(arguments, "-F") && doesFlagExist(arguments, "-G")){
+					throw new Exception("You have to use -G or -F, not both");
 				}
+				if(doesFlagExist(arguments, "-F")) {
+					useBuiltInGenerator = false;
+					inputFiles = getValueForFlag(arguments, "-F");
+					if(inputFiles == null || inputFiles.size() != 2){
+						throw new Exception("wrong input files format");
+					}
+				} else if(doesFlagExist(arguments, "-G")){
+					useBuiltInGenerator = true;
+					if(doesFlagExist(arguments, "-U")){
+						isGeneratorUniform = true;
+						inputFiles = getValueForFlag(arguments, "-U");
+						if(inputFiles == null || (inputFiles.size() != 2 && inputFiles.size() != 4)){
+							throw new Exception("wrong input files format");
+						}
+						workloadLength = Integer.valueOf(inputFiles.get(0));
+						seed = Integer.valueOf(inputFiles.get(1));
+						if(inputFiles.size() == 4){
+							isResizable = true;
+							maxWriteSize = Integer.valueOf(inputFiles.get(2));
+							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(3));
+						} else {
+							isResizable = false;
+						}
+					} else if(doesFlagExist(arguments, "-Z")){
+						isGeneratorUniform = false;
+						inputFiles = getValueForFlag(arguments, "-Z");
+						if(inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)){
+							throw new Exception("wrong input files format");
+						}
+						workloadLength = Integer.valueOf(inputFiles.get(0));
+						seed = Integer.valueOf(inputFiles.get(1));
+						exponent = Double.valueOf(inputFiles.get(2));
+						if(inputFiles.size() == 5){
+							isResizable = true;
+							maxWriteSize = Integer.valueOf(inputFiles.get(3));
+							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(4));
+						} else {
+							isResizable = false;
+						}
+					} else {
+						throw new Exception("When using built in generator - you have to specify whether you want Uniform generator or Zipf by using the flags -U or -Z");
+					}
+				} else {
+					throw new Exception("You have to use -G or -F");
+				}
+
 				List<String> outputFiles = getValueForFlag(arguments, "-O");
 				if(outputFiles == null || outputFiles.size() != 1){
 					throw new Exception("there should be exactly one output file");
@@ -201,11 +259,16 @@ public class MainSimulationView extends JFrame {
 			}
 		},
 				managerName,
-				inputTrace,
-				outputFile
-				);/* "Greedy",
+				outputFile,
+				useBuiltInGenerator,
+				inputTrace, isGeneratorUniform,workloadLength,seed,exponent,isResizable,maxWriteSize,isWriteSizeUniform
+				);
+				/*"Greedy",
+				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform",
+				true,
 				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\Small_Uniform.trace",
-				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform");*/
+				true, 1, 1, false, 100, false
+				);*/
 
 	}
 

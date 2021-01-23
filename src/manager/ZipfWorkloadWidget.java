@@ -45,6 +45,10 @@ public class ZipfWorkloadWidget <D extends Device<?>, S extends SSDManager<?,?,?
 		return new ZipfWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getExponent());
 	}
 
+	public WorkloadGenerator<D, S> createWorkloadGenerator(Integer workloadLength, Integer seed, Double exponent) {
+		return new ZipfWorkloadGenerator<D,S>(manager, workloadLength, seed, exponent);
+	}
+
 	private double getExponent() {
 		return ((Number)exponentInput.getValue()).doubleValue();
 	}

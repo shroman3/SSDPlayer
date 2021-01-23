@@ -10,10 +10,7 @@ import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import log.Message.ErrorMessage;
 import log.Message.InfoMessage;
-import manager.FileTraceParser;
-import manager.SSDManager;
-import manager.TraceParser;
-import manager.VisualConfig;
+import manager.*;
 import ui.breakpoints.InfoCLI;
 import utils.Utils;
 
@@ -21,6 +18,8 @@ import utils.Utils;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.lang.reflect.Constructor;
+import java.util.List;
 
 
 public class TracePlayerCLI {
@@ -35,11 +34,14 @@ public class TracePlayerCLI {
     private Device<?> currentDevice;
     private InfoCLI infoCLI;
 
-
+//		return new UniformResizableWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getMaxWriteSize(), isWriteSizeUniform());
     public TracePlayerCLI(VisualConfig visualConfig,
                        TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice,
                        OneObjectCallback<Device<?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView,
-                       String managerName, String traceFileName, String outputFileName) {
+                       String managerName, String outputFileName,
+                          boolean useWorkloadGenerator,
+                          String traceFileName,
+                          boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean isWriteSizeUniform) {
         Utils.validateNotNull(updateDeviceView, "Update device callback");
         Utils.validateNotNull(resetDevice, "Reset device callback");
         this.resetDevice = resetDevice;
@@ -47,22 +49,91 @@ public class TracePlayerCLI {
         this.resetDeviceView = resetDeviceView;
         this.visualConfig = visualConfig;
         ActionLog.resetLog();
-        setManagerAndTrace(managerName, traceFileName, outputFileName);
+        setManagerAndTrace(managerName, traceFileName, outputFileName, useWorkloadGenerator, isWorkloadUniform, workloadLength, seed, exp, isResizable, maxWriteSize, isWorkloadUniform);
     }
 
-    private void setManagerAndTrace(String managerName, String traceFileName, String outputFileName) {
+    private void setParser(boolean useWorkloadGenerator,
+                           String traceFileName,
+                           boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean isWriteSizeUniform) throws IOException {
+        if(!useWorkloadGenerator){
+            FileTraceParser<?, ?> fileTraceParser = manager.getFileTraseParser();
+            resetProgressBar(traceFileName);
+            fileTraceParser.open(traceFileName);
+            parser = fileTraceParser;
+        } else { //useWorkloadGenerator
+            List<? extends WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>> workloadWidgets = manager.getWorkLoadGeneratorWidgets();
+            if(isResizable){
+                if(!workloadWidgets.stream().allMatch(widget -> (widget instanceof UniformResizableWorkloadWidget))){
+                    throw new IOException(manager.getManagerName() + " does not allow resizable workload generators");
+                }
+
+                if(isWorkloadUniform){ //UniformResizableWorkloadGenerator
+                    UniformResizableWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> uniformWidget;
+                    UniformResizableWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> uniformGenerator;
+                    for (WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> widget : workloadWidgets) {
+                        if(widget instanceof UniformResizableWorkloadWidget){
+                            uniformWidget = (UniformResizableWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) widget;
+                            uniformGenerator = (UniformResizableWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) uniformWidget.createWorkloadGenerator(workloadLength, seed, maxWriteSize, isWriteSizeUniform);
+                            parser = uniformGenerator;
+                            break;
+                        }
+                    }
+                } else { //ZipfResizableWorkloadGenerator
+                    ZipfResizableWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> zipfWidget;
+                    ZipfResizableWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> zipfGenerator;
+                    for (WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> widget : workloadWidgets) {
+                        if(widget instanceof ZipfResizableWorkloadWidget){
+                            zipfWidget = (ZipfResizableWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) widget;
+                            zipfGenerator = (ZipfResizableWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) zipfWidget.createWorkloadGenerator(workloadLength, seed, exp, maxWriteSize, isWriteSizeUniform);
+                            parser = zipfGenerator;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if(!workloadWidgets.stream().allMatch(widget -> (widget instanceof UniformWorkloadWidget))){
+                    throw new IOException(manager.getManagerName() + " only allows resizable workload generators");
+                }
+
+                if(isWorkloadUniform){ //UniformWorkloadGenerator
+                    UniformWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> uniformWidget;
+                    UniformWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> uniformGenerator;
+                    for (WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> widget : workloadWidgets) {
+                        if(widget instanceof UniformWorkloadWidget){
+                            uniformWidget = (UniformWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) widget;
+                            uniformGenerator = (UniformWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) uniformWidget.createWorkloadGenerator(workloadLength, seed);
+                            parser = uniformGenerator;
+                            break;
+                        }
+                    }
+                } else { //ZipfWorkloadGenerator
+                    ZipfWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> zipfWidget;
+                    ZipfWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> zipfGenerator;
+                    for (WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>> widget : workloadWidgets) {
+                        if(widget instanceof ZipfWorkloadWidget){
+                            zipfWidget = (ZipfWorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) widget;
+                            zipfGenerator = (ZipfWorkloadGenerator<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>) zipfWidget.createWorkloadGenerator(workloadLength, seed, exp);
+                            parser = zipfGenerator;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void setManagerAndTrace(String managerName, String traceFileName, String outputFileName, boolean useWorkloadGenerator, boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean i) {
         manager = SSDManager.getManager(managerName);
+
         infoCLI = new InfoCLI(manager);
         FileTraceParser<? extends Device<?>, ?> traceParser = manager.getFileTraseParser();
         traceParser.getFileExtensions();
         resetDevice.message(traceParser.getCurrentDevice(), manager.getStatisticsGetters());
         ActionLog.resetLog();
 
-        FileTraceParser<?, ?> fileTraceParser = manager.getFileTraseParser();
+
         try {
-            resetProgressBar(traceFileName);
-            fileTraceParser.open(traceFileName);
-            parser = fileTraceParser;
+            setParser(useWorkloadGenerator, traceFileName, isWorkloadUniform, workloadLength, seed, exp, isResizable, maxWriteSize, isWorkloadUniform);
             reStartTimer(outputFileName);
         } catch (IOException e) {
             System.out.println("could not open trace file");
@@ -89,7 +160,6 @@ public class TracePlayerCLI {
         updateDeviceView.message(currentDevice);
         parser.close();
         currFrameCounter = 0;
-
     }
 
     private boolean parseNextCommand() {
