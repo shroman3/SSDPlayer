@@ -114,77 +114,84 @@ public class MainSimulationView extends JFrame {
 		return value;
 	}
 
-	//-C resources/ssd_config.xml -F
+	private static XMLGetter parseCLArgs(String[] args) throws Exception {
+		List<String> arguments = Arrays.asList(args);
+		List<String> config_xml = getValueForFlag(arguments, "-C");
+		List<String> inputFiles = null;
+		if(config_xml == null || config_xml.size() != 1){
+			throw new Exception("There should be exactly one config file");
+		}
+		List<String> managerNameFromArgs = getValueForFlag(arguments, "-M");
+		if(managerNameFromArgs == null || managerNameFromArgs.size() !=1){
+			throw new Exception("There should be exactly one manager");
+		}
+		managerName = managerNameFromArgs.get(0);
+		if(doesFlagExist(arguments, "-F") && doesFlagExist(arguments, "-G")){
+			throw new Exception("You have to use -G or -F, not both");
+		}
+		if(doesFlagExist(arguments, "-F")) {
+			useBuiltInGenerator = false;
+			inputFiles = getValueForFlag(arguments, "-F");
+			if(inputFiles == null || inputFiles.size() != 1){
+				throw new Exception("there should be exactly one input file when using -F");
+			}
+			inputTrace = inputFiles.get(0);
+		} else if(doesFlagExist(arguments, "-G")){
+			useBuiltInGenerator = true;
+			if(doesFlagExist(arguments, "-U")){
+				isGeneratorUniform = true;
+				inputFiles = getValueForFlag(arguments, "-U");
+				if(inputFiles == null || (inputFiles.size() != 2 && inputFiles.size() != 4)){
+					throw new Exception("wrong input files format");
+				}
+				workloadLength = Integer.valueOf(inputFiles.get(0));
+				seed = Integer.valueOf(inputFiles.get(1));
+				if(inputFiles.size() == 4){
+					isResizable = true;
+					maxWriteSize = Integer.valueOf(inputFiles.get(2));
+					isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(3));
+				} else {
+					isResizable = false;
+				}
+			} else if(doesFlagExist(arguments, "-Z")){
+				isGeneratorUniform = false;
+				inputFiles = getValueForFlag(arguments, "-Z");
+				if(inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)){
+					throw new Exception("wrong input files format");
+				}
+				workloadLength = Integer.valueOf(inputFiles.get(0));
+				seed = Integer.valueOf(inputFiles.get(1));
+				exponent = Double.valueOf(inputFiles.get(2));
+				if(inputFiles.size() == 5){
+					isResizable = true;
+					maxWriteSize = Integer.valueOf(inputFiles.get(3));
+					isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(4));
+				} else {
+					isResizable = false;
+				}
+			} else {
+				throw new Exception("When using built in generator - you have to specify whether you want Uniform generator or Zipf by using the flags -U or -Z");
+			}
+		} else {
+			throw new Exception("You have to use -G or -F");
+		}
+
+		List<String> outputFiles = getValueForFlag(arguments, "-O");
+		if(outputFiles == null || outputFiles.size() != 1){
+			throw new Exception("there should be exactly one output file");
+		}
+		XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
+		outputFile = outputFiles.get(0);
+
+		return xmlGetter;
+	}
+
+
+	//-C resources/ssd_config.xml -M "RAID 5" -G -U 10000 0 1 true -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generateUniformResizableUniform"
 	public static void main(String[] args) {
 		if (args.length > 0) {
 			try {
-				List<String> arguments = Arrays.asList(args);
-				List<String> config_xml = getValueForFlag(arguments, "-C");
-				List<String> inputFiles = null;
-				if(config_xml == null || config_xml.size() != 1){
-					throw new Exception("There should be exactly one config file");
-				}
-				if(doesFlagExist(arguments, "-F") && doesFlagExist(arguments, "-G")){
-					throw new Exception("You have to use -G or -F, not both");
-				}
-				if(doesFlagExist(arguments, "-F")) {
-					useBuiltInGenerator = false;
-					inputFiles = getValueForFlag(arguments, "-F");
-					if(inputFiles == null || inputFiles.size() != 2){
-						throw new Exception("wrong input files format");
-					}
-					managerName = inputFiles.get(0);
-					inputTrace = inputFiles.get(1);
-				} else if(doesFlagExist(arguments, "-G")){
-					useBuiltInGenerator = true;
-					if(doesFlagExist(arguments, "-U")){
-						isGeneratorUniform = true;
-						inputFiles = getValueForFlag(arguments, "-U");
-						if(inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)){
-							throw new Exception("wrong input files format");
-						}
-						managerName = inputFiles.get(0);
-						workloadLength = Integer.valueOf(inputFiles.get(1));
-						seed = Integer.valueOf(inputFiles.get(2));
-						if(inputFiles.size() == 5){
-							isResizable = true;
-							maxWriteSize = Integer.valueOf(inputFiles.get(3));
-							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(4));
-						} else {
-							isResizable = false;
-						}
-					} else if(doesFlagExist(arguments, "-Z")){
-						isGeneratorUniform = false;
-						inputFiles = getValueForFlag(arguments, "-Z");
-						if(inputFiles == null || (inputFiles.size() != 4 && inputFiles.size() != 6)){
-							throw new Exception("wrong input files format");
-						}
-						managerName = inputFiles.get(0);
-						workloadLength = Integer.valueOf(inputFiles.get(1));
-						seed = Integer.valueOf(inputFiles.get(2));
-						exponent = Double.valueOf(inputFiles.get(3));
-						if(inputFiles.size() == 6){
-							isResizable = true;
-							maxWriteSize = Integer.valueOf(inputFiles.get(6));
-							isWriteSizeUniform = Boolean.parseBoolean(inputFiles.get(7));
-						} else {
-							isResizable = false;
-						}
-					} else {
-						throw new Exception("When using built in generator - you have to specify whether you want Uniform generator or Zipf by using the flags -U or -Z");
-					}
-				} else {
-					throw new Exception("You have to use -G or -F");
-				}
-
-				List<String> outputFiles = getValueForFlag(arguments, "-O");
-				if(outputFiles == null || outputFiles.size() != 1){
-					throw new Exception("there should be exactly one output file");
-				}
-				XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
-
-				outputFile = outputFiles.get(0);
-
+				XMLGetter xmlGetter = parseCLArgs(args);
 				Consts.initialize(xmlGetter);
 				ConfigProperties.initialize(xmlGetter);
 				BreakpointsConstraints.initialize(xmlGetter);
@@ -202,7 +209,7 @@ public class MainSimulationView extends JFrame {
 			} catch(Exception e){
 				String error = "Unable to load config XML file\n" + e.getMessage();
 				System.out.println(e.getMessage());
-				displayErrorFrame(e.getMessage());
+				//displayErrorFrame(e.getMessage());
 
 			}
 		} else {

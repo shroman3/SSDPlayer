@@ -57,8 +57,13 @@ public class TracePlayerCLI {
                            boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean isWriteSizeUniform) throws IOException {
         if(!useWorkloadGenerator){
             FileTraceParser<?, ?> fileTraceParser = manager.getFileTraseParser();
+            if(!fileTraceParser.getFileExtensions().contains(traceFileName.split("\\.")[1])){
+                throw new IOException("Trace Parser doesn't match the manager");
+            }
+
             resetProgressBar(traceFileName);
             fileTraceParser.open(traceFileName);
+
             parser = fileTraceParser;
         } else { //useWorkloadGenerator
             numberOfLines = workloadLength;
@@ -127,20 +132,20 @@ public class TracePlayerCLI {
     //-C resources/ssd_config.xml -G -U "Greedy" 10000 2 -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generatorUniform"
     //-C resources/ssd_config.xml -F "Greedy" "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\1200_1200_seq.trace" -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generatorUniform"
     private void setManagerAndTrace(String managerName, String traceFileName, String outputFileName, boolean useWorkloadGenerator, boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean i) {
-        manager = SSDManager.getManager(managerName);
-
-        infoCLI = new InfoCLI(manager);
-        FileTraceParser<? extends Device<?>, ?> traceParser = manager.getFileTraseParser();
-        traceParser.getFileExtensions();
-        resetDevice.message(traceParser.getCurrentDevice(), manager.getStatisticsGetters());
-        ActionLog.resetLog();
-
-
         try {
+            manager = SSDManager.getManager(managerName);
+            if(manager == null){
+                throw new IOException("no manager with such name");
+            }
+            infoCLI = new InfoCLI(manager);
+            FileTraceParser<? extends Device<?>, ?> traceParser = manager.getFileTraseParser();
+            traceParser.getFileExtensions();
+            resetDevice.message(traceParser.getCurrentDevice(), manager.getStatisticsGetters());
+            ActionLog.resetLog();
             setParser(useWorkloadGenerator, traceFileName, isWorkloadUniform, workloadLength, seed, exp, isResizable, maxWriteSize, isWorkloadUniform);
             reStartTimer(outputFileName);
         } catch (IOException e) {
-            System.out.println("could not open trace file");
+            //System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -171,7 +176,6 @@ public class TracePlayerCLI {
             updateDeviceView.message(currentDevice);
             return false;
         }
-
         try {
             Device<?> updatedDevice = parser.parseNextCommand();
             if (updatedDevice != null) {
