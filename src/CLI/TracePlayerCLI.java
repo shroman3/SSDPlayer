@@ -1,4 +1,4 @@
-package ui;
+package CLI;
 
 import entities.ActionLog;
 import entities.Device;
@@ -11,6 +11,7 @@ import general.TwoObjectsCallback;
 import log.Message.ErrorMessage;
 import log.Message.InfoMessage;
 import manager.*;
+import ui.WorkloadWidget;
 import ui.breakpoints.InfoCLI;
 import utils.Utils;
 
@@ -34,7 +35,6 @@ public class TracePlayerCLI {
     private Device<?> currentDevice;
     private InfoCLI infoCLI;
 
-//		return new UniformResizableWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getMaxWriteSize(), isWriteSizeUniform());
     public TracePlayerCLI(VisualConfig visualConfig,
                        TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>> resetDevice,
                        OneObjectCallback<Device<?>> updateDeviceView, OneObjectCallback<Boolean> resetDeviceView,
@@ -68,6 +68,9 @@ public class TracePlayerCLI {
         } else { //useWorkloadGenerator
             numberOfLines = workloadLength;
             List<? extends WorkloadWidget<? extends Device<?>, ? extends SSDManager<?, ?, ?, ?, ? extends Device<?>>>> workloadWidgets = manager.getWorkLoadGeneratorWidgets();
+            if(workloadWidgets == null){
+                throw new IOException("You cannot use workload generators with simulation managers");
+            }
             if(isResizable){
                 if(!workloadWidgets.stream().allMatch(widget -> (widget instanceof UniformResizableWorkloadWidget))){
                     throw new IOException(manager.getManagerName() + " does not allow resizable workload generators");

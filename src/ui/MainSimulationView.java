@@ -31,7 +31,6 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,31 +62,31 @@ import manager.SSDManager;
 import manager.VisualConfig;
 import ui.zoom.ZoomLevelPanel;
 import utils.Utils;
+import CLI.MainCLI;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
 	private static final String VERSION = "1.2.1";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
-	private static String managerName;
-	private static String inputTrace;
-	private static String outputFile;
-	private static boolean useBuiltInGenerator;
-	private static Integer workloadLength;
-	private static Integer seed;
-	private static Double exponent;
-	private static Integer maxWriteSize;
-	private static boolean isGeneratorUniform;
-	private static boolean isResizable;
-	private static Boolean isWriteSizeUniform;
+	private static String managerName = "";
+	private static String inputTrace = "";
+	private static String outputFile = "";
+	private static boolean useBuiltInGenerator = false;
+	private static Integer workloadLength = -1;
+	private static Integer seed = -1;
+	private static Double exponent = 0.0;
+	private static Integer maxWriteSize = -1;
+	private static boolean isGeneratorUniform = false;
+	private static boolean isResizable = false;
+	private static Boolean isWriteSizeUniform = false;
 	private VisualConfig visualConfig;
-	private List<BreakpointBase> initialBreakpoints;
+    private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
 	private JPanel statisticsPanel;
 	private DeviceView deviceView;
 	private StatisticsView statisticsView;
 	private TracePlayer tracePlayer;
-	private TracePlayerCLI tracePlayerCLI;
 	private JPanel southInnerPanel;
 	private ZoomLevelPanel zoomLevelPanel;
 
@@ -169,6 +168,9 @@ public class MainSimulationView extends JFrame {
 					if (inputFiles.size() == 4) {
 						isResizable = true;
 						maxWriteSize = Integer.valueOf(inputFiles.get(2));
+						if(maxWriteSize < 0){
+                            throw new Exception("max write size must be non-negative");
+                        }
 						isWriteSizeUniform = Utils.parseBoolean(inputFiles.get(3));
 						if (isWriteSizeUniform == null) {
 							throw new Exception("Boolean parameters' values are only: T,t,F,f");
@@ -185,9 +187,15 @@ public class MainSimulationView extends JFrame {
 					workloadLength = Integer.valueOf(inputFiles.get(0));
 					seed = Integer.valueOf(inputFiles.get(1));
 					exponent = Double.valueOf(inputFiles.get(2));
+					if(exponent < 0){
+                        throw new Exception("exponent must be non-negative");
+                    }
 					if (inputFiles.size() == 5) {
 						isResizable = true;
 						maxWriteSize = Integer.valueOf(inputFiles.get(3));
+                        if(maxWriteSize < 0){
+                            throw new Exception("max write size must be non-negative");
+                        }
 						isWriteSizeUniform = Utils.parseBoolean(inputFiles.get(4));
 						if (isWriteSizeUniform == null) {
 							throw new Exception("Boolean parameters' values are only: T,t,F,f");
@@ -198,6 +206,12 @@ public class MainSimulationView extends JFrame {
 				} else {
 					throw new Exception("When using built in generator - you have to specify whether you want Uniform generator or Zipf by using the flags -U or -Z");
 				}
+                if(workloadLength < 1000){
+                    throw new Exception("workload length must be as least 1000");
+                }
+                if (seed < 0){
+                    throw new Exception("seed must be non-negative");
+                }
 			} else {
 				throw new Exception("You have to use -G or -F");
 			}
@@ -215,8 +229,8 @@ public class MainSimulationView extends JFrame {
 		}
 	}
 
-
-	//-C resources/ssd_config.xml -M "RAID 5" -G -U 10000 0 1 true -O "C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\generateUniformResizableUniform"
+	//-C resources/ssd_config.xml -M "RAID 5" -G -Z 10000 0 0.5 1 T -O "C:\\Users\\user\\Desktop\\backup\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\zipfResizableUniform"
+	//-C resources/ssd_config.xml -M "RAID 5" -G -U 10000 0 1 T -O "C:\\Users\\user\\Desktop\\backup\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\uniformResizableUniform"
 	public static void main(String[] args) {
 		if (args.length > 0) {
 			try {
@@ -235,7 +249,7 @@ public class MainSimulationView extends JFrame {
 				}
 
 				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
-				MainSimulationView window = new MainSimulationView(visualConfig, false);
+				new MainCLI(visualConfig, managerName, outputFile, inputTrace, useBuiltInGenerator, isGeneratorUniform, workloadLength, seed, exponent, isResizable, maxWriteSize, isWriteSizeUniform);
 
 
 			} catch(Exception e){
@@ -260,7 +274,7 @@ public class MainSimulationView extends JFrame {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							MainSimulationView window = new MainSimulationView(visualConfig, true);
+							MainSimulationView window = new MainSimulationView(visualConfig);
 							window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));
 							window.setVisible(true);
 						} catch (Exception e) {
@@ -275,40 +289,6 @@ public class MainSimulationView extends JFrame {
 
 			}
 		}
-	}
-
-	private void initializeForCLI(){
-
-		tracePlayerCLI = new TracePlayerCLI(visualConfig,
-				new TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>>() {
-					@Override
-					public void message(Device<?> device, Iterable<StatisticsGetter> statisticsGetters) {
-						resetDeviceCLI(device, statisticsGetters);
-
-					}
-				}, new OneObjectCallback<Device<?>>() {
-			@Override
-			public void message(Device<?> device) {
-				updateDeviceCLI(device);
-			}
-		}, new OneObjectCallback<Boolean>() {
-			@Override
-			public void message(Boolean repaintDevice) {
-				deviceView.repaintDevice();
-			}
-		},
-				managerName,
-				outputFile,
-				useBuiltInGenerator,
-				inputTrace, isGeneratorUniform,workloadLength,seed,exponent,isResizable,maxWriteSize,isWriteSizeUniform
-				);
-				/*"Greedy",
-				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\CLI_Small_Uniform",
-				true,
-				"C:\\Users\\zelik\\Desktop\\semester G\\236388 - project in storage systems\\SSDPlayer_v1.2.1\\traces\\Small_Uniform.trace",
-				true, 1, 1, false, 100, false
-				);*/
-
 	}
 
 	// Check xml values are legal.   
@@ -394,22 +374,16 @@ public class MainSimulationView extends JFrame {
 		errorFrame.setVisible(true);
 	}
 
-	public MainSimulationView(VisualConfig visualConfig, boolean withUI) {
+	public MainSimulationView(VisualConfig visualConfig) {
 		super("SSDPlayer " + VERSION);
-		if (withUI) {
-			addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					tracePlayer.stopTrace();
-				}
-			});
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			this.visualConfig = visualConfig;
-			initialize();
-		} else {
-			this.visualConfig = visualConfig;
-			initializeForCLI();
-			//continue here to use the trace functions (which will be public)
-		}
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                tracePlayer.stopTrace();
+            }
+        });
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.visualConfig = visualConfig;
+        initialize();
 	}
 
 	/**
@@ -513,33 +487,12 @@ public class MainSimulationView extends JFrame {
 		});
 	}
 
-	private void resetDeviceCLI(final Device<?> device, final Iterable<StatisticsGetter> statisticsGetters) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				deviceView = new DeviceView(visualConfig, device);
-
-				statisticsView = new StatisticsView(visualConfig, statisticsGetters);
-				statisticsView.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-			}
-		});
-	}
-
 	private void updateDevice(final Device<?> device) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				deviceView.setDevice(device);
 				statisticsView.updateStatistics(device);
 				statisticsPanel.updateUI();
-			}
-		});
-	}
-
-	private void updateDeviceCLI(final Device<?> device) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				deviceView.setDevice(device);
-				statisticsView.updateStatistics(device);
 			}
 		});
 	}
