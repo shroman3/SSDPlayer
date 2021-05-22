@@ -123,9 +123,9 @@ public class MainSimulationView extends JFrame {
 				"5. -C <config file name> -M <manager Name> -G -Z <workload length> <seed> <exponent> <max write size> <is write size uniform> -O <output file name>\n" +
 				"\n" +
 				"For instance:\n" +
-				"java -jar SSDPlayer.jar -C resources\\ssd_config.xml -M \"RAID 5\" -G -U 10000 0 1 T -O target\\generateUniformResizableUniform\n" +
+				"java -jar SSDPlayer.jar -C resources/ssd_config.xml -M \"RAID 5\" -G -U 10000 0 1 T -O target/generateUniformResizableUniform\n" +
 				"or\n" +
-				"java -jar SSDPlayer.jar -C resources\\ssd_config.xml -M Greedy -F traces\\Small_Uniform.trace -O target\\out\n");
+				"java -jar SSDPlayer.jar -C resources/ssd_config.xml -M Greedy -F traces/Small_Uniform.trace -O target/out\n");
 	}
 
 	private static XMLGetter parseCLArgs(String[] args) throws Exception {
@@ -250,10 +250,11 @@ public class MainSimulationView extends JFrame {
 
 				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
 				new MainCLI(visualConfig, managerName, outputFile, inputTrace, useBuiltInGenerator, isGeneratorUniform, workloadLength, seed, exponent, isResizable, maxWriteSize, isWriteSizeUniform);
-
+				System.out.println("Simulation Ended");
 
 			} catch(Exception e){
 				System.out.println(e.getMessage());
+				System.out.println("Simulation Ended");
 			}
 		} else {
 			try {
