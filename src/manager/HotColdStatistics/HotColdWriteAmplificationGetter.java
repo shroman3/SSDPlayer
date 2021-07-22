@@ -21,6 +21,7 @@
  *******************************************************************************/
 package manager.HotColdStatistics;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -77,9 +78,24 @@ public class HotColdWriteAmplificationGetter extends HotColdStatisticsGetter {
 		return hotcoldWA;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Entry<String, String> getInfoEntry(Device<?> device) {
-		return null;
+		if(!(device instanceof HotColdDevice)){
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+
+		HotColdDevice hotColdDevice = (HotColdDevice)device;
+		double[] hotColdWA = getHotColdWA(hotColdDevice);
+		for (HotColdPartition partition : hotColdDevice.getPartitions()){
+			sb.append(" | ");
+			sb.append(partition.getDsiplayName());
+			sb.append(": ");
+			sb.append(hotColdWA[hotColdDevice.indexOfPartition(partition)]);
+		}
+		sb.replace(0, 3, "");
+		return new AbstractMap.SimpleEntry("Hot Cold Write Amplification", sb.toString());
 	}
 
 	@Override

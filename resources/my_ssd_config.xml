@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<physical>
+		<!-- OP as percents -->
+		<overprovisioning>30</overprovisioning>
+		<!-- GCT is garbage collection threshold - as percents -->
+		<gc_threshold></gc_threshold>
+		<gc_threshold_blocks>6</gc_threshold_blocks>
+		<chips>6</chips>
+		<planes>1</planes>
+		<blocks>32</blocks>
+		<pages>24</pages>
+		<max_erasures>100000</max_erasures>
+	</physical>
+	<visual>
+		<view_sample>1</view_sample>
+		<show_counters>yes</show_counters>
+		<speed>1000000000</speed><!-- Number of frames per second -->
+		<page_width>18</page_width>
+		<page_height>11</page_height>
+		<block_space>1</block_space><!-- spacing between the blocks in the plane -->
+		<pages_in_row>8</pages_in_row>
+		<blocks_in_row>2</blocks_in_row>
+		<planes_in_row>1</planes_in_row>
+		<show_old_parity>yes</show_old_parity>
+		<show_old_data>no</show_old_data>
+		<font_type>Segoe UI</font_type>
+		<caption_font_size>14</caption_font_size>
+		<control_font_size>12</control_font_size>
+		<page_font_size>9</page_font_size>
+		<active_color r="255" g="0" b="0" />
+		<outer_bg_color r="40" g="40" b="40" />
+		<intermediate_bg_color r="50" g="50" b="50" />
+		<inner_bg_color r="64" g="64" b="64" />
+		<border_color r="128" g="128" b="128" />		
+		<page_text_color r="0" g="0" b="0" />
+		<control_text_color r="192" g="192" b="192" />
+		<highlight_color r="85" g="85" b="85" />
+	</visual>
+	<manager>
+		<name>Greedy</name>
+	</manager>
+	<workload>
+		<trace></trace>
+		<type>zipf</type>
+		<workload_length>10000</workload_length>
+		<seed>0</seed>
+		<exponent>0.5</exponent>
+	</workload>
+</root>

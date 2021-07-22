@@ -33,8 +33,9 @@ public class VisualConfig {
 	public enum BlockColorMeaning {
 		PARITY_COUNT, VALID_COUNT, ERASE_COUNT, AVERAGE_TEMPERATURE, AVERAGE_WRITE_LEVEL, NONE
 	}
-	
-	private int xmlSpeed = -1;
+
+	private long xmlSpeed = -1;
+	private int xmlViewSample = 1;
 	private boolean xmlShowCounters = true;
 	private int xmlPageWidth = -1;
 	private int xmlPageHeight = -1;
@@ -48,7 +49,8 @@ public class VisualConfig {
 	private BlockColorMeaning xmlBlocksColorMeaning = BlockColorMeaning.NONE;
 	private boolean xmlDrawFrame = true;
 
-	private int speed = -1;
+	private long speed = -1;
+	private int viewSample = 1;
 	private boolean showCounters = true;
 	private int pageWidth = -1;
 	private int pageHeight = -1;
@@ -69,14 +71,14 @@ public class VisualConfig {
 	
 	public VisualConfig(XMLGetter xmlGetter) throws XMLParsingException {
 		this.xmlShowCounters = xmlGetter.getBooleanField(VISUAL_CONFIG, "show_counters");
-		this.xmlSpeed = xmlGetter.getIntField(VISUAL_CONFIG, "speed");
+		this.xmlSpeed = xmlGetter.getLongField(VISUAL_CONFIG, "speed");
 		this.xmlPageWidth =xmlGetter.getIntField(VISUAL_CONFIG, "page_width");
 		this.xmlPageHeight = xmlGetter.getIntField(VISUAL_CONFIG, "page_height");
 		this.xmlBlockSpace = xmlGetter.getIntField(VISUAL_CONFIG, "block_space");
 		this.xmlPagesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "pages_in_row");
 		this.xmlBlocksInRow = xmlGetter.getIntField(VISUAL_CONFIG, "blocks_in_row");
 		this.xmlPlanesInRow = xmlGetter.getIntField(VISUAL_CONFIG, "planes_in_row");
-		
+		this.xmlViewSample = xmlGetter.getIntField(VISUAL_CONFIG, "view_sample");
 		restoreXmlValues();
 	}
 	
@@ -89,19 +91,28 @@ public class VisualConfig {
 		setPagesInRow(xmlPagesInRow);
 		setBlocksInRow(xmlBlocksInRow);
 		setPlanesInRow(xmlPlanesInRow);
+		setViewSample(xmlViewSample);
 		setThinCross(xmlThinCross);
 		setMovedPattern(xmlMovedPattern);
 		setShowPages(xmlShowPages);
 		setBlocksColorMeaning(xmlBlocksColorMeaning);
 		setDrawFrame(xmlDrawFrame);
-		
+
 	}
 
-	public int getSpeed() {
+	public int getViewSample(){
+		return viewSample;
+	}
+
+	public void setViewSample(int viewSample){
+		this.viewSample = viewSample;
+	}
+
+	public long getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(long speed) {
 		this.speed = speed;
 	}
 

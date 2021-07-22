@@ -28,6 +28,10 @@ public class ZipfResizableWorkloadWidget<D extends Device<?>, S extends SSDManag
 	public WorkloadGenerator<D, S> createWorkloadGenerator() {
 		return new ZipfResizableWorkloadGenerator<D,S>(manager, getWorkloadLength(), getSeed(), getExponent(), getMaxWriteSize(), isWriteSizeUniform());
 	}
+
+	public WorkloadGenerator<D, S> createWorkloadGenerator(Integer workloadLength, Integer seed, Double exponent, Integer maxWriteSize, boolean isWriteSizeUniform) {
+		return new ZipfResizableWorkloadGenerator<D,S>(manager, workloadLength, seed, exponent, maxWriteSize, isWriteSizeUniform);
+	}
 	
 	private double getExponent() {
 		return ((Number)exponentInput.getValue()).doubleValue();

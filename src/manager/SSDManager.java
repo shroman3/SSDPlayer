@@ -49,6 +49,7 @@ import zoom.IZoomLevel;
 import zoom.PagesZoomLevel;
 import zoom.SmallBlocksEraseCountZoomLevel;
 import zoom.SmallBlocksValidCountZoomLevel;
+import utils.Utils;
 
 
 /**
@@ -79,7 +80,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	private static Map<String, ? extends SSDManager<?,?,?,?,?>> managersMap;
 	private static List<String> simulatorsList = new ArrayList<>();
 	private static List<String> visualizationsList = new ArrayList<>();
-	
 	/**
 	 * Initialize SSD manager using given configuration.
 	 * First loads all of the subclasses of the SSDManager.
@@ -88,23 +88,23 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 *   
 	 * @param xmlGetter - configuration getter 
 	 */
-	public static void initializeManager(XMLGetter xmlGetter) {
-		if (managersMap == null) {		
+	public static void initializeManager(XMLGetter xmlGetter, boolean withUI) {
+		if (managersMap == null) {
 			Reflections reflections = new Reflections(SSDManager.class.getPackage().getName());
 			// We use here raw type and do the casting in order for the code to compile.
 			@SuppressWarnings("rawtypes")
 			Set<Class<? extends SSDManager>> subTypesAux = reflections.getSubTypesOf(SSDManager.class);
 			Object auxObj = subTypesAux;
 			@SuppressWarnings("unchecked")
-			Set<Class<? extends SSDManager<?,?,?,?,?>>> subTypes = (Set<Class<? extends SSDManager<?,?,?,?,?>>>)auxObj;
-			
-			Map<String, SSDManager<?,?,?,?,?>> managers = new HashMap<String, SSDManager<?,?,?,?,?>>();
-			for (Class<? extends SSDManager<?,?,?,?,?>> clazz : subTypes) {
+			Set<Class<? extends SSDManager<?, ?, ?, ?, ?>>> subTypes = (Set<Class<? extends SSDManager<?, ?, ?, ?, ?>>>) auxObj;
+
+			Map<String, SSDManager<?, ?, ?, ?, ?>> managers = new HashMap<String, SSDManager<?, ?, ?, ?, ?>>();
+			for (Class<? extends SSDManager<?, ?, ?, ?, ?>> clazz : subTypes) {
 				if (!Modifier.isAbstract(clazz.getModifiers())) {
 					try {
 						System.out.println("Initializing " + clazz.getSimpleName());
-						SSDManager<?,?,?,?,?> manager = clazz.newInstance();
-						manager.initBaseValues(xmlGetter);
+						SSDManager<?, ?, ?, ?, ?> manager = clazz.newInstance();
+						manager.initBaseValues(xmlGetter, withUI);
 						manager.initValues(xmlGetter);
 						if (manager instanceof VisualizationSSDManager) {
 							visualizationsList.add(manager.getManagerName());
@@ -112,7 +112,7 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 							simulatorsList.add(manager.getManagerName());
 						}
 						managers.put(manager.getManagerName(), manager);
-						manager.statisticsGetters  = manager.initStatisticsGetters();
+						manager.statisticsGetters = manager.initStatisticsGetters();
 						System.out.println("Finished initializing " + clazz.getSimpleName() + " - " + manager.getManagerName());
 					} catch (Throwable e) {
 						e.printStackTrace();
@@ -144,17 +144,17 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	}
 	
 	private List<StatisticsGetter> statisticsGetters;
-
 	private String managerName;
 	private int op = -1;
 	private int reserved = -1;
 	private int gct = -1;
+	private Utils.GctType gctType;
 	private int chipsNum = -1;
 	private int planesNum = -1;
 	private int blocksInPlane = -1;
 	private int pagesInBlock = -1;
 	private Color cleanColor = null;
-	
+
 	protected Set<IZoomLevel> supportedZoomLevels = new LinkedHashSet<>();
 	
 	/**
@@ -189,7 +189,6 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 * @return empty page for device initializing
  	 */
 	abstract public P getEmptyPage();
-
 
 	SSDManager() {
 		setSupportedZoomLevels();
@@ -394,19 +393,41 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	
 	private void initPhysicalValues(XMLGetter xmlGetter) throws XMLParsingException {
 		op = xmlGetter.getIntField("physical", "overprovisioning");
-		gct = xmlGetter.getIntField("physical", "gc_threshold");
 		chipsNum = xmlGetter.getIntField("physical", "chips");
 		planesNum = xmlGetter.getIntField("physical", "planes");
 		blocksInPlane = xmlGetter.getIntField("physical", "blocks");
 		pagesInBlock = xmlGetter.getIntField("physical", "pages");
+		try{
+			gct = xmlGetter.getIntField("physical", "gc_threshold");
+			try {
+				gct = xmlGetter.getIntField("physical", "gc_threshold_blocks");
+				throw new Error("You should specify EXACTLY ONE of the followings: gc_threshold, gh_threshold_blocks\nThe other should be blank");
+			} catch (XMLParsingException | java.lang.NumberFormatException e1){
+				//In this scenario, gc_threshold was selected (e.g. in percents)
+				gctType = Utils.GctType.PERCENT;
+			}
+		} catch (XMLParsingException | java.lang.NumberFormatException e){
+			try {
+				gct = xmlGetter.getIntField("physical", "gc_threshold_blocks");
+				//In this scenario, gc_threshold_blocks was selected (e.g. in total numbers)
+				gctType = Utils.GctType.BLOCKS;
+			} catch (XMLParsingException | java.lang.NumberFormatException e1){
+				throw new Error("You should specify EXACTLY ONE of the followings: gc_threshold, gh_threshold_blocks\nThe other should be blank");
+			}
+		}
 	}
 
-	private void initBaseValues(XMLGetter xmlGetter) throws XMLParsingException {
+	private void initBaseValues(XMLGetter xmlGetter, boolean withUI) throws XMLParsingException {
 		initPhysicalValues(xmlGetter);
 		managerName = getStringField(xmlGetter, "name");
-		cleanColor = getColorField(xmlGetter, "clean_color");
+		if(withUI) {
+			cleanColor = getColorField(xmlGetter, "clean_color");
+		}
 		
 		reserved = (int)(blocksInPlane * ((double)op/(op+100)));
-		gct = (int)(blocksInPlane * ((double)gct/(100)));
+		if(gctType == Utils.GctType.PERCENT) {
+			gct = (int) (blocksInPlane * ((double) gct / (100)));
+		}
+		//If gctType is GctType.BLOCKS, then there's no need to change it's value
 	}
 }

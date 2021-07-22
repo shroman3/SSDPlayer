@@ -22,6 +22,21 @@
 package utils;
 
 public class Utils {
+	public enum GctType {
+		PERCENT,
+		BLOCKS
+	}
+
+	public static Boolean parseBoolean(String var){
+		if (var.toLowerCase().equals("t")){
+			return true;
+		} else if (var.toLowerCase().equals("f")){
+			return false;
+		} else {
+			return null;
+		}
+	}
+
 	public static void validateNotNull(Object param, String paramName) {
 		if (param == null) {
 			throw new IllegalArgumentException(paramName + " parameter is null (It shouldn't be)");

@@ -31,7 +31,10 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -58,14 +61,27 @@ import general.XMLParsingException;
 import manager.SSDManager;
 import manager.VisualConfig;
 import ui.zoom.ZoomLevelPanel;
+import utils.Utils;
+import CLI.MainCLI;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
 	private static final String VERSION = "1.2.1";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
+	private static String managerName = "";
+	private static String inputTrace = "";
+	private static String outputFile = "";
+	private static boolean useBuiltInGenerator = false;
+	private static Integer workloadLength = -1;
+	private static Integer seed = -1;
+	private static Double exponent = 0.0;
+	private static Integer maxWriteSize = -1;
+	private static boolean isGeneratorUniform = false;
+	private static boolean isResizable = false;
+	private static Boolean isWriteSizeUniform = false;
 	private VisualConfig visualConfig;
-	private List<BreakpointBase> initialBreakpoints;
+    private List<BreakpointBase> initialBreakpoints;
 	private JPanel devicePanel;
 	private JPanel statisticsPanel;
 	private DeviceView deviceView;
@@ -74,49 +90,267 @@ public class MainSimulationView extends JFrame {
 	private JPanel southInnerPanel;
 	private ZoomLevelPanel zoomLevelPanel;
 
-	public static void main(String[] args) {
-		try {
-			XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
-			Consts.initialize(xmlGetter);
-			initLookAndFeel();
-			ConfigProperties.initialize(xmlGetter);
-			BreakpointsConstraints.initialize(xmlGetter);
-			SSDManager.initializeManager(xmlGetter);
-			String checkResult = checkXmlValues(xmlGetter);
-			if(checkResult != null){
-				displayErrorFrame(checkResult);
-				return;
+	private static boolean doesFlagExist(List<String> arguments, String flag){
+		return arguments.contains(flag);
+	}
+
+	private static List<String> getValueForFlag(List<String> arguments, String flag){
+		List<String> value = new ArrayList<>();
+		int flag_index = arguments.indexOf(flag);
+		if(flag_index == -1){
+			return null;
+		}
+		ListIterator<String> iterator = arguments.listIterator(flag_index);
+		iterator.next();
+		String str = iterator.next();
+		while(str != null && str.charAt(0) != '-'){
+			value.add(str);
+			if(iterator.hasNext()) {
+				str = iterator.next();
+			} else {
+				break;
 			}
-			
-			final VisualConfig visualConfig = new VisualConfig(xmlGetter);
+		}
+		return value;
+	}
 
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					try {
-						MainSimulationView window = new MainSimulationView(visualConfig);
-						window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));;
-						window.setVisible(true);
-					} catch (Exception e) {
-						displayErrorFrame("Unable to load Simulation \n" + e.toString());
-					} 
+	private static void displayHelp(){
+		System.out.println("When using CLI mode, the command line parameters should fit one of the following formats:\n" +
+				"1. -C <config file name> -M <manager Name> -F <trace file name>.<trace file extension> -O <output file name>\n" +
+				"2. -C <config file name> -M <manager Name> -G -U <workload length> <seed> -O <output file name>\n" +
+				"3. -C <config file name> -M <manager Name> -G -U <workload length> <seed> <max write size> <is write size uniform> -O <output file name>\n" +
+				"4. -C <config file name> -M <manager Name> -G -Z <workload length> <seed> <exponent> -O <output file name>\n" +
+				"5. -C <config file name> -M <manager Name> -G -Z <workload length> <seed> <exponent> <max write size> <is write size uniform> -O <output file name>\n" +
+				"\n" +
+				"For instance:\n" +
+				"java -jar SSDPlayer.jar -C resources/ssd_config.xml -M \"RAID 5\" -G -U 10000 0 1 T -O target/generateUniformResizableUniform\n" +
+				"or\n" +
+				"java -jar SSDPlayer.jar -C resources/ssd_config.xml -M Greedy -F traces/Small_Uniform.trace -O target/out\n");
+	}
+
+	private static XMLGetter parseCLArgs(String[] args) throws Exception {
+		try {
+			List<String> arguments = Arrays.asList(args);
+			if(doesFlagExist(arguments, "-help")){
+				displayHelp();
+				return null;
+			}
+			List<String> config_xml = getValueForFlag(arguments, "-C");
+			List<String> inputFiles = null;
+			if (config_xml == null || config_xml.size() != 1) {
+				throw new Exception("There should be exactly one config file");
+			}
+			List<String> managerNameFromArgs = getValueForFlag(arguments, "-M");
+			if (managerNameFromArgs == null || managerNameFromArgs.size() != 1) {
+				throw new Exception("There should be exactly one manager");
+			}
+			managerName = managerNameFromArgs.get(0);
+			if (doesFlagExist(arguments, "-F") && doesFlagExist(arguments, "-G")) {
+				throw new Exception("You have to use -G or -F, not both");
+			}
+			if (doesFlagExist(arguments, "-F")) {
+				useBuiltInGenerator = false;
+				inputFiles = getValueForFlag(arguments, "-F");
+				if (inputFiles == null || inputFiles.size() != 1) {
+					throw new Exception("there should be exactly one input file when using -F");
 				}
-			});
-		} catch (Exception e) {
-			String error = "Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage();
-			System.out.println(error);
-			displayErrorFrame(error);
+				inputTrace = inputFiles.get(0);
+			} else if (doesFlagExist(arguments, "-G")) {
+				useBuiltInGenerator = true;
+				if (doesFlagExist(arguments, "-U")) {
+					isGeneratorUniform = true;
+					inputFiles = getValueForFlag(arguments, "-U");
+					if (inputFiles == null || (inputFiles.size() != 2 && inputFiles.size() != 4)) {
+						throw new Exception("wrong parameters for workload generator");
+					}
+					workloadLength = Integer.valueOf(inputFiles.get(0));
+					seed = Integer.valueOf(inputFiles.get(1));
+					if (inputFiles.size() == 4) {
+						isResizable = true;
+						maxWriteSize = Integer.valueOf(inputFiles.get(2));
+						if(maxWriteSize < 0){
+                            throw new Exception("max write size must be non-negative");
+                        }
+						isWriteSizeUniform = Utils.parseBoolean(inputFiles.get(3));
+						if (isWriteSizeUniform == null) {
+							throw new Exception("Boolean parameters' values are only: T,t,F,f");
+						}
+					} else {
+						isResizable = false;
+					}
+				} else if (doesFlagExist(arguments, "-Z")) {
+					isGeneratorUniform = false;
+					inputFiles = getValueForFlag(arguments, "-Z");
+					if (inputFiles == null || (inputFiles.size() != 3 && inputFiles.size() != 5)) {
+						throw new Exception("wrong parameters for workload generator");
+					}
+					workloadLength = Integer.valueOf(inputFiles.get(0));
+					seed = Integer.valueOf(inputFiles.get(1));
+					exponent = Double.valueOf(inputFiles.get(2));
+					if(exponent < 0){
+                        throw new Exception("exponent must be non-negative");
+                    }
+					if (inputFiles.size() == 5) {
+						isResizable = true;
+						maxWriteSize = Integer.valueOf(inputFiles.get(3));
+                        if(maxWriteSize < 0){
+                            throw new Exception("max write size must be non-negative");
+                        }
+						isWriteSizeUniform = Utils.parseBoolean(inputFiles.get(4));
+						if (isWriteSizeUniform == null) {
+							throw new Exception("Boolean parameters' values are only: T,t,F,f");
+						}
+					} else {
+						isResizable = false;
+					}
+				} else {
+					throw new Exception("When using built in generator - you have to specify whether you want Uniform generator or Zipf by using the flags -U or -Z");
+				}
+                if(workloadLength < 1000){
+                    throw new Exception("workload length must be as least 1000");
+                }
+                if (seed < 0){
+                    throw new Exception("seed must be non-negative");
+                }
+			} else {
+				throw new Exception("You have to use -G or -F");
+			}
 
+			List<String> outputFiles = getValueForFlag(arguments, "-O");
+			if (outputFiles == null || outputFiles.size() != 1) {
+				throw new Exception("there should be exactly one output file");
+			}
+			XMLGetter xmlGetter = new XMLGetter(config_xml.get(0));
+			outputFile = outputFiles.get(0);
+
+			return xmlGetter;
+		} catch (Exception e){
+			throw new Exception(e.getMessage() + "\nuse -help flag for help");
+		}
+	}
+
+	//-C resources/ssd_config.xml -M "RAID 5" -G -Z 10000 0 0.5 1 T -O "C:\\Users\\user\\Desktop\\backup\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\zipfResizableUniform"
+	//-C resources/ssd_config.xml -M "RAID 5" -G -U 10000 0 1 T -O "C:\\Users\\user\\Desktop\\backup\\semester G\\236388 - project in storage systems\\SSDPlayer\\output\\uniformResizableUniform"
+	public static void main(String[] args) {
+		if (args.length > 0) {
+			try {
+				XMLGetter xmlGetter = parseCLArgs(args);
+				if(xmlGetter == null){
+					return;
+				}
+				Consts.initialize(xmlGetter);
+				ConfigProperties.initialize(xmlGetter);
+				BreakpointsConstraints.initialize(xmlGetter);
+				SSDManager.initializeManager(xmlGetter, false);
+				String checkResult = checkXmlValues(xmlGetter);
+				if (checkResult != null) {
+					throw new Exception("Bad XML values");
+
+				}
+
+				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
+				new MainCLI(visualConfig, managerName, outputFile, inputTrace, useBuiltInGenerator, isGeneratorUniform, workloadLength, seed, exponent, isResizable, maxWriteSize, isWriteSizeUniform);
+				System.out.println("Simulation Ended");
+
+			} catch(Exception e){
+				System.out.println(e.getMessage());
+				System.out.println("Simulation Ended");
+			}
+		} else {
+			try {
+				XMLGetter xmlGetter = new XMLGetter(CONFIG_XML);
+				Consts.initialize(xmlGetter);
+				initLookAndFeel();
+				ConfigProperties.initialize(xmlGetter);
+				BreakpointsConstraints.initialize(xmlGetter);
+				SSDManager.initializeManager(xmlGetter, true);
+				String checkResult = checkXmlValues(xmlGetter);
+				if (checkResult != null) {
+					displayErrorFrame(checkResult);
+					return;
+				}
+
+				final VisualConfig visualConfig = new VisualConfig(xmlGetter);
+
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							MainSimulationView window = new MainSimulationView(visualConfig);
+							window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/ui/images/SSDPlayer.ico")));
+							window.setVisible(true);
+						} catch (Exception e) {
+							displayErrorFrame("Unable to load Simulation \n" + e.toString());
+						}
+					}
+				});
+			} catch(Exception e){
+				String error = "Unable to load config XML file(resources/ssd_config.xml)\n" + e.getMessage();
+				System.out.println(error);
+				displayErrorFrame(error);
+
+			}
 		}
 	}
 
 	// Check xml values are legal.   
 	private static String checkXmlValues(XMLGetter xmlGetter) {
-		try {
-			if(xmlGetter.getIntField("physical","max_erasures") < 0){
-				return "max erasures is negative";
+		try{
+			int value = xmlGetter.getIntField("physical","overprovisioning");
+			if(value < 0 || value > 100){
+				return "overposishioning has illegal value";
 			}
-		} catch (XMLParsingException e) {
-			return "max erasures is not specified in config";
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "overprovisioning is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","gc_threshold");
+			if(value < 0 || value > 100){
+				return "gc_threshold has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) { }
+
+		try{
+			int value = xmlGetter.getIntField("physical","gc_threshold_blocks");
+			if(value < 0){
+				return "gc_threshold_blocks has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) { }
+
+		try{
+			int value = xmlGetter.getIntField("physical","chips");
+			if(value < 0){
+				return "chips has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "chips is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","planes");
+			if(value < 0){
+				return "planes has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "planes is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","blocks");
+			if(value < 0){
+				return "blocks has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "blocks is not specified in config";
+		}
+
+		try{
+			int value = xmlGetter.getIntField("physical","pages");
+			if(value < 0){
+				return "pages has illegal value";
+			}
+		} catch (XMLParsingException | NumberFormatException e) {
+			return "pages is not specified in config";
 		}
 		return null;
 	}
@@ -143,14 +377,14 @@ public class MainSimulationView extends JFrame {
 
 	public MainSimulationView(VisualConfig visualConfig) {
 		super("SSDPlayer " + VERSION);
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				tracePlayer.stopTrace();
-			}
-		});
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.visualConfig = visualConfig;
-		initialize();
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                tracePlayer.stopTrace();
+            }
+        });
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.visualConfig = visualConfig;
+        initialize();
 	}
 
 	/**

@@ -34,6 +34,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -71,6 +74,7 @@ import manager.VisualConfig;
 import manager.WorkloadGenerator;
 import ui.breakpoints.InfoDialog;
 import ui.breakpoints.ManageBreakpointsDialog;
+import ui.sampling.SamplingRateDialog;
 import ui.zoom.ZoomLevelDialog;
 import utils.Utils;
 import zoom.IZoomLevel;
@@ -83,18 +87,19 @@ import zoom.IZoomLevel;
 public class TracePlayer extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private ImageIcon iconPlay = new ImageIcon(getClass().getResource("/ui/images/play.png"));
-	private ImageIcon iconPause = new ImageIcon(getClass().getResource("/ui/images/pause.png"));
+	private final ImageIcon iconPlay = new ImageIcon(getClass().getResource("/ui/images/play.png"));
+	private final ImageIcon iconPause = new ImageIcon(getClass().getResource("/ui/images/pause.png"));
 
-	private JButton playPauseButton = new JButton(iconPlay);
-	private JButton stopButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/stop.png")));
-	private JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
-	private JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
-	private JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
-	private JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
-	private JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
-	private JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
-	private JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
+	private final JButton playPauseButton = new JButton(iconPlay);
+	private final JButton stopButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/stop.png")));
+	private final JButton nextButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/next.png")));
+	private final JButton openButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/eject.png")));
+	private final JButton generateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/generate.png")));
+	private final JButton showStripeButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/showStripe.png")));
+	private final JButton breakpointsButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/breakpoint.png")));
+	private final JButton zoomButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/zoom.png")));
+	private final JButton infoButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/info.png")));
+	private final JButton samplingRateButton = new JButton(new ImageIcon(getClass().getResource("/ui/images/filter.png")));
 
 	private JProgressBar progressBar;
 	private TraceParser<? extends Device<?>, ?> parser;
@@ -107,10 +112,10 @@ public class TracePlayer extends JPanel {
 
 	private boolean isPaused = true;
 
-	private Timer traceReadTimer;
+	private ScheduledExecutorService schedular;
 	private int currFrameCounter = 0;
 
-	private int readingSpeed;
+	private long readingSpeed;
 
 	private SeparatorComboBox managersList;
 
@@ -131,6 +136,7 @@ public class TracePlayer extends JPanel {
 	private ZoomLevelDialog zoomDialog;
 	private InfoDialog infoDialog;
 	private VisualConfig visualConfig;
+	private SamplingRateDialog samplingRateDialog;
 
 	private OneObjectCallback<Boolean> resetDeviceView;
 
@@ -160,9 +166,10 @@ public class TracePlayer extends JPanel {
 
 	public void stopTrace() {
 		isPaused = true;
-		if (traceReadTimer != null) {
-			traceReadTimer.cancel();
-			traceReadTimer = null;
+		if (schedular != null) {
+			updateDeviceView.message(currentDevice);
+			schedular.shutdown();
+			schedular = null;
 			parser.close();
 			playPauseButton.setEnabled(false);
 			playPauseButton.setIcon(iconPlay);
@@ -241,8 +248,13 @@ public class TracePlayer extends JPanel {
 		setStripeInformation(manager);
 		setZoomLevelOptions(manager);
 		setInfoDialog(manager);
+		setSamplingRateDialog(manager);
 		resetDevice.message(traseParser.getCurrentDevice(), manager.getStatisticsGetters());
 		ActionLog.resetLog();
+	}
+
+	private void setSamplingRateDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
+		this.samplingRateDialog = new SamplingRateDialog(SwingUtilities.windowForComponent(this), manager, this.visualConfig);
 	}
 
 	private void setInfoDialog(SSDManager<?, ?, ?, ?, ?> manager2) {
@@ -319,7 +331,7 @@ public class TracePlayer extends JPanel {
 		nextButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if ((traceReadTimer != null) && isPaused) {
+				if ((schedular != null) && isPaused) {
 					parseNextCommand();
 				}
 			}
@@ -340,17 +352,28 @@ public class TracePlayer extends JPanel {
 				showZoomDialog();
 			}
 		});
-		addButton(zoomButton, ManageBreakpointsDialog.DIALOG_HEADER);
+		addButton(zoomButton, ZoomLevelDialog.DIALOG_HEADER);
 		zoomButton.setEnabled(true);
 
-		this.infoButton.addActionListener(new ActionListener() {
+		infoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TracePlayer.this.showInfoDialog();
 			}
 		});
-		addButton(this.infoButton, "Info");
-		this.infoButton.setEnabled(true);
+		addButton(infoButton, "Info");
+		infoButton.setEnabled(true);
+
+
+		samplingRateButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showSamplingRateDialog();
+			}
+		});
+		addButton(samplingRateButton, "Sample View");
+		samplingRateButton.setEnabled(true);
+
 
 		add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -442,28 +465,25 @@ public class TracePlayer extends JPanel {
 	}
 
 	private void initTraceParsing(VisualConfig visualConfig) {
-		readingSpeed = 60000 / visualConfig.getSpeed();
+		readingSpeed = 1000000000 / visualConfig.getSpeed();
 	}
 
 	private void reStartTimer() {
 		resetDevice.message(parser.getCurrentDevice(), manager.getStatisticsGetters());
-		traceReadTimer = new Timer();
-		traceReadTimer.schedule(new TimerTask() {
-			@Override
-			public boolean cancel() {
+		schedular = Executors.newScheduledThreadPool(1);
+		schedular.scheduleWithFixedDelay(new Runnable() {
+			public void cancel() {
 				stopTrace();
-				return super.cancel();
 			}
-
-			@Override
-			public void run() {
-				if (isPaused)
-					return;
-				if (!parseNextCommand()) {
-					cancel();
-				}
-			}
-		}, 0, readingSpeed);
+			 @Override
+			 public void run() {
+				 if (isPaused)
+					 return;
+				 if (!parseNextCommand()) {
+					 cancel();
+				 }
+			 }
+		}, 0, readingSpeed, TimeUnit.NANOSECONDS);
 
 		playPauseButton.setEnabled(true);
 		stopButton.setEnabled(true);
@@ -494,6 +514,7 @@ public class TracePlayer extends JPanel {
 
 	private boolean parseNextCommand() {
 		if (currFrameCounter >= numberOfLines) {
+			updateDeviceView.message(currentDevice);
 			MessageLog.log(new InfoMessage("Simulation Ended"));
 			return false;
 		}
@@ -504,7 +525,14 @@ public class TracePlayer extends JPanel {
 		try {
 			Device<?> updatedDevice = parser.parseNextCommand();
 			if (updatedDevice != null) {
-				updateDeviceView.message(updatedDevice);
+				//The first condition is to check whether this frame should be displayed according to the sampling rate.
+				//The second one is to make sure each GC execution is displayed - currently disabled to make heavy GUI traces faster
+				//The third is to make sure that when people press the "next" button, the next frame will be displayed.
+				if(currFrameCounter % visualConfig.getViewSample() == 0
+						//|| (currentDevice != null && (currentDevice.getGCExecutions() < updatedDevice.getGCExecutions()))
+						|| isPaused) {
+					updateDeviceView.message(updatedDevice);
+				}
 				// FrameCounter runs from 0 to numberOfLines-1, displayed from 1 to numberOfLines
 				setProgressBarFrame(currFrameCounter + 1);
 				++currFrameCounter;
@@ -563,10 +591,13 @@ public class TracePlayer extends JPanel {
 	}
 
 	public void pauseTrace() {
-		isPaused = true;
-		playPauseButton.setIcon(iconPlay);
-		playPauseButton.setToolTipText("Play");
-		showStripeButton.setEnabled(true);
+		if(!isPaused) {
+			updateDeviceView.message(currentDevice);
+			isPaused = true;
+			playPauseButton.setIcon(iconPlay);
+			playPauseButton.setToolTipText("Play");
+			showStripeButton.setEnabled(true);
+		}
 	}
 
 	private void showGeneratorCreatorsTrace() {
@@ -606,5 +637,11 @@ public class TracePlayer extends JPanel {
 	private void showInfoDialog() {
 		pauseTrace();
 		this.infoDialog.setVisible(true);
+	}
+
+	private void showSamplingRateDialog(){
+		pauseTrace();
+		this.samplingRateDialog.resetSmaplingRate();
+		this.samplingRateDialog.setVisible(true);
 	}
 }

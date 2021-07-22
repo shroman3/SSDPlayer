@@ -5,16 +5,18 @@
 		<!-- OP as percents -->
 		<overprovisioning>30</overprovisioning>
 		<!-- GCT is garbage collection threshold - as percents -->
-		<gc_threshold>7</gc_threshold>
-		<chips>5</chips>
+		<gc_threshold></gc_threshold>
+		<gc_threshold_blocks>6</gc_threshold_blocks>
+		<chips>6</chips>
 		<planes>1</planes>
 		<blocks>32</blocks>
 		<pages>24</pages>
 		<max_erasures>100000</max_erasures>
 	</physical>
-	<visual> 
+	<visual>
+		<view_sample>1</view_sample>
 		<show_counters>yes</show_counters>
-		<speed>60000</speed><!-- Number of frames per minute -->
+		<speed>1000000000</speed><!-- Number of frames per second -->
 		<page_width>18</page_width>
 		<page_height>11</page_height>
 		<block_space>1</block_space><!-- spacing between the blocks in the plane -->
