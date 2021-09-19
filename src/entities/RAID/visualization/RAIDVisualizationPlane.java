@@ -27,6 +27,7 @@ import org.javatuples.Pair;
 
 import entities.BlockStatusGeneral;
 import entities.RAID.RAIDBasicPlane;
+import utils.Utils.*;
 
 /**
  * 
@@ -79,7 +80,7 @@ public class RAIDVisualizationPlane extends RAIDBasicPlane<RAIDVisualizationPage
 		return builder.build();
 	}
 
-	public RAIDVisualizationPlane writeLP(int lp, int dummy) {
+	public RAIDVisualizationPlane writeLP(int lp, LpArgs lpArgs) {
 		List<RAIDVisualizationBlock> updatedBlocks = getNewBlocksList();
 		int active = getActiveBlockIndex();
 		if (active == -1) {

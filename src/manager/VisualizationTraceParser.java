@@ -22,8 +22,13 @@
 package manager;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import entities.reusable_visualization.VisualizationDevice;
+import general.MessageLog;
+import log.Message.ErrorMessage;
+import log.Message.InfoMessage;
 
 public class VisualizationTraceParser extends FileTraceParser<VisualizationDevice, ReusableVisualizationSSDManager> {
 
@@ -34,12 +39,17 @@ public class VisualizationTraceParser extends FileTraceParser<VisualizationDevic
 	@Override
 	protected VisualizationDevice parseCommand(String command, int line, VisualizationDevice device, ReusableVisualizationSSDManager manager) throws IOException {
 		String[] operationParts = command.split("[ \t]+");
-		SecondWritesSimulationOperations operation = SecondWritesSimulationOperations.getDeviceOperation(operationParts[0]);
-		return operation.doOperation(device, manager, operationParts);
+		if (command.equals("")){
+			MessageLog.log(new InfoMessage("Ignoring empty line at line number:" + line));
+			return device;
+		} else {
+			SecondWritesSimulationOperations operation = SecondWritesSimulationOperations.getDeviceOperation(operationParts[0]);
+			return operation.doOperation(device, manager, operationParts);
+		}
 	}
 
 	@Override
-	public String getFileExtensions() {
-		return "log";
+	public String[] getFileExtensions() {
+		return new String[]{"log"};
 	}
 }

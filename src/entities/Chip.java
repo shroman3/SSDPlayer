@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.javatuples.Pair;
+import utils.Utils.*;
 
 
 /**
@@ -139,10 +140,10 @@ public abstract class Chip<T extends Plane<?>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Chip<T> writeLP(int lp, int arg) {
+	public Chip<T> writeLP(int lp, LpArgs lpArgs) {
 		int index = getMinValidCountPlaneIndex();
 		
-		T newPlane = (T) getPlane(index).writeLP(lp, arg);
+		T newPlane = (T) getPlane(index).writeLP(lp, lpArgs);
 		List<T> updatedPlanes = getNewPlanesList();
 		updatedPlanes.set(index, newPlane);
 		Builder<T> builder = getSelfBuilder();

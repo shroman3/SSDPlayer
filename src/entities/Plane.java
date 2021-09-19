@@ -28,6 +28,7 @@ import org.javatuples.Pair;
 
 import manager.SSDManager;
 import utils.Utils;
+import utils.Utils.*;
 
 /**
  * @author Roman
@@ -37,7 +38,6 @@ import utils.Utils;
  * number of clean blocks, active block index, etc.
  * Also immutable
  * 
- * @param <P> - page type the block stores.
  * @param <B> - block type that the plane stores
  */
 public abstract class Plane<B extends Block<?>> {
@@ -102,10 +102,10 @@ public abstract class Plane<B extends Block<?>> {
 	abstract public Builder<B> getSelfBuilder();
 	/**
 	 * @param lp - the logical page to be written 
-	 * @param arg - additional data(hot/cold or something else..)
+	 * @param lpArgs - additional data(hot/cold or something else..)
 	 * @return new Plane with the lp written on it
 	 */
-	abstract public Plane<B> writeLP(int lp, int arg);
+	abstract public Plane<B> writeLP(int lp, LpArgs lpArgs);
 	/**
 	 * @return tuple: first -  Plane after being cleaned 
 	 * 				  second - the number of moved pages in process of garbage collection
@@ -221,7 +221,6 @@ public abstract class Plane<B extends Block<?>> {
 	
 	/**
 	 * Choose a victim block for garbage collection
-	 * @param plane
 	 * @return block index of block with smallest sum of valid counters
 	 */
 	protected Pair<Integer, B> pickBlockToClean() {

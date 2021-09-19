@@ -22,6 +22,7 @@
 package entities.hot_cold;
 
 import java.awt.Color;
+import java.util.List;
 
 import entities.Block;
 import entities.BlockStatus;
@@ -30,6 +31,7 @@ import entities.EntityInfo;
 import manager.HotColdSSDManager;
 import manager.HotColdSSDManager.HotColdPartition;
 import utils.Utils;
+import utils.Utils.*;
 
 public class HotColdBlock extends Block<HotColdPage> {
 	public static class Builder extends Block.Builder<HotColdPage> {
@@ -131,9 +133,9 @@ public class HotColdBlock extends Block<HotColdPage> {
 	}
 
 	@Override
-	protected entities.Page.Builder getWrittenPageBuilder(int lp, int temperature, HotColdPage page) {
+	protected entities.Page.Builder getWrittenPageBuilder(int lp, Utils.LpArgs lpArgs, HotColdPage page) {
 		HotColdPage.Builder builder = page.getSelfBuilder();
-		builder.setTemperature(temperature);
+		builder.setTemperature(lpArgs.getTemperatrure());
 		return builder;
 	}
 	

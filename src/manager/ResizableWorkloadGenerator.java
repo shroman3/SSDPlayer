@@ -6,6 +6,8 @@ import org.apache.commons.math3.distribution.ZipfDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 
 import entities.Device;
+import utils.Utils;
+import utils.Utils.*;
 
 /**
  * 
@@ -43,11 +45,11 @@ public abstract class ResizableWorkloadGenerator<D extends Device<?>, S extends 
 	}
 	
 	@Override
-	protected int getLPArg(int lp) {
+	protected LpArgs getLPArg(int lp) {
 		if (isWriteSizeUniform == true) {
-			return random.nextInt(maxWriteSize) + 1;
+			return new LpArgsBuilder().size(random.nextInt(maxWriteSize) + 1).buildLpArgs();
 		}
-		return zipf.sample();
+		return new LpArgsBuilder().size(zipf.sample()).buildLpArgs();
 	}
 	
 }

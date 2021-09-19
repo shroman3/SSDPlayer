@@ -66,7 +66,7 @@ import CLI.MainCLI;
 
 public class MainSimulationView extends JFrame {
 	private static final long serialVersionUID = 251948453746299747L;
-	private static final String VERSION = "1.2.1";
+	private static final String VERSION = "1.3.1";
 	private static final String CONFIG_XML = "resources/ssd_config.xml";
 	private static final String BREAKPOINTS_XML = "resources/ssd_breakpoints.xml";
 	private static String managerName = "";

@@ -33,6 +33,7 @@ import utils.Utils;
 import entities.BlockStatusGeneral;
 import entities.EntityInfo;
 import entities.Plane;
+import utils.Utils.*;
 
 public class ReusablePlane extends Plane<ReusableBlock> {
 	public static class Builder extends Plane.Builder<ReusableBlock> {
@@ -127,7 +128,8 @@ public class ReusablePlane extends Plane<ReusableBlock> {
 						active = getLowestEraseCleanBlockIndex();
 						activeBlock = (ReusableBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
 					}
-					activeBlock = (ReusableBlock) activeBlock.move(page.getLp(), page.getWriteLevel());
+					LpArgs lpArgs = new LpArgsBuilder().writeLevel(page.getWriteLevel()).buildLpArgs();
+					activeBlock = (ReusableBlock) activeBlock.move(page.getLp(), lpArgs);
 					lpMoved.add(page.getLp());
 					if(!activeBlock.hasRoomForWrite()) {
 						activeBlock = (ReusableBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
@@ -149,7 +151,8 @@ public class ReusablePlane extends Plane<ReusableBlock> {
 		return new Pair<ReusablePlane, Integer>(builder.build(), toMove);
 	}
 
-	public ReusablePlane writeLP(int lp, int temperature) {
+	public ReusablePlane writeLP(int lp, LpArgs lpArgs) {
+		int temperature = lpArgs.getTemperatrure();
 		if (manager.isSecondWrite(hasSecondWriteBlock, temperature)) {
 			return secondWriteLP(lp);
 		}
@@ -162,8 +165,6 @@ public class ReusablePlane extends Plane<ReusableBlock> {
 
 	/**
 	 * Determine whether a victim block should be recycled or erased
-	 * @param ssdManager 
-	 * @param blockIndex - the block chosen for gc
 	 * @return 	false if (number of recycled blocks > reserved) or (number of clean blocks < 2), 
 	 * 			Otherwise, return true
 	 */

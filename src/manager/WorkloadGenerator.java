@@ -22,7 +22,7 @@
 package manager;
 
 import entities.Device;
-
+import utils.Utils.*;
 
 public abstract class WorkloadGenerator<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> implements TraceParser<D,S> {
 	private String name;
@@ -31,8 +31,9 @@ public abstract class WorkloadGenerator<D extends Device<?>, S extends SSDManage
 	protected D device; // Revised by Or: changed from private to protected, to enable setDevice in ResizableWorkloadGenerator.
 	protected final int lpRange;
 	protected int lp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
-	protected int temp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
-	
+//	protected int temp; // Revised by Or: changed from private to protected, used in ResizableWorkloadGenerator.
+	protected LpArgs temp;
+
 	protected abstract int getLP();
 
 	@Override
@@ -57,7 +58,7 @@ public abstract class WorkloadGenerator<D extends Device<?>, S extends SSDManage
 
 	@Override
 	public String getLastCommand() {
-		return "write " + lp + ", temp=" + temp;
+		return "write " + lp + ", temp=" + temp.getSize(); //Never used
 	}
 
 	@Override
@@ -75,7 +76,8 @@ public abstract class WorkloadGenerator<D extends Device<?>, S extends SSDManage
 		return device;
 	}
 
-	protected int getLPArg(int lp) {
-		return 1/*dummy*/;
+	protected LpArgs getLPArg(int lp) {
+//		return 1/*dummy*/;
+		return new LpArgsBuilder().size(1).buildLpArgs();
 	}
 }

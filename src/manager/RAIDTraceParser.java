@@ -1,7 +1,7 @@
 /*******************************************************************************
  * SSDPlayer Visualization Platform (Version 1.0)
  * Authors: Or Mauda, Roman Shor, Gala Yadgar, Eitan Yaakobi, Assaf Schuster
- * Copyright (c) 2015, Technion – Israel Institute of Technology
+ * Copyright (c) 2015, Technion ï¿½ Israel Institute of Technology
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that
  * the following conditions are met:
@@ -22,10 +22,15 @@
 package manager;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import entities.RAID.simulation.RAIDDevice;
 import general.MessageLog;
 import log.Message.ErrorMessage;
+import log.Message.InfoMessage;
+import utils.Utils;
+import utils.Utils.*;
 
 /**
  * 
@@ -40,22 +45,31 @@ public class RAIDTraceParser extends FileTraceParser<RAIDDevice, RAIDSSDManager>
 	@Override
 	protected RAIDDevice parseCommand(String command, int line, RAIDDevice device, RAIDSSDManager manager) throws IOException {
 		String[] operationParts = command.split("[ \t]+");
-		if ((operationParts.length == 5) && (operationParts[4].equals("W"))) {
+		if (operationParts.length > 5){
+			MessageLog.logOnce(new InfoMessage("Ignoring additional " + (operationParts.length - 5) + " fields which are unnecessary when using this manager"));
+		}
+		if ((operationParts.length >= 5) && (operationParts[4].equals("W"))) {
 			try {
 				int lp = Integer.parseInt(operationParts[2]);
 				int size = Integer.parseInt(operationParts[3]);
-				return manager.writeLP(device, lp, size);
+				LpArgs lpArgs = new LpArgsBuilder().size(size).buildLpArgs();
+				return manager.writeLP(device, lp, lpArgs);
 			} catch (NumberFormatException e) {
 				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
 			}
 		}
-		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
-		return null;
+		if(!command.equals("")){
+			MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
+			return null;
+		} else {
+			MessageLog.log(new InfoMessage("Ignoring empty line at line number:" + line));
+			return device;
+		}
 	}
 
 	@Override
-	public String getFileExtensions() {
-		return "trace";
+	public String[] getFileExtensions() {
+		return new String[]{"trace", "hotcold"};
 	}
 	
 	public void setDevice(RAIDDevice device) {

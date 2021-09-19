@@ -29,6 +29,7 @@ import org.javatuples.Triplet;
 import entities.BlockStatusGeneral;
 import entities.EntityInfo;
 import entities.RAID.RAIDBasicPlane;
+import utils.Utils.*;
 
 /**
  * 
@@ -88,7 +89,8 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 		return new Builder(this);
 	}
 
-	public RAIDPlane writeLP(int lp, int stripe) {
+	public RAIDPlane writeLP(int lp, LpArgs lpArgs) {
+		int stripe = lpArgs.getStripe();
 		List<RAIDBlock> updatedBlocks = getNewBlocksList();
 		int active = getActiveBlockIndex();
 		if (active == -1) {
@@ -96,7 +98,7 @@ public class RAIDPlane extends RAIDBasicPlane<RAIDPage, RAIDBlock> {
 			updatedBlocks.set(active, (RAIDBlock) updatedBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE));
 		}
 		RAIDBlock activeBlock = updatedBlocks.get(active);
-		activeBlock = activeBlock.writeLP(lp, stripe);
+		activeBlock = (RAIDBlock) activeBlock.writeLP(lp, lpArgs);
 		if(!activeBlock.hasRoomForWrite()) {
 			activeBlock = (RAIDBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 		}

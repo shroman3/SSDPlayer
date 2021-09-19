@@ -31,6 +31,7 @@ import general.MessageLog;
 import log.Message.ErrorMessage;
 import manager.SSDManager;
 import utils.Utils;
+import utils.Utils.*;
 
 /**
  * @author Roman
@@ -252,11 +253,11 @@ public abstract class Block<P extends Page> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Block<P> move(int lp, int lpArg) {
+	public Block<P> move(int lp, LpArgs lpArgs) {
 		int index = 0;
 		for (P page : getPages()) {
 			if (page.isClean()) {
-				Page.Builder builder = getWrittenPageBuilder(lp, lpArg, page);
+				Page.Builder builder = getWrittenPageBuilder(lp, lpArgs, page);
 				builder.setClean(false).setLp(lp).setGC(true).setValid(true);
 				return addValidPage(index, (P) builder.build());
 			}
@@ -265,11 +266,11 @@ public abstract class Block<P extends Page> {
 		return null;
 	}
 	@SuppressWarnings("unchecked")
-	public Block<P> writeLP(int lp, int lpArg) {
+	public Block<P> writeLP(int lp, LpArgs lpArgs) {
 		int index = 0;
 		for (P page : getPages()) {
 			if (page.isClean()) {
-				Page.Builder builder = getWrittenPageBuilder(lp, lpArg, page);
+				Page.Builder builder = getWrittenPageBuilder(lp, lpArgs, page);
 				builder.setClean(false).setLp(lp).setGC(false).setValid(true);
 				return addValidPage(index, (P) builder.build());
 			}
@@ -278,7 +279,7 @@ public abstract class Block<P extends Page> {
 		return null;
 	}
 	
-	protected Page.Builder getWrittenPageBuilder(int lp, int lpArg, P page) {
+	protected Page.Builder getWrittenPageBuilder(int lp, LpArgs lpArgs, P page) {
 		return page.getSelfBuilder();
 	}
 	

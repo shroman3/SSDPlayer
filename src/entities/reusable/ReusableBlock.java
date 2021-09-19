@@ -30,6 +30,7 @@ import entities.Block;
 import entities.EntityInfo;
 import manager.ReusableSSDManager;
 import utils.Utils;
+import utils.Utils.*;
 
 public class ReusableBlock extends Block<ReusablePage> {
 	public static class Builder extends Block.Builder<ReusablePage> {
@@ -187,9 +188,9 @@ public class ReusableBlock extends Block<ReusablePage> {
 	}
 
 	@Override
-	protected ReusablePage.Builder getWrittenPageBuilder(int lp, int writeLevel, ReusablePage page) {
+	protected ReusablePage.Builder getWrittenPageBuilder(int lp, LpArgs lpArgs, ReusablePage page) {
 		ReusablePage.Builder builder = page.getSelfBuilder();
-		builder.setWriteLevel(1).setGcWriteLevel(writeLevel);
+		builder.setWriteLevel(1).setGcWriteLevel(lpArgs.getWriteLevel());
 		return builder;
 	}
 }

@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/src/entities/RAID/simulation/RAID5Device.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/entities/RAID/simulation/RAIDDevice.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/entities/StatisticsGetter.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/entities/basic/BasicDevice.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/entities/basic/BasicPlane.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/entities/hot_cold/HotColdChip.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/entities/hot_cold/HotColdDevice.java" charset="windows-1255" />
@@ -26,6 +27,7 @@
     <file url="file://$PROJECT_DIR$/src/manager/RAID5SeparateSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/RAID6SSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/RAIDSSDManager.java" charset="windows-1255" />
+    <file url="file://$PROJECT_DIR$/src/manager/RAIDSimulationTraceParser.java" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/manager/RAIDVisualizationSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/ReusableSSDManager.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/manager/ReusableVisualizationSSDManager.java" charset="windows-1255" />
@@ -51,5 +53,6 @@
     <file url="file://$PROJECT_DIR$/src/ui/WorkloadWidget.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/utils/UIUtils.java" charset="windows-1255" />
     <file url="file://$PROJECT_DIR$/src/utils/Utils.java" charset="windows-1255" />
+    <file url="PROJECT" charset="windows-1252" />
   </component>
 </project>

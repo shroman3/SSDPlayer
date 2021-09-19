@@ -30,6 +30,7 @@ import entities.ActionLog;
 import entities.CleanAction;
 import entities.EntityInfo;
 import entities.RAID.RAIDBasicChip;
+import utils.Utils.*;
 
 /**
  * 
@@ -131,10 +132,10 @@ public class RAIDChip extends RAIDBasicChip<RAIDPage, RAIDBlock, RAIDPlane> {
 				getTotalParityWritten() + 1, getTotalWritten() + 1);
 	}
 
-	public RAIDChip writeLP(int lp, int arg) {
+	public RAIDChip writeLP(int lp, LpArgs lpArgs) {
 		int index = getMinValidCountPlaneIndex();
 
-		RAIDPlane newPlane = ((RAIDPlane) getPlane(index)).writeLP(lp, arg);
+		RAIDPlane newPlane = ((RAIDPlane) getPlane(index)).writeLP(lp, lpArgs);
 		List<RAIDPlane> updatedPlanes = getNewPlanesList();
 		updatedPlanes.set(index, newPlane);
 		Builder builder = getSelfBuilder();

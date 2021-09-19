@@ -21,9 +21,7 @@
  *******************************************************************************/
 package entities.hot_cold;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.javatuples.Pair;
 
@@ -32,6 +30,7 @@ import entities.Plane;
 import manager.HotColdSSDManager;
 import manager.HotColdSSDManager.HotColdPartition;
 import utils.Utils;
+import utils.Utils.*;
 
 public class HotColdPlane extends Plane<HotColdBlock> {
 	public static class Builder extends Plane.Builder<HotColdBlock> {
@@ -96,7 +95,8 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 	}
 	
 	@Override
-	public HotColdPlane writeLP(int lp, int temperature) {
+	public HotColdPlane writeLP(int lp, LpArgs lpArgs) {
+		int temperature = lpArgs.getTemperatrure();
 		List<HotColdBlock> updatedBlocks = getNewBlocksList();
 		HotColdPartition partition = manager.getPartition(temperature);
 		Integer active = activeBlocksMap.get(partition);
@@ -105,7 +105,7 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 			updatedBlocks.set(active, updatedBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE, partition));
 		}
 		HotColdBlock activeBlock = updatedBlocks.get(active);
-		activeBlock = (HotColdBlock) activeBlock.writeLP(lp, temperature);
+		activeBlock = (HotColdBlock) activeBlock.writeLP(lp, lpArgs);
 		if(!activeBlock.hasRoomForWrite()) {
 			activeBlock = (HotColdBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 		}
@@ -129,7 +129,8 @@ public class HotColdPlane extends Plane<HotColdBlock> {
 					cleanBlocks.set(active, cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE, partition));
 				}
 				HotColdBlock activeBlock = cleanBlocks.get(active);
-				activeBlock = (HotColdBlock) activeBlock.move(page.getLp(), page.getTemperature());
+				LpArgs lpArgs = new LpArgsBuilder().temperature(page.getTemperature()).buildLpArgs();
+				activeBlock = (HotColdBlock) activeBlock.move(page.getLp(), lpArgs);
 				if(!activeBlock.hasRoomForWrite()) {
 					activeBlock = (HotColdBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 					cleanBlocks.set(active, activeBlock);

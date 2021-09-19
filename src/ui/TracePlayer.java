@@ -174,6 +174,7 @@ public class TracePlayer extends JPanel {
 			playPauseButton.setEnabled(false);
 			playPauseButton.setIcon(iconPlay);
 			stopButton.setEnabled(false);
+			MessageLog.clearLoggedMessages();
 			nextButton.setEnabled(false);
 			showStripeButton.setEnabled(false);
 			openButton.setEnabled(true);
