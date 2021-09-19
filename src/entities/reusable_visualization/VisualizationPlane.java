@@ -29,6 +29,7 @@ import org.javatuples.Pair;
 
 import utils.Utils;
 import entities.Plane;
+import utils.Utils.*;
 
 public class VisualizationPlane extends Plane<VisualizationBlock> {
 	public static class Builder extends Plane.Builder<VisualizationBlock> {
@@ -88,7 +89,7 @@ public class VisualizationPlane extends Plane<VisualizationBlock> {
 	}
 
 	@Override
-	public Plane<VisualizationBlock> writeLP(int lp, int arg) {
+	public Plane<VisualizationBlock> writeLP(int lp, LpArgs lpArgs) {
 		return null;
 	}
 

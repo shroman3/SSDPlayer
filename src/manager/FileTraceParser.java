@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import entities.Device;
 
@@ -34,15 +35,16 @@ public abstract class FileTraceParser<D extends Device<?>, S extends SSDManager<
 	private String operationLine;
 	private S manager;
 	private D device; //  November 2015: revised by Or Mauda for additional RAID functionality. changed from private to protected, to enable setDevice in RAID. 
-	private int lineNo = 0;
+	private int lineNo;
 
 	public FileTraceParser(S manager) {
+		lineNo = 0;
 		this.manager = manager;
 		device = manager.getEmptyDevice();
 	}
 
 	protected abstract D parseCommand(String command, int lineNo, D device, S manager) throws IOException;
-	public abstract  String getFileExtensions();
+	public abstract String[] getFileExtensions();
 	
 	public void open(String fileName) throws FileNotFoundException {
 		br = new BufferedReader(new FileReader(fileName));
@@ -66,12 +68,13 @@ public abstract class FileTraceParser<D extends Device<?>, S extends SSDManager<
 	
 	@Override
 	public D parseNextCommand() throws Exception {
+		lineNo++;
 		if (device != null) {	
 			if (br == null) {
 				throw new RuntimeException("You have to open trace file before you parse");
 			}
 			if ((operationLine = br.readLine()) == null) {				
-				return null;
+				return device;
 			}
 			if (!operationLine.matches("#.*")) {
 				device = parseCommand(operationLine, lineNo, device, manager);

@@ -20,4 +20,9 @@ public abstract class Message {
 	public Color getColor() {
 		return this.mColor;
 	}
+
+	@Override
+	public int hashCode(){
+		return mText.hashCode();
+	}
 }

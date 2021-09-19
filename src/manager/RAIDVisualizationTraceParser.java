@@ -22,8 +22,13 @@
 package manager;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import entities.RAID.visualization.RAIDVisualizationDevice;
+import general.MessageLog;
+import log.Message.ErrorMessage;
+import log.Message.InfoMessage;
 
 /**
  * 
@@ -40,13 +45,18 @@ public class RAIDVisualizationTraceParser extends FileTraceParser<RAIDVisualizat
 	@Override
 	protected RAIDVisualizationDevice parseCommand(String command, int line, RAIDVisualizationDevice device, RAIDVisualizationSSDManager manager) throws IOException {
 		String[] operationParts = command.split("[ \t]+");
-		RAIDSimulationOperations operation = RAIDSimulationOperations.getDeviceOperation(operationParts[0]);
-		return operation.doOperation(device, manager, operationParts);
+		if(command.equals("")){
+			MessageLog.log(new InfoMessage("Ignoring empty line at line number:" + line));
+			return device;
+		} else {
+			RAIDSimulationOperations operation = RAIDSimulationOperations.getDeviceOperation(operationParts[0]);
+			return operation.doOperation(device, manager, operationParts);
+		}
 	}
 
 	@Override
-	public String getFileExtensions() {
-		return "rlog";
+	public String[] getFileExtensions() {
+		return new String[]{"rlog"};
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import general.TwoObjectsCallback;
 import log.Message.ErrorMessage;
 import log.Message.InfoMessage;
 import manager.*;
+import org.javatuples.Pair;
 import ui.WorkloadWidget;
 import ui.breakpoints.InfoCLI;
 import utils.Utils;
@@ -20,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -57,7 +59,7 @@ public class TracePlayerCLI {
                            boolean isWorkloadUniform, Integer workloadLength, Integer seed, Double exp, boolean isResizable, Integer maxWriteSize, boolean isWriteSizeUniform) throws IOException {
         if(!useWorkloadGenerator){
             FileTraceParser<?, ?> fileTraceParser = manager.getFileTraseParser();
-            if(!fileTraceParser.getFileExtensions().contains(traceFileName.split("\\.")[1])){
+            if(Arrays.stream(fileTraceParser.getFileExtensions()).noneMatch(s->s.contains(traceFileName.split("\\.")[1]))){
                 throw new IOException("Trace Parser doesn't match the manager");
             }
 

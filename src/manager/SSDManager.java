@@ -50,6 +50,7 @@ import zoom.PagesZoomLevel;
 import zoom.SmallBlocksEraseCountZoomLevel;
 import zoom.SmallBlocksValidCountZoomLevel;
 import utils.Utils;
+import utils.Utils.*;
 
 
 /**
@@ -287,10 +288,10 @@ public abstract class SSDManager<P extends Page, B extends Block<P>, T extends P
 	 * @return the new device after the write.
 	 */
 	@SuppressWarnings("unchecked")
-	public D writeLP(D device, int lp, int arg) {
+	public D writeLP(D device, int lp, LpArgs lpArgs) {
 		D cleanDevice = (D) device.invokeCleaning();
 		cleanDevice = (D) cleanDevice.invalidate(lp);
-		cleanDevice = (D) cleanDevice.writeLP(lp, arg);
+		cleanDevice = (D) cleanDevice.writeLP(lp, lpArgs);
 		return cleanDevice;
 	}
 

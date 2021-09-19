@@ -22,6 +22,93 @@
 package utils;
 
 public class Utils {
+	public static class LpArgs{
+		private Integer size;
+		private Integer temperatrure;
+		private Integer stripe;
+		private Integer writeLevel;
+
+		public LpArgs(Integer size, Integer temperatrure, Integer stripe, Integer writeLevel) {
+			this.size = size;
+			this.temperatrure = temperatrure;
+			this.stripe = stripe;
+			this.writeLevel = writeLevel;
+		}
+
+		public Integer getSize() {
+			return size;
+		}
+
+		public void setSize(int size) {
+			this.size = size;
+		}
+
+		public Integer getTemperatrure() {
+			return temperatrure;
+		}
+
+		public void setTemperatrure(int temperatrure) {
+			this.temperatrure = temperatrure;
+		}
+
+		public Integer getStripe() {
+			return stripe;
+		}
+
+		public void setStripe(int stripe) {
+			this.stripe = stripe;
+		}
+
+		public Integer getWriteLevel() {
+			return writeLevel;
+		}
+
+		public void setWriteLevel(Integer writeLevel) {
+			this.writeLevel = writeLevel;
+		}
+	}
+
+	public static class LpArgsBuilder{
+		private Integer size;
+		private Integer temperatrure;
+		private Integer stripe;
+		private Integer writeLevel;
+
+		public LpArgsBuilder(){ }
+
+		public LpArgs buildLpArgs(){
+			return new LpArgs(size, temperatrure, stripe, writeLevel);
+		}
+
+		public LpArgsBuilder setAll(int val){
+			this.size = val;
+			this.temperatrure = val;
+			this.stripe = val;
+			this.writeLevel = val;
+			return this;
+		}
+
+		public LpArgsBuilder size(int size){
+			this.size = size;
+			return this;
+		}
+
+		public LpArgsBuilder temperature(int temperatrure){
+			this.temperatrure = temperatrure;
+			return this;
+		}
+
+		public LpArgsBuilder stripe(int stripe){
+			this.stripe = stripe;
+			return this;
+		}
+
+		public LpArgsBuilder writeLevel(int writeLevel){
+			this.writeLevel = writeLevel;
+			return this;
+		}
+	}
+
 	public enum GctType {
 		PERCENT,
 		BLOCKS

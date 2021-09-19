@@ -2,6 +2,7 @@ package CLI;
 
 import entities.Device;
 import entities.StatisticsGetter;
+import general.MessageLog;
 import general.OneObjectCallback;
 import general.TwoObjectsCallback;
 import manager.VisualConfig;
@@ -19,6 +20,7 @@ public class MainCLI {
 
     public MainCLI(VisualConfig visualConfig, String managerName, String outputFile, String inputTrace, boolean useBuiltInGenerator, boolean isGeneratorUniform, int workloadLength, int seed, double exponent, boolean isResizable, int maxWriteSize, boolean isWriteSizeUniform){
         this.visualConfig = visualConfig;
+        MessageLog.initialize(null);
         new TracePlayerCLI(visualConfig,
                 new TwoObjectsCallback<Device<?>, Iterable<StatisticsGetter>>() {
                     @Override

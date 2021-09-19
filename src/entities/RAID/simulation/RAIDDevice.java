@@ -32,6 +32,7 @@ import entities.ActionLog;
 import entities.WriteInStripeAction;
 import entities.WriteLpAction;
 import entities.RAID.RAIDBasicDevice;
+import utils.Utils.*;
 
 /**
  * 
@@ -111,8 +112,9 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 	
 
 	@Override
-	public RAIDDevice writeLP(int lp, int size) {
+	public RAIDDevice writeLP(int lp, LpArgs lpArgs) {
 		/* write the data pages */
+		int size = lpArgs.getSize();
 		boolean isFirstWrite = true; // if size > 1, this field gets false after the first write 
 		RAIDDevice tempDevice = (RAIDDevice) getSelfBuilder().build();
 		
@@ -139,7 +141,8 @@ public abstract class RAIDDevice extends RAIDBasicDevice<RAIDPage, RAIDBlock, RA
 			RAIDChip chip = tempDevice.getChip(chipIndex);
 			
 			// write the logical page to the fitting chip
-			updatedChips.set(chipIndex, (RAIDChip) chip.writeLP(currentLP, currentStripe));
+			LpArgs updatedChipsLpArgs = new LpArgsBuilder().stripe(currentStripe).buildLpArgs();
+			updatedChips.set(chipIndex, (RAIDChip) chip.writeLP(currentLP, updatedChipsLpArgs));
 			
 			Builder builder = (Builder) tempDevice.getSelfBuilder();
 			builder.increaseTotalDataWritten().setChips(updatedChips);

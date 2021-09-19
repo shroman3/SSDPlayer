@@ -25,6 +25,7 @@ import entities.RAID.RAIDBasicBlock;
 import entities.RAID.RAIDBasicPage;
 import manager.RAIDBasicSSDManager;
 import utils.Utils;
+import utils.Utils.*;
 
 /**
  * 
@@ -109,7 +110,8 @@ public class RAIDBlock extends RAIDBasicBlock<RAIDPage> {
 		return null;
 	}
 	
-	public RAIDBlock writeLP(int lp, int stripe) {
+	public RAIDBlock writeLP(int lp, LpArgs lpArgs) {
+		int stripe = lpArgs.getStripe();
 		int index = 0;
 		for (RAIDBasicPage page : getPages()) {
 			if (page.isClean()) {

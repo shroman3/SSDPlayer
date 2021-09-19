@@ -28,7 +28,7 @@ import java.util.Map;
 import entities.Device;
 import manager.HotColdSSDManager;
 import manager.HotColdSSDManager.HotColdPartition;
-
+import utils.Utils.*;
 
 public class HotColdDevice extends Device<HotColdChip> {
 	public static class Builder extends Device.Builder<HotColdChip> {
@@ -81,8 +81,9 @@ public class HotColdDevice extends Device<HotColdChip> {
 	}
 
 	@Override
-	public HotColdDevice writeLP(int lp, int temperature) {
-		HotColdDevice device = (HotColdDevice) super.writeLP(lp, temperature);
+	public HotColdDevice writeLP(int lp, LpArgs lpArgs) {
+		int temperature = lpArgs.getTemperatrure();
+		HotColdDevice device = (HotColdDevice) super.writeLP(lp, lpArgs);
 		HotColdPartition partition = manager.getPartition(temperature);
 		return device.getSelfBuilder().setTotalWritten(partition, totalWrittenMap.get(partition) + 1).build();
 	}

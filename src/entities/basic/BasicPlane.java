@@ -27,6 +27,8 @@ import org.javatuples.Pair;
 
 import entities.BlockStatusGeneral;
 import entities.Plane;
+import utils.Utils;
+import utils.Utils.*;
 
 public class BasicPlane extends Plane<BasicBlock> {
 	public static class Builder extends Plane.Builder<BasicBlock> {
@@ -67,7 +69,7 @@ public class BasicPlane extends Plane<BasicBlock> {
 	}
 
 	@Override
-	public BasicPlane writeLP(int lp, int dummy) {
+	public BasicPlane writeLP(int lp, LpArgs dummyLpArgs) {
 		List<BasicBlock> updatedBlocks = getNewBlocksList();
 		int active = getActiveBlockIndex();
 		if (active == -1) {
@@ -75,7 +77,9 @@ public class BasicPlane extends Plane<BasicBlock> {
 			updatedBlocks.set(active, (BasicBlock) updatedBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE));
 		}
 		BasicBlock activeBlock = updatedBlocks.get(active);
-		activeBlock = (BasicBlock) activeBlock.writeLP(lp, 0);
+		LpArgs lpArgs = new LpArgsBuilder().setAll(0).buildLpArgs(); //This is just because I am not sure what the 0 stands for
+		activeBlock = (BasicBlock) activeBlock.writeLP(lp, lpArgs);
+//		activeBlock = (BasicBlock) activeBlock.writeLP(lp, 0);
 		if(!activeBlock.hasRoomForWrite()) {
 			activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 		}
@@ -101,7 +105,9 @@ public class BasicPlane extends Plane<BasicBlock> {
 					active = getLowestEraseCleanBlockIndex();
 					activeBlock = (BasicBlock) cleanBlocks.get(active).setStatus(BlockStatusGeneral.ACTIVE);
 				}
-				activeBlock = (BasicBlock) activeBlock.move(page.getLp(), 0);
+				LpArgs lpArgs = new LpArgsBuilder().setAll(0).buildLpArgs(); //This is just because I am not sure what the 0 stands for
+				activeBlock = (BasicBlock) activeBlock.move(page.getLp(), lpArgs);
+//				activeBlock = (BasicBlock) activeBlock.move(page.getLp(), 0);
 				if(!activeBlock.hasRoomForWrite()) {
 					activeBlock = (BasicBlock) activeBlock.setStatus(BlockStatusGeneral.USED);
 					cleanBlocks.set(active, activeBlock);

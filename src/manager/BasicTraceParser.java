@@ -23,8 +23,13 @@ package manager;
 
 import general.MessageLog;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 import log.Message.ErrorMessage;
 import entities.Device;
+import log.Message.InfoMessage;
+import utils.Utils.*;
 
 public class BasicTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,D>> extends FileTraceParser<D,S> {
 	public BasicTraceParser(S manager) {
@@ -34,20 +39,34 @@ public class BasicTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,
 	@Override
 	protected D parseCommand(String command, int line, D device, S manager) throws IOException {
 		String[] operationParts = command.split("[ \t]+");
-		if ((operationParts.length == expectedNumberOfArguments()) && (operationParts[4].equals("W"))) {
+
+		if (operationParts.length > expectedNumberOfArguments()){
+			MessageLog.logOnce(new InfoMessage("Ignoring additional " + (operationParts.length - expectedNumberOfArguments()) + " fields which are unnecessary when using this manager"));
+		}
+		if ((operationParts.length >= expectedNumberOfArguments()) && (operationParts[4].equals("W"))) {
 			try {
 				int lp = Integer.parseInt(operationParts[2]);
-				return manager.writeLP(device, lp, getLpArg(operationParts));
+//				int size = Integer.parseInt(operationParts[3]);
+//				Integer lpArg = getLpArg(operationParts);
+//				return manager.writeLP(device, lp, size, lpArg);
+				LpArgs lpArgs = getLpArg(operationParts);
+				return manager.writeLP(device, lp, lpArgs);
 			} catch (NumberFormatException e) {
 				MessageLog.log(new ErrorMessage("Illegal Logical Page given: " + operationParts[2] + " line:" + line));
 			}
 		}
-		MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
-		return null;
+		if(!command.equals("")){
+			MessageLog.log(new ErrorMessage("Illegal trace line: " + command + " line:" + line));
+			return null;
+		} else {
+			MessageLog.log(new InfoMessage("Ignoring empty line at line number:" + line));
+			return device;
+		}
 	}
 
-	protected int getLpArg(String[] operationParts) {
-		return 0/*dummy*/;
+	protected LpArgs getLpArg(String[] operationParts) {
+		//return 0/*dummy*/;
+		return new LpArgsBuilder().size(Integer.parseInt(operationParts[3])).temperature(0).buildLpArgs();
 	}
 
 	protected int expectedNumberOfArguments() {
@@ -55,8 +74,8 @@ public class BasicTraceParser<D extends Device<?>, S extends SSDManager<?,?,?,?,
 	}
 
 	@Override
-	public String getFileExtensions() {
-		return "trace";
+	public String[] getFileExtensions() {
+		return new String[]{"trace", "hotcold"};
 	}
 
 }

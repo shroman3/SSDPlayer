@@ -24,10 +24,12 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.RAID.simulation.RAIDDevice;
 import org.javatuples.Pair;
 
 import general.ConfigProperties;
 import utils.Utils;
+import utils.Utils.*;
 
 /**
  * November 2015: revised by Or Mauda for additional RAID functionality.
@@ -147,14 +149,24 @@ public abstract class Device<C extends Chip<?>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Device<C> writeLP(int lp, int arg) {
-		int chipIndex = getChipIndex(lp);
-		List<C> updatedChips = getNewChipsList();
-		updatedChips.set(chipIndex, (C) getChip(chipIndex).writeLP(lp, arg));
-		ActionLog.addAction(new WriteLpAction(lp));
-		Builder<C> builder = getSelfBuilder();
-		builder.setChips(updatedChips).setTotalWritten(totalWritten + 1);
-		return builder.build();
+	public Device<C> writeLP(int lp, LpArgs lpArgs) {
+		int size = lpArgs.getSize();
+		Device<C> updatedDevice = getSelfBuilder().build();
+
+		for (int currentLP = lp; currentLP < lp + size; currentLP++) {
+			if (currentLP != lp) {
+				updatedDevice = updatedDevice.invokeCleaning();
+				updatedDevice = updatedDevice.invalidate(currentLP);
+			}
+			int chipIndex = getChipIndex(currentLP);
+			List<C> updatedChips = updatedDevice.getNewChipsList(); //?
+			updatedChips.set(chipIndex, (C) updatedDevice.getChip(chipIndex).writeLP(currentLP, lpArgs)); //?
+			ActionLog.addAction(new WriteLpAction(currentLP));
+			Builder<C> builder = updatedDevice.getSelfBuilder();
+			builder.setChips(updatedChips).setTotalWritten(updatedDevice.getTotalWritten() + 1);
+			updatedDevice = builder.build();
+		}
+		return updatedDevice;
 	}
 	
 	public C getChipByIndex(int chipIndex){

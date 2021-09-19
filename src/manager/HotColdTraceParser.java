@@ -22,6 +22,8 @@
 package manager;
 
 import entities.Device;
+import utils.Utils;
+import utils.Utils.*;
 
 public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?, ?, ?, ?, D>> extends BasicTraceParser<D, S> {
 	public HotColdTraceParser(S manager) {
@@ -29,8 +31,10 @@ public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?, ?, 
 	}
 
 	@Override
-	protected int getLpArg(String[] operationParts) {
-		return Integer.parseInt(operationParts[5]);
+	protected Utils.LpArgs getLpArg(String[] operationParts) {
+//		return Integer.parseInt(operationParts[5]);
+		return new LpArgsBuilder().size(Integer.parseInt(operationParts[3]))
+				.temperature(Integer.parseInt(operationParts[5])).buildLpArgs();
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class HotColdTraceParser<D extends Device<?>, S extends SSDManager<?, ?, 
 	}
 
 	@Override
-	public String getFileExtensions() {
-		return "hotcold";
+	public String[] getFileExtensions() {
+		return new String[]{"hotcold"};
 	}
 }
